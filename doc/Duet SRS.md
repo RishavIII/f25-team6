@@ -1,5 +1,5 @@
 # Software Requirements Specification
-## For Duet
+## For Duet – Local Music Tutor Finder
 
 Version 0.1  
 Prepared by Brian Tekmen and Rishav Patel
@@ -42,32 +42,50 @@ Table of Contents
 ## 1. Introduction
 
 ### 1.1 Document Purpose
-The purpose of this Software Requirements Specification (SRS) document is to describe the client-view and developer-view requirements for the Duet application.
-Client-oriented requirements describe the system from the client’s perspective. These requirements include a description of the different types of users served by the system.
-Developer-oriented requirements describe the system from a software developer’s perspective. These requirements include a detailed description of functional, data, performance, and other important requirements.
-### 1.2 Product Scope
-The purpose of the Duet system is to connect students with local music tutors and to create a convenient and easy-to-use application for tutors to reach their student base and monitor their reputation and revenue metrics. The system is a web-based application to simplify usability. Above all, we hope to provide a comfortable student and tutor experience.
+The purpose of this Software Requirements Specification (SRS) is to describe client-view and developer-view requirements for Duet, a web application that connects local music tutors with students (or parents). The client view captures user goals and use cases; the developer view specifies functional behavior, data, performance, and quality attributes required to implement the system.
 
+### 1.2 Product Scope
+Duet helps students/parents discover, evaluate, and book local private music lessons (in-person or online). Tutors publish detailed profiles, availability, instruments taught, travel radius, and rates. Students search by location, instrument, level, and schedule; book lessons; message tutors; and leave reviews. An admin console enables moderation and dispute handling. Primary objectives:
+
+- Reduce search friction for trustworthy, nearby tutors.
+
+- Provide simple, reliable scheduling and payments.
+
+- Support safe communication and reputation via reviews and responses.
 
 
 ### 1.3 Definitions, Acronyms and Abbreviations    
-| Reference |	Definition |
-| --------- | ------- |
-| Java |	A programming language originally developed by James Gosling at Sun Microsystems. We will be using this language to build the backend service for LocalHarvest Hub
-| Postgresql |	Open-source relational database management system.
-| SpringBoot |	An open-source Java-based framework used to create a micro Service. This will be used to create and run our application.
-| Spring MVC |	Model-View-Controller. This is the architectural pattern that will be used to implement our system.
-| Spring Web |	Will be used to build our web application by using | Spring MVC. This is one of the dependencies of our system.
-| API	| Application Programming Interface. This will be used to interface the backend and the fronted of our application.
-| HTML	| Hypertext Markup Language. This is the code that will be used to structure and design the web application and its content.
-| CSS	| Cascading Style Sheets. Will be used to add styles and appearance to the web app.
-| JavaScript |	An object-oriented computer programming language commonly used to create interactive effects within web browsers.Will be used in conjuction with HTML and CSS to make the web app.
-| VS Code	| An integrated development environment (IDE) for Java. This is where our system will be created.
+| Reference             | Definition                                                                           |
+| --------------------- | ------------------------------------------------------------------------------------ |
+| **Tutor**             | A music teacher offering paid lessons.                                               |
+| **Student**           | A learner seeking lessons (may be represented by a **Parent** account).              |
+| **Admin**             | Platform operator with moderation/oversight privileges.                              |
+| **Lesson**            | A scheduled session between a tutor and a student (trial or standard).               |
+| **Availability**      | Tutor’s time slots open for booking, including recurring patterns and buffers.       |
+| **RBAC**              | Role-Based Access Control.                                                           |
+| **JWT**               | JSON Web Token for stateless session auth.                                           |
+| **REST API**          | Backend HTTP interface for the web client.                                           |
+| **WebSocket**         | Bi-directional channel for real-time messaging/notifications.                        |
+| **PCI-DSS**           | Payment Card Industry Data Security Standard (handled via payment processor).        |
+| **COPPA**             | U.S. Children’s Online Privacy Protection Act (requirements when serving users <13). |
+| **Java**              | Backend implementation language.                                                     |
+| **Spring Boot**       | Java framework used to create the backend service.                                   |
+| **PostgreSQL**        | Relational database used to store application data.                                  |
+| **Map Geocoding API** | Service to geocode addresses and compute distances (e.g., Mapbox/Google).            |
+| **Stripe**            | Third-party payment processor (or equivalent).                                       |
 
 ### 1.4 References
+Spring Guides & Docs
 
+PostgreSQL Documentation
+
+Stripe API Docs (Payments, PaymentIntents)
+
+Mapbox/Google Maps Geocoding & Distance APIs
+
+OWASP ASVS & Top 10 (security baseline)
 ### 1.5 Document Overview
-Section 1 is a general introduction to the document, intended for any readers. Section 2 is focused on the product and its features. This section is for customers and business stakeholders. Section 3 specifies the requirements and constraints for the product and development process. This section is intended for all stakeholders, especially the development team.
+Section 1 is a general introduction to the document, intended for any readers. Section 2 describes Duet’s product perspective and major features for stakeholders. Section 3 details functional and non-functional requirements for the engineering team.
 
 ## 2. Product Overview
 This section should describe the general factors that affect the product and its requirements. This section does not state specific requirements. Instead, it provides a background for those requirements, which are defined in detail in Section 3, and makes them easier to understand.
