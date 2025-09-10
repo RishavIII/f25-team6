@@ -110,15 +110,67 @@ List any assumed factors (as opposed to known facts) that could affect the requi
 ## 3. Requirements
 
 ### 3.1 Functional Requirements 
-This section specifies the software product's requirements. Specify all of the software requirements to a level of detail sufficient to enable designers to design a software system to satisfy those requirements, and to enable testers to test that the software system satisfies those requirements.
+3.1.B Tutor / Provider
 
-The specific requirements should:
-* Be uniquely identifiable.
-* State the subject of the requirement (e.g., system, software, etc.) and what shall be done.
-* Optionally state the conditions and constraints, if any.
-* Describe every input (stimulus) into the software system, every output (response) from the software system, and all functions performed by the software system in response to an input or in support of an output.
-* Be verifiable (e.g., the requirement realization can be proven to the customer's satisfaction)
-* Conform to agreed upon syntax, keywords, and terms.
+- FR10 Accounts, Onboarding & RBAC
+
+	 - FR10.1 Register/login as Tutor; complete onboarding wizard.
+
+	 - FR10.2 Role-based permissions restrict access to tutor-only features.
+
+- FR11 Profile Management
+
+	 - FR11.1 Create/edit profile: bio, photo, instruments taught, levels, genres, hourly rate(s), travel radius, studio address, online/in-person options, credentials.
+
+	 - FR11.2 Define cancellation policy and lesson buffers (prep/commute).
+
+- FR12 Availability & Calendar
+
+	 - FR12.1 Define recurring availability (weekly patterns) and blackout dates.
+
+	 - FR12.2 System generates bookable slots; prevent double-booking.
+
+	 - FR12.3 Time-zone-aware display; optional iCal read-only export in v1.1.
+
+- FR13 Booking Management
+
+	 - FR13.1 View incoming booking requests; Accept, Decline, or Propose alternate times.
+
+	 - FR13.2 On Accept, the system creates a Lesson record and notifies the student.
+
+	 - FR13.3 Modify or cancel per policy; system computes fees/refunds.
+
+- FR14 Messaging
+
+	 - FR14.1 Message students within the platform; receive new-message notifications.
+
+	 - FR14.2 Mark/report abusive content.
+
+- FR15 Pricing, Payments & Payouts
+
+	 - FR15.1 Set lesson rates (optionally by duration or level).
+
+	 - FR15.2 Connect a payout account with the payment processor.
+
+	 - FR15.3 View payment status for lessons (authorized/captured/refunded).
+
+- FR16 Reviews & Reputation
+
+	 - FR16.1 View received reviews/ratings.
+
+	 - FR16.2 Post one public response per review.
+
+	 - FR16.3 Flag abusive reviews for admin moderation.
+
+- FR17 Insights & Reporting
+
+	 - FR17.1 Dashboard with upcoming lessons, monthly earnings, cancellations.
+
+	 - FR17.2 Export lesson and payout history (CSV/JSON) in v1.1.
+
+- FR18 Notifications
+
+	 - FR18.1 Email notifications (optional SMS later) for new requests, messages, schedule changes, and payout events.
 
 #### 3.1.1 User interfaces
 Define the software components for which a user interface is needed. Describe the logical characteristics of each interface between the software product and the users. This may include sample screen images, any GUI standards or product family style guides that are to be followed, screen layout constraints, standard buttons and functions (e.g., help) that will appear on every screen, keyboard shortcuts, error message display standards, and so on. Details of the user interface design should be documented in a separate user interface specification.
