@@ -37,7 +37,7 @@ Table of Contents
 ## Revision History
 | Name | Date    | Reason For Changes  | Version   |
 | ---- | ------- | ------------------- | --------- |
-|Rishav|9/10/2025|                     |           |
+|Rishav|9/10/2025|Initial SRS Section 2|1.0        |
 |      |         |                     |           |
 |      |         |                     |           |
 
