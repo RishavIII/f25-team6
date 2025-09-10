@@ -76,26 +76,80 @@ We will be using Java, with our program being dependent on Spring & SpringBoot, 
 ## 3. Requirements
 
 ### 3.1 Functional Requirements 
-This section specifies the software product's requirements. Specify all of the software requirements to a level of detail sufficient to enable designers to design a software system to satisfy those requirements, and to enable testers to test that the software system satisfies those requirements.
+- FR0 Accounts & Profiles
 
-The specific requirements should:
-* Be uniquely identifiable.
-* State the subject of the requirement (e.g., system, software, etc.) and what shall be done.
-* Optionally state the conditions and constraints, if any.
-* Describe every input (stimulus) into the software system, every output (response) from the software system, and all functions performed by the software system in response to an input or in support of an output.
-* Be verifiable (e.g., the requirement realization can be proven to the customer's satisfaction)
-* Conform to agreed upon syntax, keywords, and terms.
+	 - FR0.1 Students (or Parents) can register/login via email/password; password reset is available.
+
+	 - FR0.2 If the learner is under 13, a Parent account is required (age gate at signup).
+
+	 - FR0.3 Students can edit profile info (name, preferred instruments/levels, contact preferences).
+
+- FR1 Search & Discovery
+
+	 - FR1.1 Search tutors by instrument, level, distance/radius (geocoded), price range, rating, availability, online/in-person.
+
+	 - FR1.2 Sort results by relevance, distance, price, or rating.
+
+	 - FR1.3 View results as list (MVP); map view is optional post-MVP.
+
+- FR2 Tutor Profiles
+
+	 - FR2.1 Open a tutor profile showing bio, photo, instruments/levels, genres, rates, travel radius, in-person/online options, credentials, cancellation policy, reviews/ratings.
+
+	 - FR2.2 See next available time slots if the tutor exposes availability.
+
+- FR3 Messaging
+
+	 - FR3.1 Start and continue in-app message threads with tutors.
+
+	 - FR3.2 Report/flag abusive messages.
+
+- FR4 Booking Requests
+
+	 - FR4.1 Create a booking request selecting instrument, duration, date/time, lesson mode (online/in-person) and location if needed.
+
+	 - FR4.2 See status changes: Pending → Accepted/Declined or Alt-Time Proposed.
+
+	 - FR4.3 Receive confirmations and calendar details when accepted.
+
+- FR5 Payments & Checkout
+
+	 - FR5.1 Pay for accepted lessons via integrated processor (e.g., Stripe PaymentIntents).
+
+	 - FR5.2 View totals, fees, and refund policy before paying.
+
+	 - FR5.3 Receive receipt/confirmation after successful payment.
+
+- FR6 Reschedule & Cancel
+
+	 - FR6.1 Request reschedule/cancel according to tutor policy and time buffers.
+
+	 - FR6.2 System calculates applicable refunds/fees automatically and displays them prior to confirmation.
+- FR7 Reviews & Ratings
+
+	 - FR7.1 After a completed lesson, submit a 1–5 star rating and optional text review.
+
+	 - FR7.2 Flag inappropriate reviews for admin moderation.
+
+- FR8 Notifications
+
+	 - FR8.1 Receive email notifications (and optional SMS later) for new messages, booking decisions, payment results, and upcoming lesson reminders (e.g., 24h prior).
+
+- FR9 Data Portability
+
+	 - FR9.1 Export basic profile and booking history (CSV/JSON) in v1.1.
+
 
 #### 3.1.1 User interfaces
-Define the software components for which a user interface is needed. Describe the logical characteristics of each interface between the software product and the users. This may include sample screen images, any GUI standards or product family style guides that are to be followed, screen layout constraints, standard buttons and functions (e.g., help) that will appear on every screen, keyboard shortcuts, error message display standards, and so on. Details of the user interface design should be documented in a separate user interface specification.
-
-Could be further divided into Usability and Convenience requirements.
+Web pages using HTML, CSS, and JavaScript.
 
 #### 3.1.2 Hardware interfaces
-Describe the logical and physical characteristics of each interface between the software product and the hardware components of the system. This may include the supported device types, the nature of the data and control interactions between the software and the hardware, and communication protocols to be used.
+Devices that have web browser capabilities.
 
 #### 3.1.3 Software interfaces
-Describe the connections between this product and other specific software components (name and version), including databases, operating systems, tools, libraries, and integrated commercial components. Identify the data items or messages coming into the system and going out and describe the purpose of each. Describe the services needed and the nature of communications. Refer to documents that describe detailed application programming interface protocols. Identify data that will be shared across software components. If the data sharing mechanism must be implemented in a specific way (for example, use of a global data area in a multitasking operating system), specify this as an implementation constraint.
+- Java jdk 21
+- PostgreSQL 17
+- SpringBoot 3.4.5
 
 ### 3.2 Non Functional Requirements 
 
