@@ -1,10 +1,10 @@
 # Software Requirements Specification
-## For <project name>
+## For Duet – Local Music Tutor Finder
 
 Version 0.1  
-Prepared by <author>  
-<organization>  
-<date created> 
+Prepared by Brian Tekmen and Rishav Patel
+CSC340
+September 10, 2025
 
 Table of Contents
 =================
@@ -37,26 +37,55 @@ Table of Contents
 ## Revision History
 | Name | Date    | Reason For Changes  | Version   |
 | ---- | ------- | ------------------- | --------- |
-|      |         |                     |           |
-|      |         |                     |           |
-|      |         |                     |           |
+|  Emre | 9/10/2025      |    Init Section 1                 |     0.1      |
 
 ## 1. Introduction
 
 ### 1.1 Document Purpose
-Describe the purpose of the SRS and its intended audience.
+The purpose of this Software Requirements Specification (SRS) is to describe client-view and developer-view requirements for Duet, a web application that connects local music tutors with students (or parents). The client view captures user goals and use cases; the developer view specifies functional behavior, data, performance, and quality attributes required to implement the system.
 
 ### 1.2 Product Scope
-Identify the product whose software requirements are specified in this document, including the revision or release number. Explain what the product that is covered by this SRS will do, particularly if this SRS describes only part of the system or a single subsystem. 
-Provide a short description of the software being specified and its purpose, including relevant benefits, objectives, and goals. Relate the software to corporate goals or business strategies. If a separate vision and scope document is available, refer to it rather than duplicating its contents here.
+Duet helps students/parents discover, evaluate, and book local private music lessons (in-person or online). Tutors publish detailed profiles, availability, instruments taught, travel radius, and rates. Students search by location, instrument, level, and schedule; book lessons; message tutors; and leave reviews. An admin console enables moderation and dispute handling. Primary objectives:
 
-### 1.3 Definitions, Acronyms and Abbreviations                                                                                                                                                                          |
+- Reduce search friction for trustworthy, nearby tutors.
+
+- Provide simple, reliable scheduling and payments.
+
+- Support safe communication and reputation via reviews and responses.
+
+
+### 1.3 Definitions, Acronyms and Abbreviations    
+| Reference             | Definition                                                                           |
+| --------------------- | ------------------------------------------------------------------------------------ |
+| **Tutor**             | A music teacher offering paid lessons.                                               |
+| **Student**           | A learner seeking lessons (may be represented by a **Parent** account).              |
+| **Admin**             | Platform operator with moderation/oversight privileges.                              |
+| **Lesson**            | A scheduled session between a tutor and a student (trial or standard).               |
+| **Availability**      | Tutor’s time slots open for booking, including recurring patterns and buffers.       |
+| **RBAC**              | Role-Based Access Control.                                                           |
+| **JWT**               | JSON Web Token for stateless session auth.                                           |
+| **REST API**          | Backend HTTP interface for the web client.                                           |
+| **WebSocket**         | Bi-directional channel for real-time messaging/notifications.                        |
+| **PCI-DSS**           | Payment Card Industry Data Security Standard (handled via payment processor).        |
+| **COPPA**             | U.S. Children’s Online Privacy Protection Act (requirements when serving users <13). |
+| **Java**              | Backend implementation language.                                                     |
+| **Spring Boot**       | Java framework used to create the backend service.                                   |
+| **PostgreSQL**        | Relational database used to store application data.                                  |
+| **Map Geocoding API** | Service to geocode addresses and compute distances (e.g., Mapbox/Google).            |
+| **Stripe**            | Third-party payment processor (or equivalent).                                       |
 
 ### 1.4 References
-List any other documents or Web addresses to which this SRS refers. These may include user interface style guides, contracts, standards, system requirements specifications, use case documents, or a vision and scope document. Provide enough information so that the reader could access a copy of each reference, including title, author, version number, date, and source or location.
+Spring Guides & Docs
 
+PostgreSQL Documentation
+
+Stripe API Docs (Payments, PaymentIntents)
+
+Mapbox/Google Maps Geocoding & Distance APIs
+
+OWASP ASVS & Top 10 (security baseline)
 ### 1.5 Document Overview
-Describe what the rest of the document contains and how it is organized.
+Section 1 is a general introduction to the document, intended for any readers. Section 2 describes Duet’s product perspective and major features for stakeholders. Section 3 details functional and non-functional requirements for the engineering team.
 
 ## 2. Product Overview
 This section should describe the general factors that affect the product and its requirements. This section does not state specific requirements. Instead, it provides a background for those requirements, which are defined in detail in Section 3, and makes them easier to understand.
