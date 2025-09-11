@@ -106,6 +106,9 @@ We will be using Java, with our program being dependent on Spring & SpringBoot, 
 ## 3. Requirements
 
 ### 3.1 Functional Requirements 
+
+3.1.A Student / Customer
+
 - FR0 Accounts & Profiles
 
 	 - FR0.1 Students (or Parents) can register/login via email/password; password reset is available.
