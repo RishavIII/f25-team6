@@ -37,6 +37,7 @@ Table of Contents
 ## Revision History
 | Name | Date    | Reason For Changes  | Version   |
 | ---- | ------- | ------------------- | --------- |
+|Rishav|9/10/2025|Initial SRS Section 2|1.0        |
 |  Emre | 9/10/2025      |    Init Section 1                 |     0.1      |
 
 ## 1. Introduction
@@ -88,28 +89,86 @@ OWASP ASVS & Top 10 (security baseline)
 Section 1 is a general introduction to the document, intended for any readers. Section 2 describes Duet’s product perspective and major features for stakeholders. Section 3 details functional and non-functional requirements for the engineering team.
 
 ## 2. Product Overview
-This section should describe the general factors that affect the product and its requirements. This section does not state specific requirements. Instead, it provides a background for those requirements, which are defined in detail in Section 3, and makes them easier to understand.
+ Duet is a web-based platform designed to help students discover and make appointments with music tutors. Students can leave reviews based on the quality of their experience with tutors. Tutors showcase their profile, mange their appointments, and track student engagement. The system supports the user roles for students and tutors, each with tailored services to ensure a seamless market between tutor and student.
 
 ### 2.1 Product Functions
-Summarize the major functions the product must perform or must let the user perform. Details will be provided in Section 3, so only a high level summary (such as a bullet list) is needed here. Organize the functions to make them understandable to any reader of the SRS. A picture of the major groups of related requirements and how they relate, such as a top level data flow diagram or object class diagram, is often effective.
+Duet allows tutors to post and customize their profiles. They can manage and track their calendar of appointments from the website. Students can look for and schedule appointments to any tutor of their choosing based on convenience by price, location, and skill from the dashboard.
 
 ### 2.2 Product Constraints
-This subsection should provide a general description of any other items that will limit the developer’s options. These may include:  
-
-* Interfaces to users, other applications or hardware.  
-* Quality of service constraints.  
-* Standards compliance.  
-* Constraints around design or implementation.
+At this point, the program will only run on a computer with Java jdk 21 installed. The full scope of the project is hopefully realized, however the team has a deadline of about 10 weeks, which could lead to feature cuts. The program would have a challenge scaling, as the current plan is to use a free version of a Postgresql database to store the information.
   
 ### 2.3 User Characteristics
-Identify the various user classes that you anticipate will use this product. User classes may be differentiated based on frequency of use, subset of product functions used, technical expertise, security or privilege levels, educational level, or experience. Describe the pertinent characteristics of each user class. Certain requirements may pertain only to certain user classes. Distinguish the most important user classes for this product from those who are less important to satisfy.
+Our website application does not expect our users to have any prior knowledge of a computer, apart from using a web browser. As long as users know what skills or music intruments they are interested in, they should be experts within several uses of the application.
 
 ### 2.4 Assumptions and Dependencies
-List any assumed factors (as opposed to known facts) that could affect the requirements stated in the SRS. These could include third-party or commercial components that you plan to use, issues around the development or operating environment, or constraints. The project could be affected if these assumptions are incorrect, are not shared, or change. Also identify any dependencies the project has on external factors, such as software components that you intend to reuse from another project, unless they are already documented elsewhere (for example, in the vision and scope document or the project plan).
+We will be using Java, with our program being dependent on Spring & SpringBoot, and RestAPI to connect to external APIs and developed with VS Code. The application will also use an external location API that will help the student schedule the appointment with the most convenience.
 
 ## 3. Requirements
 
 ### 3.1 Functional Requirements 
+- FR0 Accounts & Profiles
+
+	 - FR0.1 Students (or Parents) can register/login via email/password; password reset is available.
+
+	 - FR0.2 If the learner is under 13, a Parent account is required (age gate at signup).
+
+	 - FR0.3 Students can edit profile info (name, preferred instruments/levels, contact preferences).
+
+- FR1 Search & Discovery
+
+	 - FR1.1 Search tutors by instrument, level, distance/radius (geocoded), price range, rating, availability, online/in-person.
+
+	 - FR1.2 Sort results by relevance, distance, price, or rating.
+
+	 - FR1.3 View results as list (MVP); map view is optional post-MVP.
+
+- FR2 Tutor Profiles
+
+	 - FR2.1 Open a tutor profile showing bio, photo, instruments/levels, genres, rates, travel radius, in-person/online options, credentials, cancellation policy, reviews/ratings.
+
+	 - FR2.2 See next available time slots if the tutor exposes availability.
+
+- FR3 Messaging
+
+	 - FR3.1 Start and continue in-app message threads with tutors.
+
+	 - FR3.2 Report/flag abusive messages.
+
+- FR4 Booking Requests
+
+	 - FR4.1 Create a booking request selecting instrument, duration, date/time, lesson mode (online/in-person) and location if needed.
+
+	 - FR4.2 See status changes: Pending → Accepted/Declined or Alt-Time Proposed.
+
+	 - FR4.3 Receive confirmations and calendar details when accepted.
+
+- FR5 Payments & Checkout
+
+	 - FR5.1 Pay for accepted lessons via integrated processor (e.g., Stripe PaymentIntents).
+
+	 - FR5.2 View totals, fees, and refund policy before paying.
+
+	 - FR5.3 Receive receipt/confirmation after successful payment.
+
+- FR6 Reschedule & Cancel
+
+	 - FR6.1 Request reschedule/cancel according to tutor policy and time buffers.
+
+	 - FR6.2 System calculates applicable refunds/fees automatically and displays them prior to confirmation.
+- FR7 Reviews & Ratings
+
+	 - FR7.1 After a completed lesson, submit a 1–5 star rating and optional text review.
+
+	 - FR7.2 Flag inappropriate reviews for admin moderation.
+
+- FR8 Notifications
+
+	 - FR8.1 Receive email notifications (and optional SMS later) for new messages, booking decisions, payment results, and upcoming lesson reminders (e.g., 24h prior).
+
+- FR9 Data Portability
+
+	 - FR9.1 Export basic profile and booking history (CSV/JSON) in v1.1.
+
 3.1.B Tutor / Provider
 
 - FR10 Accounts, Onboarding & RBAC
@@ -173,35 +232,69 @@ List any assumed factors (as opposed to known facts) that could affect the requi
 	 - FR18.1 Email notifications (optional SMS later) for new requests, messages, schedule changes, and payout events.
 
 #### 3.1.1 User interfaces
-Define the software components for which a user interface is needed. Describe the logical characteristics of each interface between the software product and the users. This may include sample screen images, any GUI standards or product family style guides that are to be followed, screen layout constraints, standard buttons and functions (e.g., help) that will appear on every screen, keyboard shortcuts, error message display standards, and so on. Details of the user interface design should be documented in a separate user interface specification.
-
-Could be further divided into Usability and Convenience requirements.
+Web pages using HTML, CSS, and JavaScript.
 
 #### 3.1.2 Hardware interfaces
-Describe the logical and physical characteristics of each interface between the software product and the hardware components of the system. This may include the supported device types, the nature of the data and control interactions between the software and the hardware, and communication protocols to be used.
+Devices that have web browser capabilities.
 
 #### 3.1.3 Software interfaces
-Describe the connections between this product and other specific software components (name and version), including databases, operating systems, tools, libraries, and integrated commercial components. Identify the data items or messages coming into the system and going out and describe the purpose of each. Describe the services needed and the nature of communications. Refer to documents that describe detailed application programming interface protocols. Identify data that will be shared across software components. If the data sharing mechanism must be implemented in a specific way (for example, use of a global data area in a multitasking operating system), specify this as an implementation constraint.
+- Java jdk 21
+- PostgreSQL 17
+- SpringBoot 3.4.5
 
 ### 3.2 Non Functional Requirements 
+3.2.1 Performance
 
-#### 3.2.1 Performance
-If there are performance requirements for the product under various circumstances, state them here and explain their rationale, to help the developers understand the intent and make suitable design choices. Specify the timing relationships for real time systems. Make such requirements as specific as possible. You may need to state performance requirements for individual functional requirements or features.
+- NFR0: Search response time less than 0.5 seconds on average
 
-#### 3.2.2 Security
-Specify any requirements regarding security or privacy issues surrounding use of the product or protection of the data used or created by the product. Define any user identity authentication requirements. Refer to any external policies or regulations containing security issues that affect the product. Define any security or privacy certifications that must be satisfied.
+- NFR1: Booking confirmation less than 2 seconds
 
-#### 3.2.3 Reliability
-Specify the factors required to establish the required reliability of the software system at time of delivery.
+- NFR2: First meaningful connections < 2.5 seconds
 
-#### 3.2.4 Availability
-Specify the factors required to guarantee a defined availability level for the entire system such as checkpoint, recovery, and restart.
+- NFR3: Message delivery latency < 1 second
 
-#### 3.2.5 Compliance
-Specify the requirements derived from existing standards or regulations
+3.2.2 Security
 
-#### 3.2.6 Cost
-Specify monetary cost of the software product.
+- NFR4: All traffic served over HTTPS
 
-#### 3.2.7 Deadline
-Specify schedule for delivery of the software product.
+- NFR5: Passwords will be salted and hashed.
+
+- NFR6: tutors cannot access other tutors’ earnings/availability data.
+
+- NFR7: Payment data never stored on Duet servers; handled by Stripe.
+
+- NFR8: Sending requests will be rate-limited
+
+- NFR9: Basic censorship of vulgar words
+
+- NFR10: Privacy for minors: no public contact details; parent account required for those under 13.
+
+3.2.3 Reliability
+
+- NFR11: Consistently back up data
+
+- NFR12: Payments will retry until success.
+
+- NFR13: If message transmissions fail, they will be stored and queued for delivery
+
+3.2.4 Availability
+
+- NFR14: Should be upt 99.99% of the time.
+
+- NFR15: Maintenance will occur during off hours.
+
+3.2.5 Compliance
+
+- NFR16: Use stripe for payment processing safety
+
+- NFR17: Create a privacy policy and terms of service
+
+- NFR18: Follow generic accessibility guidlines
+
+3.2.6 Cost
+
+- NFR19: This application should cost 0 dollars.
+
+3.2.7 Deadline
+
+- NFR20: The final product will be delivered by December 2025.
