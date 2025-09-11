@@ -246,24 +246,58 @@ Devices that have web browser capabilities.
 - SpringBoot 3.4.5
 
 ### 3.2 Non Functional Requirements 
+3.2.1 Performance
 
-#### 3.2.1 Performance
-If there are performance requirements for the product under various circumstances, state them here and explain their rationale, to help the developers understand the intent and make suitable design choices. Specify the timing relationships for real time systems. Make such requirements as specific as possible. You may need to state performance requirements for individual functional requirements or features.
+- NFR0: Search response time less than 0.5 seconds on average
 
-#### 3.2.2 Security
-Specify any requirements regarding security or privacy issues surrounding use of the product or protection of the data used or created by the product. Define any user identity authentication requirements. Refer to any external policies or regulations containing security issues that affect the product. Define any security or privacy certifications that must be satisfied.
+- NFR1: Booking confirmation less than 2 seconds
 
-#### 3.2.3 Reliability
-Specify the factors required to establish the required reliability of the software system at time of delivery.
+- NFR2: First meaningful connections < 2.5 seconds
 
-#### 3.2.4 Availability
-Specify the factors required to guarantee a defined availability level for the entire system such as checkpoint, recovery, and restart.
+- NFR3: Message delivery latency < 1 second
 
-#### 3.2.5 Compliance
-Specify the requirements derived from existing standards or regulations
+3.2.2 Security
 
-#### 3.2.6 Cost
-Specify monetary cost of the software product.
+- NFR4: All traffic served over HTTPS
 
-#### 3.2.7 Deadline
-Specify schedule for delivery of the software product.
+- NFR5: Passwords will be salted and hashed.
+
+- NFR6: tutors cannot access other tutors’ earnings/availability data.
+
+- NFR7: Payment data never stored on Duet servers; handled by Stripe.
+
+- NFR8: Sending requests will be rate-limited
+
+- NFR9: Basic censorship of vulgar words
+
+- NFR10: Privacy for minors: no public contact details; parent account required for those under 13.
+
+3.2.3 Reliability
+
+- NFR11: Consistently back up data
+
+- NFR12: Payments will retry until success.
+
+- NFR13: If message transmissions fail, they will be stored and queued for delivery
+
+3.2.4 Availability
+
+- NFR14: Should be upt 99.99% of the time.
+
+- NFR15: Maintenance will occur during off hours.
+
+3.2.5 Compliance
+
+- NFR16: Use stripe for payment processing safety
+
+- NFR17: Create a privacy policy and terms of service
+
+- NFR18: Follow generic accessibility guidlines
+
+3.2.6 Cost
+
+- NFR19: This application should cost 0 dollars.
+
+3.2.7 Deadline
+
+- NFR20: The final product will be delivered by December 2025.
