@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Profile — DUET</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <div class="nav-container">
+      <div class="brand">DUET</div>
+      <div class="search" role="search">
+        <label for="nav-search" class="visually-hidden">Search</label>
+        <div class="search-inner">
+          <!-- search icon -->
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="2" fill="none"></circle>
+          </svg>
+          <input id="nav-search" type="search" placeholder="Search" />
+        </div>
+      </div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="tutor_home.html" class="nav-link" aria-label="Home">
+          <!-- home icon -->
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M5 21V12h14v9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="message.html" class="nav-link" aria-label="Messages">
+          <!-- message icon -->
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="#notifications" class="nav-link" aria-label="Notifications">
+          <!-- bell icon -->
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15 17H9a3 3 0 0 1-3-3V11a6 6 0 1 1 12 0v3a3 3 0 0 1-3 3z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="#calendar" class="nav-link" aria-label="Calendar">
+          <!-- calendar icon -->
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="3" y="5" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="1.6" fill="none"></rect>
+            <path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="#profile" class="nav-link" aria-label="Profile">
+          <!-- user icon -->
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.6" fill="none"></circle>
+          </svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="profile-page">
+    <div class="profile-view-card card center-card" id="profileView">
+      <button class="edit-toggle" id="editToggle" aria-label="Edit profile">✎</button>
+      <h1>Your profile</h1>
+      <div class="view-top">
+        <div class="photo-large">
+          <img id="viewPhoto" src="empty-pfp.jpg" alt="Profile photo">
+        </div>
+        <div class="view-main">
+          <div class="view-row"><span class="label">Display name</span><span class="value" id="viewName">Emma Tutor</span></div>
+          <div class="view-row"><span class="label">Bio</span><span class="value" id="viewBio">Enthusiastic piano teacher with 8 years of experience teaching all ages.</span></div>
+          <div class="view-row"><span class="label">Instruments</span><span class="value" id="viewInstruments">Piano, Keyboard</span></div>
+          <div class="view-row"><span class="label">Levels</span><span class="value" id="viewLevels">Beginner, Intermediate</span></div>
+        </div>
+      </div>
+      <div class="view-grid">
+        <div class="view-row"><span class="label">Genres</span><span class="value" id="viewGenres">Classical, Pop</span></div>
+        <div class="view-row"><span class="label">Credentials</span><span class="value" id="viewCreds">B.M. in Piano Performance</span></div>
+        <div class="view-row"><span class="label">Hourly rate (local)</span><span class="value" id="viewRateLocal">$40</span></div>
+        <div class="view-row"><span class="label">Hourly rate (online)</span><span class="value" id="viewRateOnline">$30</span></div>
+        <div class="view-row"><span class="label">Travel radius</span><span class="value" id="viewRadius">10 miles</span></div>
+        <div class="view-row"><span class="label">Studio address</span><span class="value" id="viewAddress">123 Music Ave, City, ZIP</span></div>
+        <div class="view-row"><span class="label">Lesson types</span><span class="value" id="viewTypes">Online, In-person at studio</span></div>
+        <div class="view-row"><span class="label">Cancellation policy</span><span class="value" id="viewCancel">24-hour notice (full refund)</span></div>
+        <div class="view-row"><span class="label">Prep buffer</span><span class="value" id="viewPrep">10 minutes</span></div>
+        <div class="view-row"><span class="label">Commute buffer</span><span class="value" id="viewCommute">20 minutes</span></div>
+      </div>
+    </div>
+
+    <!-- Hidden edit form (initially hidden) -->
+    <div class="profile-edit-card card center-card hidden" id="profileEdit">
+      <button class="edit-toggle" id="cancelEdit" aria-label="Cancel editing">✕</button>
+      <h1>Edit profile</h1>
+      <form class="profile-form" id="editForm">
+        <div class="edit-top">
+          <div class="photo-large edit-photo">
+            <input id="inputPhoto" type="file" accept="image/*">
+            <img id="editPhotoPreview" src="empty-pfp.jpg" alt="Profile photo">
+          </div>
+          <div class="edit-main">
+            <label class="field"><span>Display name</span><input id="inputName" type="text" value="Emma Tutor"></label>
+            <label class="field"><span>Bio</span><textarea id="inputBio">Enthusiastic piano teacher with 8 years of experience teaching all ages.</textarea></label>
+            <label class="field"><span>Instruments</span><input id="inputInstruments" type="text" value="Piano, Keyboard"></label>
+            <label class="field"><span>Levels</span><input id="inputLevels" type="text" value="Beginner, Intermediate"></label>
+          </div>
+        </div>
+        <div class="edit-grid">
+          <label class="field"><span>Genres</span><input id="inputGenres" type="text" value="Classical, Pop"></label>
+          <label class="field"><span>Credentials</span><textarea id="inputCreds">B.M. in Piano Performance</textarea></label>
+          <label class="field"><span>Hourly rate (local)</span><input id="inputRateLocal" type="number" value="40"></label>
+          <label class="field"><span>Hourly rate (online)</span><input id="inputRateOnline" type="number" value="30"></label>
+          <label class="field"><span>Travel radius (miles)</span><input id="inputRadius" type="number" value="10"></label>
+          <label class="field"><span>Studio address</span><input id="inputAddress" type="text" value="123 Music Ave, City, ZIP"></label>
+          <label class="field"><span>Lesson types</span><input id="inputTypes" type="text" value="Online, In-person at studio"></label>
+          <label class="field"><span>Cancellation policy</span><select id="inputCancel"><option>24-hour notice (full refund)</option><option>12-hour notice (50% refund)</option><option>Strict (no refund)</option></select></label>
+          <label class="field"><span>Prep buffer (minutes)</span><input id="inputPrep" type="number" value="10"></label>
+          <label class="field"><span>Commute buffer (minutes)</span><input id="inputCommute" type="number" value="20"></label>
+        </div>
+        <div class="form-actions">
+          <button class="btn primary" id="saveBtn" type="button">Save</button>
+          <button class="btn" id="resetBtn" type="button">Reset</button>
+        </div>
+      </form>
+    </div>
+  </main>
+  <script>
+    // Toggle edit/view and sync values
+    const editToggle = document.getElementById('editToggle');
+    const profileView = document.getElementById('profileView');
+    const profileEdit = document.getElementById('profileEdit');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const saveBtn = document.getElementById('saveBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    function showEdit(){
+      profileView.classList.add('hidden');
+      profileEdit.classList.remove('hidden');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function showView(){
+      profileEdit.classList.add('hidden');
+      profileView.classList.remove('hidden');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    editToggle && editToggle.addEventListener('click', showEdit);
+    cancelEdit && cancelEdit.addEventListener('click', showView);
+
+    saveBtn && saveBtn.addEventListener('click', ()=>{
+      // copy values from inputs into view
+      document.getElementById('viewName').textContent = document.getElementById('inputName').value;
+      document.getElementById('viewBio').textContent = document.getElementById('inputBio').value;
+      document.getElementById('viewInstruments').textContent = document.getElementById('inputInstruments').value;
+      document.getElementById('viewLevels').textContent = document.getElementById('inputLevels').value;
+      document.getElementById('viewGenres').textContent = document.getElementById('inputGenres').value;
+      document.getElementById('viewCreds').textContent = document.getElementById('inputCreds').value;
+      document.getElementById('viewRateLocal').textContent = '$'+document.getElementById('inputRateLocal').value;
+      document.getElementById('viewRateOnline').textContent = '$'+document.getElementById('inputRateOnline').value;
+      document.getElementById('viewRadius').textContent = document.getElementById('inputRadius').value+' miles';
+      document.getElementById('viewAddress').textContent = document.getElementById('inputAddress').value;
+      document.getElementById('viewTypes').textContent = document.getElementById('inputTypes').value;
+      document.getElementById('viewCancel').textContent = document.getElementById('inputCancel').value;
+      document.getElementById('viewPrep').textContent = document.getElementById('inputPrep').value+' minutes';
+      document.getElementById('viewCommute').textContent = document.getElementById('inputCommute').value+' minutes';
+      showView();
+    });
+
+    resetBtn && resetBtn.addEventListener('click', ()=>{
+      // reset inputs to current view values
+      document.getElementById('inputName').value = document.getElementById('viewName').textContent;
+      document.getElementById('inputBio').value = document.getElementById('viewBio').textContent;
+      document.getElementById('inputInstruments').value = document.getElementById('viewInstruments').textContent;
+      document.getElementById('inputLevels').value = document.getElementById('viewLevels').textContent;
+      document.getElementById('inputGenres').value = document.getElementById('viewGenres').textContent;
+      document.getElementById('inputCreds').value = document.getElementById('viewCreds').textContent;
+      document.getElementById('inputRateLocal').value = document.getElementById('viewRateLocal').textContent.replace(/[^0-9.]/g,'');
+      document.getElementById('inputRateOnline').value = document.getElementById('viewRateOnline').textContent.replace(/[^0-9.]/g,'');
+      document.getElementById('inputRadius').value = document.getElementById('viewRadius').textContent.replace(/[^0-9.]/g,'');
+      document.getElementById('inputAddress').value = document.getElementById('viewAddress').textContent;
+      document.getElementById('inputTypes').value = document.getElementById('viewTypes').textContent;
+      // cancel, prep, commute
+      document.getElementById('inputCancel').value = document.getElementById('viewCancel').textContent;
+      document.getElementById('inputPrep').value = document.getElementById('viewPrep').textContent.replace(/[^0-9]/g,'');
+      document.getElementById('inputCommute').value = document.getElementById('viewCommute').textContent.replace(/[^0-9]/g,'');
+    });
+  </script>
+</body>
+</html>

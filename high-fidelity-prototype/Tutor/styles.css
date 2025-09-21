@@ -100,6 +100,66 @@ main{max-width:1100px;margin:28px auto;padding:0 20px}
   .lessons-list li{grid-template-columns:1fr}
 }
 
+/* Profile page */
+.profile-page{max-width:1100px;margin:28px auto;padding:0 20px}
+.profile-container{display:flex;flex-direction:column;gap:18px}
+.profile-page h1{margin:0 0 6px 0}
+.profile-form{display:flex;flex-direction:column;gap:14px}
+.profile-form .card{padding:14px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+.field input[type="text"],.field input[type="number"],.field textarea,.field select{padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06)}
+.field input[type="file"]{padding:6px}
+.checkbox-row .checkboxes{display:flex;flex-direction:column;gap:6px}
+.form-actions{display:flex;gap:8px}
+
+@media (max-width:700px){
+	.profile-page{padding:0 12px}
+}
+
+/* Centered, read-only profile card */
+.center-card{max-width:720px;margin:36px auto;padding:18px;position:relative}
+.center-card h1{margin-top:0}
+.view-grid{display:flex;flex-direction:column;gap:10px}
+.view-row{display:flex;gap:12px;align-items:flex-start}
+.view-row .label{width:180px;color:var(--muted);font-weight:600}
+.view-row .value{flex:1}
+.edit-toggle{position:absolute;top:12px;right:12px;border:0;background:transparent;font-size:1.05rem;cursor:pointer}
+.hidden{display:none}
+
+/* Profile top: photo + main fields */
+.view-top{display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:start;margin-bottom:12px}
+.photo-large{width:160px;height:160px;border-radius:12px;overflow:hidden;flex:0 0 160px;background:#f3f4f6;display:flex;align-items:center;justify-content:center}
+.photo-large img{width:100%;height:100%;object-fit:cover;display:block}
+.view-main{display:flex;flex-direction:column;gap:8px}
+.view-top .view-row .label{width:120px}
+
+/* Edit form top layout */
+.edit-top{display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:start;margin-bottom:12px}
+.edit-photo{display:flex;flex-direction:column;gap:8px}
+.edit-photo input[type="file"]{padding:6px}
+.edit-photo img{width:160px;height:160px;object-fit:cover;border-radius:12px}
+.edit-main{display:flex;flex-direction:column;gap:8px}
+.edit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+
+@media (max-width:700px){
+	.view-top{grid-template-columns:1fr;justify-items:center}
+	.edit-top{grid-template-columns:1fr}
+	.photo-large{width:140px;height:140px}
+	.edit-photo img{width:140px;height:140px}
+	.view-top .view-row .label{width:100%}
+}
+
+/* Edit form card (centered) */
+.profile-edit-card{max-width:720px;margin:36px auto;padding:18px}
+.profile-edit-card .field{margin-bottom:8px}
+
+/* Tighten view for small screens */
+@media (max-width:600px){
+	.view-row{flex-direction:column}
+	.view-row .label{width:100%}
+}
+
+
 @media (max-width:480px){
 	.stat-grid{grid-template-columns:1fr}
 	.rating{font-size:0.95rem}
