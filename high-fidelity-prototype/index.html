@@ -9,23 +9,23 @@
   </head>
   <body>
     <script>
-      // Early helper: allow inline onclicks to open modals even before init
+       
       window._openModal = function(id){
         if(window._modals && window._modals[id] && window._modals[id].open) window._modals[id].open();
       };
     </script>
-      <!-- Background: YouTube embed (muted, autoplay, loop) -->
+       
       <div id="bg-wrap" aria-hidden="true">
         <iframe id="bg-iframe" src="https://www.youtube.com/embed/IZx6_bCvVNo?autoplay=1&controls=0&loop=1&playlist=IZx6_bCvVNo&mute=1&rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
       </div>
       <script>
-      // Fade-in background iframe after it loads to avoid a black flash
+       
       (function(){
         const f = document.getElementById('bg-iframe');
         if(!f) return;
         f.style.opacity = '0';
         f.addEventListener('load', ()=>{ setTimeout(()=>{ f.style.opacity = '1'; }, 120); });
-        // If load doesn't fire (some browsers), ensure a fallback show after a short timeout
+         
         setTimeout(()=>{ if(getComputedStyle(f).opacity === '0') f.style.opacity = '1'; }, 2000);
       })();
       </script>
@@ -56,7 +56,7 @@
       </section>
     </main>
 
-  <!-- About modal (hidden by default) -->
+   
   <div id="about-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="about-title" aria-hidden="true">
     <div class="modal-backdrop" data-dismiss="backdrop"></div>
     <div class="modal-card" role="document">
@@ -70,7 +70,7 @@
 
     </div>
 
-      <!-- Login modal -->
+       
       <div id="login-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title" aria-hidden="true">
         <div class="modal-backdrop" data-dismiss="backdrop"></div>
         <div class="modal-card" role="document">
@@ -94,7 +94,7 @@
         </div>
       </div>
 
-      <!-- Signup modal -->
+       
       <div id="signup-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="signup-title" aria-hidden="true">
         <div class="modal-backdrop" data-dismiss="backdrop"></div>
         <div class="modal-card" role="document">
@@ -120,7 +120,7 @@
   </div>
 
   <script>
-  // Modal utility: attach open/close behavior to modals by id
+   
   (function(){
     function initModals(){
       window._modals = window._modals || {};
@@ -161,13 +161,13 @@
       return api;
     }
 
-    // wire About modal
+     
     const about = makeModal('about-modal');
     const aboutLink = document.getElementById('about-link');
     console.debug('about modal', !!about, 'aboutLink', !!aboutLink);
     if(about && aboutLink) aboutLink.addEventListener('click', function(e){ e.preventDefault(); about.open(); });
 
-    // login/signup modals and hero buttons
+     
     const login = makeModal('login-modal');
     const signup = makeModal('signup-modal');
     const loginBtn = document.getElementById('login-btn');
@@ -184,7 +184,7 @@
     if(heroLogin){ heroLogin.addEventListener('click', ()=>{ console.debug('hero-login clicked'); if(login) login.open(); }); }
     if(heroSignup){ heroSignup.addEventListener('click', ()=>{ console.debug('hero-signup clicked'); if(signup) signup.open(); }); }
 
-    // placeholder: OAuth button handlers
+     
     document.querySelectorAll('.oauth').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const provider = btn.dataset.provider || 'oauth';
@@ -192,12 +192,11 @@
       });
     });
 
-    // placeholder: handle form submissions locally
+     
     const loginForm = document.getElementById('login-form');
     if(loginForm){
       loginForm.addEventListener('submit', function(e){
         e.preventDefault();
-        alert('Logged in (placeholder) — implement backend API call');
         if(login) login.close();
       });
     }
