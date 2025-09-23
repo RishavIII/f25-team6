@@ -1,11 +1,11 @@
 :root{
-	--purple-600: #5b21b6; /* primary */
+	--purple-600: #5b21b6;  
 	--purple-400: #7c3aed;
 	--bg: #ffffff;
 	--muted: #6b7280;
 }
 
-/* Reset-ish for this small prototype */
+ 
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:var(--bg); color:#111827}
 
@@ -28,17 +28,17 @@ html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -app
 .nav-link:hover{background:linear-gradient(90deg, rgba(124,58,237,0.08), rgba(91,33,182,0.06))}
 .nav-link:focus{outline:2px solid rgba(91,33,182,0.16);outline-offset:2px;box-shadow:0 0 0 4px rgba(124,58,237,0.06)}
 
-/* small screens: collapse search slightly */
+ 
 @media (max-width:700px){
 	.nav-container{padding:10px}
-	.search{display:none} /* hide search on small screens for compactness */
+	.search{display:none}  
 	.brand{font-size:1rem}
 }
 
-/* main content spacing so header doesn't overlap */
+ 
 main{max-width:1100px;margin:28px auto;padding:0 20px}
 
-/* Dashboard layout */
+ 
 .dashboard-header{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
 .dashboard-header h1{margin:0;font-size:1.6rem;color:var(--purple-600)}
 .dashboard-header .muted{color:var(--muted);margin:0}
@@ -85,22 +85,22 @@ main{max-width:1100px;margin:28px auto;padding:0 20px}
 
 .dashboard-footer{margin-top:12px;padding:8px 2px;text-align:center}
 
-/* Responsive: stack columns on small screens */
+ 
 @media (max-width:900px){
 	.dashboard-grid{grid-template-columns:1fr}
 	.col-left,.col-right{width:100%}
 	.stat-grid{grid-template-columns:repeat(2,1fr)}
-	/* make action column narrower on smaller screens so layout remains balanced */
+	 
 	.lessons-list li{grid-template-columns:1fr 150px}
 }
 
-/* On very small screens allow actions to wrap so buttons don't overflow */
+ 
 @media (max-width:560px){
   .lesson-actions{flex-wrap:wrap}
   .lessons-list li{grid-template-columns:1fr}
 }
 
-/* Profile page */
+ 
 .profile-page{max-width:1100px;margin:28px auto;padding:0 20px}
 .profile-container{display:flex;flex-direction:column;gap:18px}
 .profile-page h1{margin:0 0 6px 0}
@@ -116,7 +116,7 @@ main{max-width:1100px;margin:28px auto;padding:0 20px}
 	.profile-page{padding:0 12px}
 }
 
-/* Centered, read-only profile card */
+ 
 .center-card{max-width:720px;margin:36px auto;padding:18px;position:relative}
 .center-card h1{margin-top:0}
 .view-grid{display:flex;flex-direction:column;gap:10px}
@@ -126,14 +126,14 @@ main{max-width:1100px;margin:28px auto;padding:0 20px}
 .edit-toggle{position:absolute;top:12px;right:12px;border:0;background:transparent;font-size:1.05rem;cursor:pointer}
 .hidden{display:none}
 
-/* Profile top: photo + main fields */
+ 
 .view-top{display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:start;margin-bottom:12px}
 .photo-large{width:160px;height:160px;border-radius:12px;overflow:hidden;flex:0 0 160px;background:#f3f4f6;display:flex;align-items:center;justify-content:center}
 .photo-large img{width:100%;height:100%;object-fit:cover;display:block}
 .view-main{display:flex;flex-direction:column;gap:8px}
 .view-top .view-row .label{width:120px}
 
-/* Edit form top layout */
+ 
 .edit-top{display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:start;margin-bottom:12px}
 .edit-photo{display:flex;flex-direction:column;gap:8px}
 .edit-photo input[type="file"]{padding:6px}
@@ -149,11 +149,11 @@ main{max-width:1100px;margin:28px auto;padding:0 20px}
 	.view-top .view-row .label{width:100%}
 }
 
-/* Edit form card (centered) */
+ 
 .profile-edit-card{max-width:720px;margin:36px auto;padding:18px}
 .profile-edit-card .field{margin-bottom:8px}
 
-/* Tighten view for small screens */
+ 
 @media (max-width:600px){
 	.view-row{flex-direction:column}
 	.view-row .label{width:100%}
@@ -166,7 +166,7 @@ main{max-width:1100px;margin:28px auto;padding:0 20px}
 	.metric-value{font-size:1rem}
 }
 
-/* Messaging page styles */
+ 
 .messages-page{max-width:1200px;margin:20px auto;padding:0 20px}
 .messages-split{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:stretch}
 .conversations{border:1px solid rgba(99,102,241,0.06);border-radius:12px;background:#fff;padding:8px;display:flex;flex-direction:column}
