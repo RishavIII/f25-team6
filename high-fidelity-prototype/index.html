@@ -198,10 +198,12 @@
       loginForm.addEventListener('submit', function(e){
         e.preventDefault();
         const formData = new FormData(loginForm);
-        const full_name = formData.get('email');
-        if (full_name === "tutor@tutor.com") {
+        const email = formData.get('email');
+        if (email === "tutor@tutor.com") {
           window.location.href = "Tutor/tutor_home.html"
         }
+        else if (email === "student@student.com")
+          window.location.href = "Student/student-home.html"
         if(login) login.close();
       });
     }
