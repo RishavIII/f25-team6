@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>High Fidelity Prototype</title>
+  <meta name="description" content="Barebone HTML5 skeleton for the high-fidelity prototype">
+</head>
+
+<body>
+  <header class="top-nav" role="banner">
+    <div class="nav-container">
+      <div class="brand">DUET</div>
+      <div class="search" role="search">
+        <form action="search.html" method="get" class="search-inner">
+          <label for="nav-search" class="visually-hidden">Search</label>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+            <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="2" fill="none"></circle>
+          </svg>
+          <input id="nav-search" type="search" name="q" placeholder="Search" />
+        </form>
+      </div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="student-home.html" class="nav-link" aria-label="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+            <path d="M5 21V12h14v9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="../message.html" class="nav-link" aria-label="Messages">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor"
+              stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="notifications.html" class="nav-link" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15 17H9a3 3 0 0 1-3-3V11a6 6 0 1 1 12 0v3a3 3 0 0 1-3 3z" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="calendar.html" class="nav-link" aria-label="Calendar">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="3" y="5" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="1.6" fill="none">
+            </rect>
+            <path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="student-profile.html" class="nav-link" aria-label="Profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.6" fill="none"></circle>
+          </svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="dashboard">
+      <header class="dashboard-header">
+        <h1>Dashboard</h1>
+        <p class="muted">Overview of available tutors</p>
+      </header>
+
+      <div class="dashboard-grid">
+        <div class="col-left">
+          <section class="card upcoming-tutors" aria-labelledby="upcoming-tutors-title">
+            <h2 id="upcoming-tutors-title">Tutors</h2>
+            <ul class="tutors-grid">
+              <li>
+                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Emma Tutor" />
+                <h3 class="tutor-name">Emma Tutor</h3>
+                <p class="tutor-bio">Enthusiastic piano teacher with 8 years of experience teaching all ages.</p>
+                <div class="tutor-meta">
+                  <div class="meta-row"><span class="meta-label">Instruments</span>
+                    <div class="chips"><span class="chip">Piano</span><span class="chip">Keyboard</span></div>
+                  </div>
+                  <div class="meta-row"><span class="meta-label">Levels</span>
+                    <div class="chips"><span class="chip">Beginner</span><span class="chip">Intermediate</span></div>
+                  </div>
+                </div>
+                <div class="actions-row">
+                  <a class="btn primary" href="#">Schedule Lesson</a>
+                  <a class="btn" href="#">Message Tutor</a>
+                  <a class="btn" href="#">Create Offer</a>
+                </div>
+              </li>
+              <li>
+                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Liam Rivera" />
+                <h3 class="tutor-name">Liam Rivera</h3>
+                <p class="tutor-bio">Guitarist focusing on rock &amp; blues; I make theory easy and painless.</p>
+                <div class="tutor-meta">
+                  <div class="meta-row"><span class="meta-label">Instruments</span>
+                    <div class="chips"><span class="chip">Guitar</span></div>
+                  </div>
+                  <div class="meta-row"><span class="meta-label">Levels</span>
+                    <div class="chips"><span class="chip">Beginner</span><span class="chip">Advanced</span></div>
+                  </div>
+                </div>
+                <div class="actions-row">
+                  <a class="btn primary" href="#">Schedule Lesson</a>
+                  <a class="btn" href="#">Message Tutor</a>
+                  <a class="btn" href="#">Create Offer</a>
+                </div>
+              </li>
+              <li>
+                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Sophia Moore" />
+                <h3 class="tutor-name">Sophia Moore</h3>
+                <p class="tutor-bio">Classically trained vocalist; technique + confidence building.</p>
+                <div class="tutor-meta">
+                  <div class="meta-row"><span class="meta-label">Instruments</span>
+                    <div class="chips"><span class="chip">Voice</span></div>
+                  </div>
+                  <div class="meta-row"><span class="meta-label">Levels</span>
+                    <div class="chips"><span class="chip">Intermediate</span><span class="chip">Advanced</span></div>
+                  </div>
+                </div>
+                <div class="actions-row">
+                  <a class="btn primary" href="#">Schedule Lesson</a>
+                  <a class="btn" href="#">Message Tutor</a>
+                  <a class="btn" href="#">Create Offer</a>
+                </div>
+              </li>
+              <li>
+                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Noah Patel" />
+                <h3 class="tutor-name">Noah Patel</h3>
+                <p class="tutor-bio">Percussionist with a focus on groove, timing, and fun practice routines.</p>
+                <div class="tutor-meta">
+                  <div class="meta-row"><span class="meta-label">Instruments</span>
+                    <div class="chips"><span class="chip">Drums</span></div>
+                  </div>
+                  <div class="meta-row"><span class="meta-label">Levels</span>
+                    <div class="chips"><span class="chip">Beginner</span><span class="chip">Intermediate</span></div>
+                  </div>
+                </div>
+                <div class="actions-row">
+                  <a class="btn primary" href="#">Schedule Lesson</a>
+                  <a class="btn" href="#">Message Tutor</a>
+                  <a class="btn" href="#">Create Offer</a>
+                </div>
+              </li>
+              <li>
+                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Ava Chen" />
+                <h3 class="tutor-name">Ava Chen</h3>
+                <p class="tutor-bio">Conservatory-trained violinist; technique + musicality with modern repertoire.</p>
+                <div class="tutor-meta">
+                  <div class="meta-row"><span class="meta-label">Instruments</span>
+                    <div class="chips"><span class="chip">Violin</span></div>
+                  </div>
+                  <div class="meta-row"><span class="meta-label">Levels</span>
+                    <div class="chips"><span class="chip">Intermediate</span><span class="chip">Advanced</span></div>
+                  </div>
+                </div>
+                <div class="actions-row">
+                  <a class="btn primary" href="#">Schedule Lesson</a>
+                  <a class="btn" href="#">Message Tutor</a>
+                  <a class="btn" href="#">Create Offer</a>
+                </div>
+              </li>
+              <li>
+                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Mason Brooks" />
+                <h3 class="tutor-name">Mason Brooks</h3>
+                <p class="tutor-bio">Saxophonist—jazz improvisation, tone, and ear-training for all ages.</p>
+                <div class="tutor-meta">
+                  <div class="meta-row"><span class="meta-label">Instruments</span>
+                    <div class="chips"><span class="chip">Saxophone</span></div>
+                  </div>
+                  <div class="meta-row"><span class="meta-label">Levels</span>
+                    <div class="chips"><span class="chip">Beginner</span><span class="chip">Intermediate</span></div>
+                  </div>
+                </div>
+                <div class="actions-row">
+                  <a class="btn primary" href="#">Schedule Lesson</a>
+                  <a class="btn" href="#">Message Tutor</a>
+                  <a class="btn" href="#">Create Offer</a>
+                </div>
+              </li>
+              <li>
+                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Olivia Garcia" />
+                <h3 class="tutor-name">Olivia Garcia</h3>
+                <p class="tutor-bio">Flute instructor with a gentle approach and audition prep experience.</p>
+                <div class="tutor-meta">
+                  <div class="meta-row"><span class="meta-label">Instruments</span>
+                    <div class="chips"><span class="chip">Flute</span></div>
+                  </div>
+                  <div class="meta-row"><span class="meta-label">Levels</span>
+                    <div class="chips"><span class="chip">Beginner</span><span class="chip">Intermediate</span></div>
+                  </div>
+                </div>
+                <div class="actions-row">
+                  <a class="btn primary" href="#">Schedule Lesson</a>
+                  <a class="btn" href="#">Message Tutor</a>
+                  <a class="btn" href="#">Create Offer</a>
+                </div>
+              </li>
+              <li>
+                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Ethan Kim" />
+                <h3 class="tutor-name">Ethan Kim</h3>
+                <p class="tutor-bio">Bass player—lock in rhythm, build technique, and play with confidence.</p>
+                <div class="tutor-meta">
+                  <div class="meta-row"><span class="meta-label">Instruments</span>
+                    <div class="chips"><span class="chip">Bass</span></div>
+                  </div>
+                  <div class="meta-row"><span class="meta-label">Levels</span>
+                    <div class="chips"><span class="chip">Beginner</span><span class="chip">Advanced</span></div>
+                  </div>
+                </div>
+                <div class="actions-row">
+                  <a class="btn primary" href="#">Schedule Lesson</a>
+                  <a class="btn" href="#">Message Tutor</a>
+                  <a class="btn" href="#">Create Offer</a>
+                </div>
+              </li>
+              <li>
+                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Mia Johnson" />
+                <h3 class="tutor-name">Mia Johnson</h3>
+                <p class="tutor-bio">Cellist focusing on posture, tone production, and expressive playing.</p>
+                <div class="tutor-meta">
+                  <div class="meta-row"><span class="meta-label">Instruments</span>
+                    <div class="chips"><span class="chip">Cello</span></div>
+                  </div>
+                  <div class="meta-row"><span class="meta-label">Levels</span>
+                    <div class="chips"><span class="chip">Intermediate</span><span class="chip">Advanced</span></div>
+                  </div>
+                </div>
+                <div class="actions-row">
+                  <a class="btn primary" href="#">Schedule Lesson</a>
+                  <a class="btn" href="#">Message Tutor</a>
+                  <a class="btn" href="#">Create Offer</a>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="col-right">
+          <section class="card filters" aria-label="Filters">
+            <h3>Filters</h3>
+            <div class="meta-row">
+              <span class="meta-label">Instruments</span>
+              <div class="chips">
+                <button class="chip" type="button" aria-pressed="false">Piano</button>
+                <button class="chip" type="button" aria-pressed="false">Guitar</button>
+                <button class="chip" type="button" aria-pressed="false">Voice</button>
+                <button class="chip" type="button" aria-pressed="false">Drums</button>
+                <button class="chip" type="button" aria-pressed="false">Violin</button>
+                <button class="chip" type="button" aria-pressed="false">Keyboard</button>
+              </div>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Levels</span>
+              <div class="chips">
+                <button class="chip" type="button" aria-pressed="false">Beginner</button>
+                <button class="chip" type="button" aria-pressed="false">Intermediate</button>
+                <button class="chip" type="button" aria-pressed="false">Advanced</button>
+              </div>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Availability</span>
+              <div class="chips">
+                <button class="chip" type="button" aria-pressed="false">Weekdays</button>
+                <button class="chip" type="button" aria-pressed="false">Weekends</button>
+                <button class="chip" type="button" aria-pressed="false">Evenings</button>
+              </div>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Price</span>
+              <div class="chips">
+                <button class="chip" type="button" aria-pressed="false">$</button>
+                <button class="chip" type="button" aria-pressed="false">$$</button>
+                <button class="chip" type="button" aria-pressed="false">$$$</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="card stats" aria-label="Student stats">
+            <div class="stat-grid">
+              <div>
+                <h4>Tutors available</h4>
+                <div class="stat-value">9</div>
+              </div>
+              <div>
+                <h4>Tutors filtered</h4>
+                <div class="stat-value">9</div>
+              </div>
+              <div>
+                <h4>Avg. hr rate</h4>
+                <div class="stat-value">$40</div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="dashboard-footer muted small">
+        Tip: Use filters to find tutors that match your learning style and goals.
+      </footer>
+    </section>
+  </main>
+</body>
+
+</html>
