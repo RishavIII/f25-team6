@@ -1,9 +1,9 @@
-# LocalHarvest Hub - Software Design 
+# Duet - Software Design 
 
 Version 1  
-Prepared by Alice Beback\
-LocalHarvest Hub\
-Oct 8, 2025
+Prepared by Brian Tekmen\
+Duet\
+Oct 20, 2025
 
 Table of Contents
 =================
@@ -20,17 +20,16 @@ Table of Contents
 ## Revision History
 | Name | Date    | Reason For Changes  | Version   |
 | ---- | ------- | ------------------- | --------- |
-|  Al  |10/8     | Initial Design      |    1      |
+|  Brian  |10/20     | Initial Design      |    1      |
 |      |         |                     |           |
 |      |         |                     |           |
 
 ## 1. Product Overview
-LocalHarvest Hub is a simple, comprehensive, easy to use web app with the goal of connecting consumers to locally grown produce. Farmers and customers make use of the centralized platform to meet their needs. 
-Farmers create and publish produce boxes, customers subscribe any available boxes that they are interested in, either as a one-off or recurring subscription.
+ Duet is a web-based platform designed to help students discover and make appointments with music tutors. Students can leave reviews based on the quality of their experience with tutors. Tutors showcase their profile, mange their appointments, and track student engagement. The system supports the user roles for students and tutors, each with tailored services to ensure a seamless market between tutor and student.
 
 ## 2. Use Cases
 ### 2.1 Use Case Model
-![Use Case Model](https://github.com/csc340-uncg/f25-team0/blob/main/doc/Object-Oriented-Design/use-case.png)
+![Use Case Model](use-case.png)
 
 ### 2.2 Use Case Descriptions
 
