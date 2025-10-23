@@ -47,8 +47,6 @@ public class Customer {
     @Column(nullable = false)
     private Boolean notifyByEmail = true;
 
-    @Transient
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
 

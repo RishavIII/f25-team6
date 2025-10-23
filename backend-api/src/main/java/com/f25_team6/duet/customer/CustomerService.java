@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Locale;
-
+import java.util.List;
 import static org.springframework.http.HttpStatus.*;
 
 @Service
@@ -18,7 +18,6 @@ public class CustomerService {
 
     private final CustomerRepository repository;
 
-    // CREATE
     public Customer create(Customer incoming) {
         normalize(incoming);
 
@@ -26,7 +25,6 @@ public class CustomerService {
             throw new ResponseStatusException(CONFLICT, "Email already in use.");
         }
 
-        // hash password if provided via transient `password`
         if (incoming.getPassword() != null && !incoming.getPassword().isBlank()) {
             incoming.setPassword(incoming.getPassword());
         } else {
@@ -42,15 +40,13 @@ public class CustomerService {
         return repository.save(incoming);
     }
 
-    @Transactional(readOnly = true)
     public Customer get(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Customer not found."));
     }
 
-    @Transactional(readOnly = true)
-    public Page<Customer> list(Pageable pageable) {
-        return repository.findAll(pageable);
+    public List<Customer> list() {
+        return repository.findAll();
     }
 
     public Customer update(Long id, Customer incoming) {
