@@ -115,7 +115,4 @@ public class Provider {
     @Digits(integer = 8, fraction = 2)
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal hourlyRate;
-
-
-
 }
