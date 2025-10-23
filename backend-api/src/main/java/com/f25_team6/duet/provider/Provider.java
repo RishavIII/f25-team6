@@ -93,9 +93,8 @@ public class Provider {
     private BigDecimal travelRadiusKm;
 
     @Size(max = 120)
-    private String studioAddressLine1;
+    private String address;
     @Size(max = 120)
-    private String studioAddressLine2;
     @Size(max = 80)
     private String city;
     @Size(max = 80)
@@ -104,5 +103,19 @@ public class Provider {
     private String postalCode;
     @Size(max = 80)
     private String country;
+
+    // For Map API
+    @Column(precision = 9, scale = 6)
+    private BigDecimal latitude;
+    @Column(precision = 9, scale = 6)
+    private BigDecimal longitude;
+
+    @NotNull
+    @DecimalMin("0.00")
+    @Digits(integer = 8, fraction = 2)
+    @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal hourlyRate;
+
+
 
 }

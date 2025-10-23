@@ -41,29 +41,26 @@ public class Customer {
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean emailVerified = false;
+    private Boolean emailVerified = false;
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean notifyByEmail = true;
+    private Boolean notifyByEmail = true;
 
-    @NotBlank
-    @Column(name = "password_hash", nullable = false, length = 200)
+    @Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ToString.Exclude
-    private String passwordHash;
+    private String password;
+
 
     @Size(max = 20)
     private String phone;
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean notifyBySms = false;
+    private Boolean notifyBySms = false;
 
     @Size(max = 120)
-    private String addressLine1;
-    @Size(max = 120)
-    private String addressLine2;
+    private String address;
     @Size(max = 80)
     private String city;
     @Size(max = 80)
