@@ -108,7 +108,7 @@ public class CustomerService {
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new ResponseStatusException(NOT_FOUND, "Customer not found.");
-        }
+        }   
         repository.deleteById(id);
     }
 
