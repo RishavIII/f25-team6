@@ -191,7 +191,7 @@ We will be using Java, with our program being dependent on Spring & SpringBoot, 
 
 	 - FR12.2 System generates bookable slots; prevent double-booking.
 
-	 - FR12.3 Time-zone-aware display; optional iCal read-only export in v1.1.
+	 - FR12.3 Time-zone-aware display; 
 
 - FR13 Booking Management
 
