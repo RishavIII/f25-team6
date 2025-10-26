@@ -1,6 +1,5 @@
 package com.f25_team6.duet.customer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
