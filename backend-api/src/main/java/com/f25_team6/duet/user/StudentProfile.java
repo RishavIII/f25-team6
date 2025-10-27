@@ -15,7 +15,7 @@ public class StudentProfile {
     private Long userId; // FK = PK
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 

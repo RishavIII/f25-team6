@@ -15,7 +15,7 @@ public class TutorProfile {
     private Long userId;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -33,16 +33,13 @@ public class TutorProfile {
     @Column(nullable = false)
     private Integer hourlyRateCents;
 
-    @Column(precision = 9, scale = 6)
     private Double latitude;
-    @Column(precision = 9, scale = 6)
     private Double longitude;
     private String city;
     private String state;
     private String timezone;
 
     @Builder.Default
-    @Column(precision = 3, scale = 2)
     private Double ratingAvg = 0.0;
     @Builder.Default
     private Integer ratingCount = 0;
