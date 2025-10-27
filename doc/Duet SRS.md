@@ -113,7 +113,6 @@ We will be using Java, with our program being dependent on Spring & SpringBoot, 
 
 	 - FR0.1 Students (or Parents) can register/login via email/password; password reset is available.
 
-	 - FR0.2 If the learner is under 13, a Parent account is required (age gate at signup).
 
 	 - FR0.3 Students can edit profile info (name, preferred instruments/levels, contact preferences).
 
@@ -147,7 +146,7 @@ We will be using Java, with our program being dependent on Spring & SpringBoot, 
 
 - FR5 Payments & Checkout
 
-	 - FR5.1 Pay for accepted lessons via integrated processor (e.g., Stripe PaymentIntents).
+	 - FR5.1 Pay for accepted lessons (mock payment)
 
 	 - FR5.2 View totals, fees, and refund policy before paying.
 
@@ -192,7 +191,7 @@ We will be using Java, with our program being dependent on Spring & SpringBoot, 
 
 	 - FR12.2 System generates bookable slots; prevent double-booking.
 
-	 - FR12.3 Time-zone-aware display; optional iCal read-only export in v1.1.
+	 - FR12.3 Time-zone-aware display; 
 
 - FR13 Booking Management
 
