@@ -17,7 +17,7 @@ public class User extends BaseEntity {
   @Column(nullable=false, unique=true, length=254)
   private String email;
 
-  @NotBlank @Size(min=60, max=100) 
+  @NotBlank @Size(min=3, max=100) 
   @Column(nullable=false, length=100)
   private String password;
 
