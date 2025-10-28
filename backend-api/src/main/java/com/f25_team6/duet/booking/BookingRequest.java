@@ -40,8 +40,6 @@ public class BookingRequest {
   @Enumerated(EnumType.STRING) @Column(nullable=false, length=16)
   private BookingStatus status = BookingStatus.PENDING;
 
-  private OffsetDateTime altProposedStartUtc;
-
   @Column(columnDefinition="text")
   private String notes;
 

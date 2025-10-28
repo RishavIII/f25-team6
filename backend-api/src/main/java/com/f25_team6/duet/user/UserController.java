@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import static org.springframework.http.HttpStatus.*;
-
+import jakarta.transaction.Transactional;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -44,7 +44,7 @@ public class UserController {
     if (in.getName() != null) cur.setName(in.getName());
     if (in.getPhone() != null) cur.setPhone(in.getPhone());
     if (in.getRole() != null) cur.setRole(in.getRole());
-    return ResponseEntity.ok(cur);
+    return ResponseEntity.ok(repo.save(cur));
   }
 
   @DeleteMapping("/{id}")

@@ -6,7 +6,6 @@ import com.f25_team6.duet.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.OffsetDateTime;
-
 @Entity @Table(name="payments", uniqueConstraints=@UniqueConstraint(columnNames="lesson_id"))
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Payment {
@@ -18,12 +17,9 @@ public class Payment {
 
   @ManyToOne(optional=false) @JoinColumn(name="student_user_id")
   private User student;
-
   @Column(nullable=false) private Integer amountCents;
-
   @Enumerated(EnumType.STRING) @Column(nullable=false, length=16)
   private PaymentStatus status;
-
   private String processorRef;
 
   @Builder.Default
