@@ -19,7 +19,7 @@ public class TutorProfileController {
     User u = userRepo.findById(userId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
     if (repo.existsById(userId)) throw new ResponseStatusException(CONFLICT, "Profile exists");
     if (in.getHourlyRateCents() == null) throw new ResponseStatusException(BAD_REQUEST, "hourlyRateCents required");
-    in.setUser(u);
+    in.setUser(u); in.setUserId(userId);
     return ResponseEntity.ok(repo.save(in));
   }
 

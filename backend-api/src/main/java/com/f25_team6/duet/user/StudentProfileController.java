@@ -18,7 +18,7 @@ public class StudentProfileController {
   public ResponseEntity<StudentProfile> create(@PathVariable Long userId, @RequestBody StudentProfile in) {
     User u = userRepo.findById(userId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
     if (repo.existsById(userId)) throw new ResponseStatusException(CONFLICT, "Profile exists");
-    in.setUser(u);
+    in.setUser(u); in.setUserId(userId);
     return ResponseEntity.ok(repo.save(in));
   }
 

@@ -45,19 +45,20 @@ The tutor will receive reviews from customers on their profile. The tutor can wr
 ##### 2.2.1.4 View Optics Metrics
 The tutor will be able to view their metrics such as visibility, click-through rate, average lesson time, and weekly/monthly pay.
 
-#### 2.2.2 Actor: Customer
+#### 2.2.2 Actor: Student
 ##### 2.2.2.1 Sign Up
-A customer can sign up to create their profile with their name, email, password, and address. Emails must be unique.
+A student can sign up to create their profile with their name, email, password, and address. Emails must be unique.
 ##### 2.2.2.2 Log In
-A customer shall be able to sign in using their registred email and password. After logging in, the customer shall be directed their dashboard where they see an overview of their subscriptions.
-##### 2.2.2.3 Browse Produce Boxes
-A customer shall be able to view available produce boxes. They can do this from the home page or using a search function. They can also filter boxes by name, descriptions, or farm. They will also be able to select one box and view more details.
-##### 2.2.1.4 Subscribe to Produce Box
-Upon selecting a box, a customer shall be able to subscribe for the box using a one-click action. This box will then appear on their dashboard, and they will be able to ammend the subscription.
-##### 2.2.1.5 Review Produce Box
-A customer may write a review for a box they subscribed to. They will be able to rate the box based on freshness and delivery.
+A student shall be able to sign in using their registred email and password. After logging in, the customer shall be directed their dashboard where they see recomended tutors.
+##### 2.2.2.3 Browse Tutors
+A student shall be able to view available tutors near them. They can do this from the home page or using a search function. They can also filter tutors by name, descriptions, location, or tags. They will also be able to select one tutor and view more details.
+##### 2.2.1.4 Appointment with Tutor
+Upon selecting a tutor, a student shall be able to contact the tutor. They can then sign up for appointments. This appoinment will then appear on their calendar.
+##### 2.2.1.5 Review Tutors
+A customer may write a review for a tutor they took a class with. They will be able to rate the tutor based on the lesson, skill and clarity.
 
 ## 3. UML Class Diagram
 ![UML Class Diagram](class-diagram.png)
 ## 4. Database Schema
+
 ![UML Class Diagram](schema.png)
