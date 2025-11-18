@@ -24,7 +24,6 @@ public class ConversationController {
     User tutor = userRepo.findById(req.tutorUserId())
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Tutor not found"));
 
-    // enforce uniqueness
     var existing = repo.findByStudentIdAndTutorId(student.getId(), tutor.getId());
     if (existing.isPresent()) return ResponseEntity.ok(existing.get());
 

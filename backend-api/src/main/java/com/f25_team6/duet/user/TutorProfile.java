@@ -1,5 +1,8 @@
 package com.f25_team6.duet.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import jakarta.persistence.*;
 import lombok.*;
 

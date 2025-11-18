@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 public class StudentProfile {
     @Id
-    private Long userId; // FK = PK
+    private Long userId;
 
     @MapsId
     @OneToOne(optional = false)

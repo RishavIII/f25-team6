@@ -1,4 +1,3 @@
-// com/f25_team6/duet/booking/Review.java
 package com.f25_team6.duet.booking;
 
 import com.f25_team6.duet.user.User;

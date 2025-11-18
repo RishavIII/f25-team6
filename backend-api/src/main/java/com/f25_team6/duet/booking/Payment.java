@@ -1,4 +1,3 @@
-// com/f25_team6/duet/booking/Payment.java
 package com.f25_team6.duet.booking;
 
 import com.f25_team6.duet.common.enums.PaymentStatus;
