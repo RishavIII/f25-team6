@@ -126,7 +126,6 @@
     </div>
   </main>
   <script>
-    // Simple frontend wiring to backend /api endpoints.
     const API_BASE = 'http://localhost:8080/api';
     const editToggle = document.getElementById('editToggle');
     const profileView = document.getElementById('profileView');
@@ -162,12 +161,10 @@
       document.getElementById('viewPhoto').src = p.photoUrl || 'empty-pfp.jpg';
       document.getElementById('viewName').textContent = p.user?.name || '';
       document.getElementById('viewBio').textContent = p.bio || '';
-      // For simplicity, map hourlyRateCents -> local/online same value
       document.getElementById('viewRateLocal').textContent = p.hourlyRateCents ? '$' + (p.hourlyRateCents/100) : '';
       document.getElementById('viewRateOnline').textContent = p.hourlyRateCents ? '$' + (p.hourlyRateCents/100) : '';
       document.getElementById('viewAddress').textContent = p.city ? p.city + (p.state ? (', ' + p.state) : '') : '';
       document.getElementById('viewCancel').textContent = p.cancellationNote || '';
-      // fill edit form
       document.getElementById('inputPhoto') && (document.getElementById('editPhotoPreview').src = p.photoUrl || 'empty-pfp.jpg');
       document.getElementById('inputName').value = p.user?.name || '';
       document.getElementById('inputBio').value = p.bio || '';
@@ -186,7 +183,6 @@
           const profile = await res.json();
           populateView(profile);
         } else if (res.status === 404) {
-          // no profile yet; create a minimal profile using user info
           const userRes = await fetch(`${API_BASE}/users/${uid}`);
           if (userRes.ok) {
             const user = await userRes.json();
@@ -224,11 +220,9 @@
     });
 
     resetBtn && resetBtn.addEventListener('click', ()=>{
-      // reload profile from server
       loadProfile();
     });
 
-    // initialize
     loadProfile();
   </script>
 </body>
