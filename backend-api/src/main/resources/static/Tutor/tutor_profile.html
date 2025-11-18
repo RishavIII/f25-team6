@@ -6,7 +6,6 @@
     <title>Profile — DUET</title>
     <link rel="stylesheet" href="/styles.css" />
     <style>
-      /* Scoped styles for tutor profile */
       .profile-page {
         padding: 24px;
         max-width: 1100px;
@@ -21,15 +20,14 @@
       .center-card {
         margin: 18px 0;
       }
-      .profile-view-card h1,
-      .profile-edit-card h1 {
+      .profile-view-card h1 {
         margin-top: 0;
       }
-      .view-top,
-      .edit-top {
+      .view-top {
         display: flex;
         gap: 20px;
         align-items: flex-start;
+        margin-bottom: 20px;
       }
       .photo-large {
         width: 160px;
@@ -47,25 +45,8 @@
         object-fit: cover;
         display: block;
       }
-      .edit-photo input[type="file"] {
-        position: absolute;
-        opacity: 0;
-        width: 1px;
-        height: 1px;
-      }
-      .edit-photo {
-        position: relative;
-      }
-      .edit-photo .upload-btn {
-        position: absolute;
-        bottom: 8px;
-        left: 8px;
-        background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        padding: 6px 8px;
-        border-radius: 6px;
-        font-size: 13px;
-        cursor: pointer;
+      .view-main {
+        flex: 1;
       }
       .view-row {
         display: flex;
@@ -73,36 +54,36 @@
         padding: 8px 0;
         border-bottom: 1px solid #f0f0f0;
       }
+      .view-row:last-child {
+        border-bottom: none;
+      }
       .label {
         color: #666;
         font-size: 13px;
       }
       .value {
         font-weight: 500;
+        text-align: right;
+        margin-left: 16px;
       }
-      .profile-form .field {
-        display: block;
-        margin-bottom: 10px;
+      .view-grid {
+        margin-top: 8px;
       }
-      .profile-form .field span {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 6px;
-      }
-      .form-actions {
+      .pill-list {
         display: flex;
-        gap: 8px;
-        margin-top: 12px;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: flex-end;
       }
-      .edit-toggle {
-        position: absolute;
-        right: 18px;
-        top: 14px;
-        background: #fff;
-        border: 1px solid #ddd;
-        padding: 6px;
-        border-radius: 6px;
-        cursor: pointer;
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #f3e8ff;
+        color: #6b21a8;
+        font-size: 12px;
+        font-weight: 500;
       }
     </style>
   </head>
@@ -240,9 +221,6 @@
 
     <main class="profile-page">
       <div class="profile-view-card card center-card" id="profileView">
-        <button class="edit-toggle" id="editToggle" aria-label="Edit profile">
-          ✎
-        </button>
         <h1>Your profile</h1>
         <div class="view-top">
           <div class="photo-large">
@@ -254,336 +232,60 @@
           </div>
           <div class="view-main">
             <div class="view-row">
-              <span class="label">Display name</span
-              ><span class="value" id="viewName">Emma Tutor</span>
+              <span class="label">Name</span>
+              <span class="value" id="viewName"></span>
             </div>
             <div class="view-row">
-              <span class="label">Bio</span
-              ><span class="value" id="viewBio"
-                >Enthusiastic piano teacher with 8 years of experience teaching
-                all ages.</span
-              >
+              <span class="label">Bio</span>
+              <span class="value" id="viewBio"></span>
             </div>
             <div class="view-row">
-              <span class="label">Instruments</span
-              ><span class="value" id="viewInstruments">Piano, Keyboard</span>
-            </div>
-            <div class="view-row">
-              <span class="label">Levels</span
-              ><span class="value" id="viewLevels">Beginner, Intermediate</span>
+              <span class="label">Hourly rate</span>
+              <span class="value" id="viewHourlyRate"></span>
             </div>
           </div>
         </div>
+
         <div class="view-grid">
           <div class="view-row">
-            <span class="label">Genres</span
-            ><span class="value" id="viewGenres">Classical, Pop</span>
+            <span class="label">Lesson types</span>
+            <span class="value" id="viewLessonTypes"></span>
           </div>
           <div class="view-row">
-            <span class="label">Credentials</span
-            ><span class="value" id="viewCreds">B.M. in Piano Performance</span>
+            <span class="label">Instruments</span>
+            <span class="value" id="viewInstruments"></span>
           </div>
           <div class="view-row">
-            <span class="label">Hourly rate (local)</span
-            ><span class="value" id="viewRateLocal">$40</span>
+            <span class="label">Location</span>
+            <span class="value" id="viewLocation"></span>
           </div>
           <div class="view-row">
-            <span class="label">Hourly rate (online)</span
-            ><span class="value" id="viewRateOnline">$30</span>
+            <span class="label">Latitude / Longitude</span>
+            <span class="value" id="viewLatLon"></span>
           </div>
           <div class="view-row">
-            <span class="label">Travel radius</span
-            ><span class="value" id="viewRadius">10 miles</span>
+            <span class="label">Timezone</span>
+            <span class="value" id="viewTimezone"></span>
           </div>
           <div class="view-row">
-            <span class="label">Studio address</span
-            ><span class="value" id="viewAddress"
-              >123 Music Ave, City, ZIP</span
-            >
-          </div>
-          <div class="view-row">
-            <span class="label">Lesson types</span
-            ><span class="value" id="viewTypes"
-              >Online, In-person at studio</span
-            >
-          </div>
-          <div class="view-row">
-            <span class="label">Cancellation policy</span
-            ><span class="value" id="viewCancel"
-              >24-hour notice (full refund)</span
-            >
-          </div>
-          <div class="view-row">
-            <span class="label">Prep buffer</span
-            ><span class="value" id="viewPrep">10 minutes</span>
-          </div>
-          <div class="view-row">
-            <span class="label">Commute buffer</span
-            ><span class="value" id="viewCommute">20 minutes</span>
+            <span class="label">Cancellation policy</span>
+            <span class="value" id="viewCancel"></span>
           </div>
         </div>
       </div>
 
-      <div class="profile-edit-card card center-card hidden" id="profileEdit">
-        <button class="edit-toggle" id="cancelEdit" aria-label="Cancel editing">
-          ✕
-        </button>
-        <h1>Edit profile</h1>
-        <form class="profile-form" id="editForm">
-          <div class="edit-top">
-            <div class="photo-large edit-photo">
-              <input id="inputPhoto" type="file" accept="image/*" />
-              <img
-                id="editPhotoPreview"
-                src="/assets/empty-pfp.svg"
-                alt="Profile photo"
-              />
-              <label class="upload-btn" for="inputPhoto">Change</label>
-            </div>
-            <div class="edit-main">
-              <label class="field"
-                ><span>Display name</span
-                ><input id="inputName" type="text" value="Emma Tutor"
-              /></label>
-              <label class="field"
-                ><span>Bio</span
-                ><textarea id="inputBio">
-Enthusiastic piano teacher with 8 years of experience teaching all ages.</textarea
-                >
-              </label>
-              <label class="field"
-                ><span>Instruments</span
-                ><input
-                  id="inputInstruments"
-                  type="text"
-                  value="Piano, Keyboard"
-              /></label>
-              <label class="field"
-                ><span>Levels</span
-                ><input
-                  id="inputLevels"
-                  type="text"
-                  value="Beginner, Intermediate"
-              /></label>
-            </div>
-          </div>
-          <div class="edit-grid">
-            <label class="field"
-              ><span>Genres</span
-              ><input id="inputGenres" type="text" value="Classical, Pop"
-            /></label>
-            <label class="field"
-              ><span>Credentials</span
-              ><textarea id="inputCreds">B.M. in Piano Performance</textarea>
-            </label>
-            <label class="field"
-              ><span>Hourly rate (local)</span
-              ><input id="inputRateLocal" type="number" value="40"
-            /></label>
-            <label class="field"
-              ><span>Hourly rate (online)</span
-              ><input id="inputRateOnline" type="number" value="30"
-            /></label>
-            <label class="field"
-              ><span>Travel radius (miles)</span
-              ><input id="inputRadius" type="number" value="10"
-            /></label>
-            <label class="field"
-              ><span>Studio address</span
-              ><input
-                id="inputAddress"
-                type="text"
-                value="123 Music Ave, City, ZIP"
-            /></label>
-            <label class="field"
-              ><span>Lesson types</span
-              ><input
-                id="inputTypes"
-                type="text"
-                value="Online, In-person at studio"
-            /></label>
-            <label class="field"
-              ><span>Cancellation policy</span
-              ><select id="inputCancel">
-                <option>24-hour notice (full refund)</option>
-                <option>12-hour notice (50% refund)</option>
-                <option>Strict (no refund)</option>
-              </select></label
-            >
-            <label class="field"
-              ><span>Prep buffer (minutes)</span
-              ><input id="inputPrep" type="number" value="10"
-            /></label>
-            <label class="field"
-              ><span>Commute buffer (minutes)</span
-              ><input id="inputCommute" type="number" value="20"
-            /></label>
-          </div>
-          <div class="form-actions">
-            <button class="btn primary" id="saveBtn" type="button">Save</button>
-            <button class="btn" id="resetBtn" type="button">Reset</button>
-          </div>
-        </form>
-      </div>
+      <div
+        id="msg"
+        style="
+          margin-top: 12px;
+          color: #b91c1c;
+          font-size: 0.95rem;
+          font-weight: 500;
+        "
+      ></div>
     </main>
-    <script>
-      const API_BASE = "/api";
-      const editToggle = document.getElementById("editToggle");
-      const profileView = document.getElementById("profileView");
-      const profileEdit = document.getElementById("profileEdit");
-      const cancelEdit = document.getElementById("cancelEdit");
-      const saveBtn = document.getElementById("saveBtn");
-      const resetBtn = document.getElementById("resetBtn");
 
-      function requireLogin() {
-        const uid = localStorage.getItem("userId");
-        if (!uid) {
-          window.location.href = "tutor_login.html";
-          return null;
-        }
-        return uid;
-      }
-
-      function showEdit() {
-        profileView.classList.add("hidden");
-        profileEdit.classList.remove("hidden");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-      function showView() {
-        profileEdit.classList.add("hidden");
-        profileView.classList.remove("hidden");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-
-      editToggle && editToggle.addEventListener("click", showEdit);
-      cancelEdit && cancelEdit.addEventListener("click", showView);
-
-      function populateView(p) {
-        document.getElementById("viewPhoto").src =
-          p.photoUrl || "/assets/empty-pfp.svg";
-        document.getElementById("viewName").textContent = p.user?.name || "";
-        document.getElementById("viewBio").textContent = p.bio || "";
-        document.getElementById("viewRateLocal").textContent = p.hourlyRateCents
-          ? "$" + p.hourlyRateCents / 100
-          : "";
-        document.getElementById("viewRateOnline").textContent =
-          p.hourlyRateCents ? "$" + p.hourlyRateCents / 100 : "";
-        document.getElementById("viewAddress").textContent = p.city
-          ? p.city + (p.state ? ", " + p.state : "")
-          : "";
-        document.getElementById("viewCancel").textContent =
-          p.cancellationNote || "";
-        document.getElementById("inputPhoto") &&
-          (document.getElementById("editPhotoPreview").src =
-            p.photoUrl || "/assets/empty-pfp.svg");
-        document.getElementById("inputName").value = p.user?.name || "";
-        document.getElementById("inputBio").value = p.bio || "";
-        document.getElementById("inputRateLocal").value = p.hourlyRateCents
-          ? p.hourlyRateCents / 100
-          : "";
-        document.getElementById("inputRateOnline").value = p.hourlyRateCents
-          ? p.hourlyRateCents / 100
-          : "";
-        document.getElementById("inputAddress").value = p.city
-          ? p.city + (p.state ? ", " + p.state : "")
-          : "";
-        document.getElementById("inputCancel").value = p.cancellationNote || "";
-        document.getElementById("inputPrep") &&
-          (document.getElementById("inputPrep").value = "");
-      }
-
-      const inputPhoto = document.getElementById("inputPhoto");
-      if (inputPhoto) {
-        inputPhoto.addEventListener("change", async function (e) {
-          const f = inputPhoto.files && inputPhoto.files[0];
-          if (!f) return;
-          const uid = requireLogin();
-          if (!uid) return;
-          const fd = new FormData();
-          fd.append("file", f);
-          try {
-            const resp = await fetch(
-              `${API_BASE}/tutor-profiles/${uid}/photo`,
-              { method: "POST", body: fd }
-            );
-            if (resp.ok) {
-              const data = await resp.json();
-              const url = data.url;
-              document.getElementById("editPhotoPreview").src = url;
-            } else {
-              alert("Upload failed: " + resp.status);
-            }
-          } catch (err) {
-            console.error(err);
-            alert("Upload failed");
-          }
-        });
-      }
-
-      async function loadProfile() {
-        const uid = requireLogin();
-        if (!uid) return;
-        try {
-          const res = await fetch(`${API_BASE}/tutor-profiles/${uid}`);
-          if (res.ok) {
-            const profile = await res.json();
-            populateView(profile);
-          } else if (res.status === 404) {
-            const userRes = await fetch(`${API_BASE}/users/${uid}`);
-            if (userRes.ok) {
-              const user = await userRes.json();
-              populateView({ user, hourlyRateCents: 0 });
-            }
-          } else {
-            console.error("Failed loading profile", res.status);
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      saveBtn &&
-        saveBtn.addEventListener("click", async () => {
-          const uid = requireLogin();
-          if (!uid) return;
-          const payload = {
-            bio: document.getElementById("inputBio").value,
-            photoUrl: document.getElementById("editPhotoPreview").src,
-            hourlyRateCents: Math.round(
-              parseFloat(
-                document.getElementById("inputRateLocal").value || "0"
-              ) * 100
-            ),
-            city: document.getElementById("inputAddress").value,
-            cancellationNote: document.getElementById("inputCancel").value,
-            onlineEnabled: true,
-            inPersonEnabled: true,
-          };
-          try {
-            const res = await fetch(`${API_BASE}/tutor-profiles/${uid}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            if (res.ok) {
-              const updated = await res.json();
-              populateView(updated);
-              showView();
-            } else {
-              alert("Failed to save: " + res.status);
-            }
-          } catch (e) {
-            console.error(e);
-            alert("Save failed");
-          }
-        });
-
-      resetBtn &&
-        resetBtn.addEventListener("click", () => {
-          loadProfile();
-        });
-
-      loadProfile();
-    </script>
+    <script src="/js/common.js"></script>
+    <script src="/js/tutor_profile.js"></script>
   </body>
 </html>
