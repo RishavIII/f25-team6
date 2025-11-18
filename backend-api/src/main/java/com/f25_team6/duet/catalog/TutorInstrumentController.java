@@ -54,7 +54,6 @@ public class TutorInstrumentController {
     repo.deleteById(id); return ResponseEntity.noContent().build();
   }
 
-  // DTOs
   public static record CreateReq(Long tutorUserId, Long instrumentId,
                                  com.f25_team6.duet.common.enums.Level minLevel,
                                  com.f25_team6.duet.common.enums.Level maxLevel) {}
