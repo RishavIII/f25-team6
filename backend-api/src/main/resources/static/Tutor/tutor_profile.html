@@ -1,10 +1,30 @@
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Profile — DUET</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* Scoped styles for tutor profile */
+    .profile-page { padding: 24px; max-width: 1100px; margin: 0 auto; }
+    .card { background: #fff; border-radius: 10px; box-shadow: 0 6px 20px rgba(10,20,30,0.06); padding: 20px; }
+    .center-card { margin: 18px 0; }
+    .profile-view-card h1, .profile-edit-card h1 { margin-top: 0; }
+    .view-top, .edit-top { display: flex; gap: 20px; align-items: flex-start; }
+    .photo-large { width: 160px; height: 160px; border-radius: 8px; overflow: hidden; background: #f5f5f6; display:flex;align-items:center;justify-content:center }
+    .photo-large img { width:100%; height:100%; object-fit:cover; display:block }
+    .edit-photo input[type=file] { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .edit-photo { position: relative; }
+    .edit-photo .upload-btn { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.6); color:#fff; padding:6px 8px; border-radius:6px; font-size:13px; cursor:pointer }
+    .view-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom: 1px solid #f0f0f0 }
+    .label { color:#666; font-size:13px }
+    .value { font-weight:500 }
+    .profile-form .field { display:block; margin-bottom:10px }
+    .profile-form .field span { display:block; font-weight:600; margin-bottom:6px }
+    .form-actions { display:flex; gap:8px; margin-top:12px }
+    .edit-toggle { position:absolute; right:18px; top:14px; background:#fff; border:1px solid #ddd; padding:6px;border-radius:6px; cursor:pointer }
+  </style>
 </head>
 <body>
   <header class="top-nav" role="banner">
@@ -66,7 +86,7 @@
       <h1>Your profile</h1>
       <div class="view-top">
         <div class="photo-large">
-          <img id="viewPhoto" src="empty-pfp.jpg" alt="Profile photo">
+          <img id="viewPhoto" src="/assets/empty-pfp.svg" alt="Profile photo">
         </div>
         <div class="view-main">
           <div class="view-row"><span class="label">Display name</span><span class="value" id="viewName">Emma Tutor</span></div>
@@ -97,7 +117,8 @@
         <div class="edit-top">
           <div class="photo-large edit-photo">
             <input id="inputPhoto" type="file" accept="image/*">
-            <img id="editPhotoPreview" src="empty-pfp.jpg" alt="Profile photo">
+            <img id="editPhotoPreview" src="/assets/empty-pfp.svg" alt="Profile photo">
+            <label class="upload-btn" for="inputPhoto">Change</label>
           </div>
           <div class="edit-main">
             <label class="field"><span>Display name</span><input id="inputName" type="text" value="Emma Tutor"></label>
@@ -126,8 +147,7 @@
     </div>
   </main>
   <script>
-    // Simple frontend wiring to backend /api endpoints.
-    const API_BASE = 'http://localhost:8080/api';
+    const API_BASE = '/api';
     const editToggle = document.getElementById('editToggle');
     const profileView = document.getElementById('profileView');
     const profileEdit = document.getElementById('profileEdit');
@@ -159,16 +179,14 @@
     cancelEdit && cancelEdit.addEventListener('click', showView);
 
     function populateView(p) {
-      document.getElementById('viewPhoto').src = p.photoUrl || 'empty-pfp.jpg';
+      document.getElementById('viewPhoto').src = p.photoUrl || '/assets/empty-pfp.svg';
       document.getElementById('viewName').textContent = p.user?.name || '';
       document.getElementById('viewBio').textContent = p.bio || '';
-      // For simplicity, map hourlyRateCents -> local/online same value
       document.getElementById('viewRateLocal').textContent = p.hourlyRateCents ? '$' + (p.hourlyRateCents/100) : '';
       document.getElementById('viewRateOnline').textContent = p.hourlyRateCents ? '$' + (p.hourlyRateCents/100) : '';
       document.getElementById('viewAddress').textContent = p.city ? p.city + (p.state ? (', ' + p.state) : '') : '';
       document.getElementById('viewCancel').textContent = p.cancellationNote || '';
-      // fill edit form
-      document.getElementById('inputPhoto') && (document.getElementById('editPhotoPreview').src = p.photoUrl || 'empty-pfp.jpg');
+      document.getElementById('inputPhoto') && (document.getElementById('editPhotoPreview').src = p.photoUrl || '/assets/empty-pfp.svg');
       document.getElementById('inputName').value = p.user?.name || '';
       document.getElementById('inputBio').value = p.bio || '';
       document.getElementById('inputRateLocal').value = p.hourlyRateCents ? (p.hourlyRateCents/100) : '';
@@ -176,6 +194,26 @@
       document.getElementById('inputAddress').value = p.city ? p.city + (p.state ? (', ' + p.state) : '') : '';
       document.getElementById('inputCancel').value = p.cancellationNote || '';
       document.getElementById('inputPrep') && (document.getElementById('inputPrep').value = '');
+    }
+
+    const inputPhoto = document.getElementById('inputPhoto');
+    if (inputPhoto) {
+      inputPhoto.addEventListener('change', async function(e){
+        const f = inputPhoto.files && inputPhoto.files[0];
+        if (!f) return;
+        const uid = requireLogin(); if(!uid) return;
+        const fd = new FormData(); fd.append('file', f);
+        try {
+          const resp = await fetch(`${API_BASE}/tutor-profiles/${uid}/photo`, { method: 'POST', body: fd });
+          if (resp.ok) {
+            const data = await resp.json();
+            const url = data.url;
+            document.getElementById('editPhotoPreview').src = url;
+          } else {
+            alert('Upload failed: ' + resp.status);
+          }
+        } catch (err) { console.error(err); alert('Upload failed'); }
+      });
     }
 
     async function loadProfile() {
