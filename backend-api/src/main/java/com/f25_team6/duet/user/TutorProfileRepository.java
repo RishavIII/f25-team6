@@ -8,7 +8,7 @@ public interface TutorProfileRepository extends JpaRepository<TutorProfile, Long
 
   @Query("""
     select tp from TutorProfile tp
-    join TutorInstrument ti on ti.tutor.userId = tp.userId
+    left join TutorInstrument ti on ti.tutor.userId = tp.userId
     where (:instrumentId is null or ti.instrument.id = :instrumentId)
       and (:online is null or tp.onlineEnabled = :online)
       and (:inPerson is null or tp.inPersonEnabled = :inPerson)
