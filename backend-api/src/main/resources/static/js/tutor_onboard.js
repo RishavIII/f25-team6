@@ -47,7 +47,7 @@
     if (!instrumentRowsContainer) return;
     if (!instruments || instruments.length === 0) {
       msg.textContent =
-        "Instruments are still loading. Please try again in a moment.";
+        "Instruments are stilll loading. Please try again in a moment.";
       return;
     }
 
@@ -255,7 +255,7 @@
       latitude,
       longitude,
     };
-
+    //failsafe
     if (!uploadedPhotoUrl && fileInput && fileInput.files && fileInput.files[0]) {
       try {
         const fd = new FormData();

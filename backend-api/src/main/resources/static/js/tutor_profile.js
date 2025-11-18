@@ -36,7 +36,7 @@
         const pill = document.createElement("span");
         pill.className = "pill";
         pill.textContent = instName
-          ? `${instName} (${minL} – ${maxL})`
+          ? `${instName} (${minL} - ${maxL})`
           : `${minL} – ${maxL}`;
         wrapper.appendChild(pill);
       });
