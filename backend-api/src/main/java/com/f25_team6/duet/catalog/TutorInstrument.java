@@ -1,4 +1,3 @@
-// com/f25_team6/duet/catalog/TutorInstrument.java
 package com.f25_team6.duet.catalog;
 
 import com.f25_team6.duet.common.enums.Level;

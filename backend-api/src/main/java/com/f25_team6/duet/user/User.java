@@ -1,4 +1,3 @@
-// com/f25_team6/duet/user/User.java
 package com.f25_team6.duet.user;
 
 import com.f25_team6.duet.common.BaseEntity;

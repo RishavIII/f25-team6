@@ -11,7 +11,6 @@ public class TutorSearchController {
 
   private final TutorProfileRepository repo;
 
-  // /api/tutors/search?instrumentId=1&online=true&inPerson=false&maxRate=6000
   @GetMapping("/search")
   public List<TutorProfile> search(@RequestParam(required=false) Long instrumentId,
                                    @RequestParam(required=false) Boolean online,

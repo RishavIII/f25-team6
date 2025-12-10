@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.List;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
