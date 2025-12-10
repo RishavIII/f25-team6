@@ -10,7 +10,22 @@
   let uploadedPhotoUrl = null;
   let instruments = [];
   const levels = ["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"];
+  document.getElementById('zipcode').addEventListener('blur', async (e) => {
+    const zip = e.target.value;
+    if (zip && zip.length == 5) {
+      try {
+        const res = await fetch(`https://api.zippopotam.us/us/${zip}`)
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('city').value = data.places[0]['place name'];
+          document.getElementById('state').value = data.places[0]['state abbreviation'];
 
+          document.getElementById('latitude').value = place['latitude'];
+          document.getElementById('longitude').value = place['longitude'];
+        }
+      } catch (err) {console.error('Geo Error', err);}
+    }
+  });
   (function prefillTimezone() {
     try {
       const tzInput = document.getElementById("timezone");
@@ -242,6 +257,8 @@
 
     const instrumentSelections = collectInstrumentSelections();
 
+    const latRaw = document.getElementById("latitude").value;
+    const lonRaw = document.getElementById("longitude").value;
     const payload = {
       photoUrl,
       bio,
@@ -252,8 +269,8 @@
       state,
       timezone,
       cancellationNote,
-      latitude,
-      longitude,
+      latitude : latRaw ? parseFloat(latRaw) : null,
+      longitude : lonRaw ? parseFloat(lonRaw) : null,
     };
     //failsafe
     if (!uploadedPhotoUrl && fileInput && fileInput.files && fileInput.files[0]) {
