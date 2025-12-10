@@ -16,7 +16,7 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowCredentials = "false")
 @RequestMapping("/api/tutor-profiles")
 @RequiredArgsConstructor
 public class TutorProfileController {
