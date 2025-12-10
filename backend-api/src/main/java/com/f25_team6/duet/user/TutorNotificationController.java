@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowCredentials = "false")
 @RequestMapping("/api/tutors/{tutorId}/notifications")
 @RequiredArgsConstructor
 public class TutorNotificationController {

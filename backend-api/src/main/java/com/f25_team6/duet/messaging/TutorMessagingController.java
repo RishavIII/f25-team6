@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowCredentials = "false")
 @RequestMapping("/api/tutors/{tutorId}")
 @RequiredArgsConstructor
 public class TutorMessagingController {

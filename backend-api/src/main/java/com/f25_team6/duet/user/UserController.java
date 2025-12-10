@@ -9,7 +9,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowCredentials = "false")
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {

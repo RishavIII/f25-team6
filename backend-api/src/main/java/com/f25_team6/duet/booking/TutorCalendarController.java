@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowCredentials = "false")
 @RequestMapping("/api/tutors/{tutorId}/calendar")
 @RequiredArgsConstructor
 public class TutorCalendarController {

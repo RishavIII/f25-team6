@@ -117,6 +117,24 @@
           </div>
         </div>
       </div>
+
+      <div id="forgot-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="forgot-title" aria-hidden="true">
+        <div class="modal-backdrop" data-dismiss="backdrop"></div>
+        <div class="modal-card" role="document">
+          <button class="modal-close" aria-label="Close forgot dialog">✕</button>
+          <h2 id="forgot-title">Reset password</h2>
+          <div class="modal-body">
+            <form id="forgot-form">
+              <label>Email<br><input type="email" id="forgot-email" required></label>
+              <label>New password<br><input type="password" id="forgot-new" required></label>
+              <label>Confirm new password<br><input type="password" id="forgot-confirm" required></label>
+              <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                <button type="submit" class="btn-primary">Update password</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
   </div>
 
   <script>
@@ -166,6 +184,7 @@
 
     const login = makeModal('login-modal');
     const signup = makeModal('signup-modal');
+    const forgotModal = makeModal('forgot-modal');
     const loginBtn = document.getElementById('login-btn');
     const signupBtn = document.getElementById('signup-btn');
     const heroLogin = document.getElementById('hero-login');
@@ -177,13 +196,16 @@
 
     document.querySelectorAll('.oauth').forEach(btn=>{ btn.addEventListener('click', ()=>{ const provider = btn.dataset.provider || 'oauth'; alert('OAuth sign-in with: ' + provider + '\n(This is a placeholder — wire your auth flow.)'); }); });
 
+    const forgotBtn = document.getElementById('forgot');
+    if (forgotBtn) forgotBtn.addEventListener('click', ()=>{ if (login) login.close(); if (forgotModal) forgotModal.open(); });
+
     const loginForm = document.getElementById('login-form');
     if(loginForm){
       loginForm.addEventListener('submit', async function(e){
         e.preventDefault();
         const formData = new FormData(loginForm);
-        const email = formData.get('email');
-        const password = formData.get('password');
+        const email = String(formData.get('email')||'').trim();
+        const password = String(formData.get('password')||'').trim();
         try {
           const res = await fetch(`${API_BASE}/login`, {
             method: 'POST', headers: {'Content-Type':'application/json'},
@@ -197,10 +219,10 @@
             else if (user.role === 'STUDENT') window.location.href = '/Student/student-home.html';
             else window.location.href = '/Tutor/tutor_home.html';
             if(login) login.close();
-          } else if (res.status === 401) {
-            alert('Invalid credentials');
           } else {
-            alert('Sign in failed: ' + res.status);
+            let msg = 'Sign in failed';
+            try { const err = await res.json(); if (err && (err.error || err.message)) msg = err.error || err.message; } catch(_){}
+            alert(msg);
           }
         } catch (err) {
           console.error(err); alert('Network error during sign in');
@@ -211,9 +233,9 @@
     if(signupForm){
       signupForm.addEventListener('submit', async function(e){
         e.preventDefault();
-        const name = document.getElementById('signup-name').value;
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
+        const name = document.getElementById('signup-name').value.trim();
+        const email = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value.trim();
         const role = document.getElementById('signup-role').value || 'STUDENT';
         try {
           const payload = { name, email, password, role };
@@ -223,10 +245,10 @@
             try { localStorage.setItem('userId', user.id); } catch(_){ }
             if (role === 'TUTOR') window.location.href = '/Tutor/tutor_onboard.html';
             else window.location.href = '/Student/student-home.html';
-          } else if (res.status === 409) {
-            alert('Email already in use');
           } else {
-            alert('Signup failed: ' + res.status);
+            let msg = 'Signup failed';
+            try { const err = await res.json(); if (err && (err.error || err.message)) msg = err.error || err.message; } catch(_){}
+            alert(msg);
           }
         } catch (err) {
           console.error(err); alert('Network error during signup');
@@ -238,6 +260,33 @@
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initModals);
   else initModals();
 
+  })();
+  </script>
+  <script>
+  (function(){
+    const form = document.getElementById('forgot-form');
+    if (!form) return;
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const email = document.getElementById('forgot-email').value.trim();
+      const p1 = document.getElementById('forgot-new').value.trim();
+      const p2 = document.getElementById('forgot-confirm').value.trim();
+      if (!email || !p1) { alert('Email and new password required'); return; }
+      if (p1 !== p2) { alert('Passwords do not match'); return; }
+      try{
+        const res = await fetch(`${API_BASE}/forgot-password`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, newPassword: p1 }) });
+        if (res.ok){
+          alert('Password updated. Please sign in.');
+          // Close forgot, open login
+          if (window._modals && window._modals['forgot-modal']) window._modals['forgot-modal'].close();
+          if (window._modals && window._modals['login-modal']) window._modals['login-modal'].open();
+        } else {
+          let msg = 'Reset failed';
+          try { const err = await res.json(); if (err && (err.error || err.message)) msg = err.error || err.message; } catch(_){}
+          alert(msg);
+        }
+      } catch(err){ alert('Network error during password reset'); }
+    });
   })();
   </script>
 
