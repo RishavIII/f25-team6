@@ -89,67 +89,11 @@
           <section class="card upcoming-tutors" aria-labelledby="results-tutors-title">
             <h2 id="results-tutors-title">Tutors</h2>
             <ul class="tutors-grid">
-              <li>
-                <img class="tutor-photo" src="empty-pfp.jpg" alt="Photo of Emma Tutor" />
-                <h3 class="tutor-name">Emma Tutor</h3>
-                <p class="tutor-bio">Enthusiastic piano teacher with 8 years of experience teaching all ages.</p>
-                <div class="tutor-meta">
-                  <div class="meta-row"><span class="meta-label">Instruments</span>
-                    <div class="chips"><span class="chip">Piano</span><span class="chip">Keyboard</span></div>
-                  </div>
-                  <div class="meta-row"><span class="meta-label">Levels</span>
-                    <div class="chips"><span class="chip">Beginner</span><span class="chip">Intermediate</span></div>
-                  </div>
-                </div>
-                <div class="actions-row">
-                  <a class="btn primary" href="#">Schedule Lesson</a>
-                  <a class="btn" href="#">Message Tutor</a>
-                  <a class="btn" href="#">Create Offer</a>
-                </div>
-              </li>
             </ul>
           </section>
         </div>
 
         <div class="col-right">
-          <section class="card filters" aria-label="Filters">
-            <h2>Filters</h2>
-            <div class="meta-row">
-              <span class="meta-label">Instruments</span>
-              <div class="chips">
-                <button class="chip active" type="button" aria-pressed="true">Piano</button>
-                <button class="chip" type="button" aria-pressed="false">Guitar</button>
-                <button class="chip" type="button" aria-pressed="false">Voice</button>
-                <button class="chip" type="button" aria-pressed="false">Drums</button>
-                <button class="chip" type="button" aria-pressed="false">Violin</button>
-                <button class="chip" type="button" aria-pressed="false">Keyboard</button>
-              </div>
-            </div>
-            <div class="meta-row">
-              <span class="meta-label">Levels</span>
-              <div class="chips">
-                <button class="chip" type="button" aria-pressed="false">Beginner</button>
-                <button class="chip" type="button" aria-pressed="false">Intermediate</button>
-                <button class="chip" type="button" aria-pressed="false">Advanced</button>
-              </div>
-            </div>
-            <div class="meta-row">
-              <span class="meta-label">Availability</span>
-              <div class="chips">
-                <button class="chip" type="button" aria-pressed="false">Weekdays</button>
-                <button class="chip" type="button" aria-pressed="false">Weekends</button>
-                <button class="chip" type="button" aria-pressed="false">Evenings</button>
-              </div>
-            </div>
-            <div class="meta-row">
-              <span class="meta-label">Price</span>
-              <div class="chips">
-                <button class="chip" type="button" aria-pressed="false">$</button>
-                <button class="chip" type="button" aria-pressed="false">$$</button>
-                <button class="chip" type="button" aria-pressed="false">$$$</button>
-              </div>
-            </div>
-          </section>
 
           <section class="card stats" aria-label="Search stats">
             <div class="stat-grid">
@@ -175,6 +119,206 @@
       </footer>
     </section>
   </main>
+
+  <script>
+  const API_BASE_URL = 'http://localhost:8080/api';
+
+  let allTutors = [];
+  let filteredTutors = [];
+  let filters = {
+    instrument: null,
+    levels: [],
+    availability: [],
+    priceRange: null,
+    searchText: '' 
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    if (q) {
+      filters.searchText = q.toLowerCase();
+      const input = document.getElementById('nav-search');
+      if (input) input.value = q;
+    }
+
+    fetchTutors();
+    setupFilterListeners();
+  });
+
+  async function fetchTutors() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/tutors/search`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      allTutors = await response.json();
+
+      applyFilters();
+    } catch (error) {
+      console.error('Error fetching tutors:', error);
+      showError('Unable to load tutors. Please try again later.');
+    }
+  }
+
+  function renderTutors() {
+    const tutorsContainer = document.querySelector('.tutors-grid');
+
+    if (filteredTutors.length === 0) {
+      tutorsContainer.innerHTML =
+        '<li class="no-results">No tutors found matching your criteria.</li>';
+      return;
+    }
+
+    tutorsContainer.innerHTML = filteredTutors.map(tutor => `
+      <li>
+        <img class="tutor-photo"
+             src="${tutor.photoUrl || 'empty-pfp.jpg'}"
+             alt="Photo of ${tutor.user?.name || 'Tutor'}" />
+
+        <h3 class="tutor-name">${tutor.user?.name || 'Unknown Tutor'}</h3>
+        <p class="tutor-bio">${tutor.bio || 'No bio available.'}</p>
+
+        <div class="tutor-meta">
+          <div class="meta-row">
+            <span class="meta-label">Rate</span>
+            <div class="chips">
+              <span class="chip">$${(tutor.hourlyRateCents / 100).toFixed(2)}/hr</span>
+            </div>
+          </div>
+
+          <div class="meta-row">
+            <span class="meta-label">Location</span>
+            <div class="chips">
+              ${tutor.city && tutor.state
+                ? `<span class="chip">${tutor.city}, ${tutor.state}</span>`
+                : '<span class="chip">Location not specified</span>'}
+            </div>
+          </div>
+
+          <div class="meta-row">
+            <span class="meta-label">Mode</span>
+            <div class="chips">
+              ${tutor.onlineEnabled ? '<span class="chip">Online</span>' : ''}
+              ${tutor.inPersonEnabled ? '<span class="chip">In-Person</span>' : ''}
+            </div>
+          </div>
+
+          ${tutor.ratingCount > 0 ? `
+          <div class="meta-row">
+            <span class="meta-label">Rating</span>
+            <div class="chips">
+              <span class="chip">
+                ${tutor.ratingAvg.toFixed(1)} (${tutor.ratingCount} reviews)
+              </span>
+            </div>
+          </div>
+          ` : ''}
+        </div>
+
+        <div class="actions-row">
+          <a class="btn primary" href="#" onclick="scheduleLesson(${tutor.userId}); return false;">Schedule Lesson</a>
+          <a class="btn" href="#" onclick="messageTutor(${tutor.userId}); return false;">Message Tutor</a>
+          <a class="btn" href="#" onclick="createOffer(${tutor.userId}); return false;">Create Offer</a>
+        </div>
+      </li>
+    `).join('');
+  }
+
+  function updateStats() {
+    const totalTutors = allTutors.length;
+    const filteredCount = filteredTutors.length;
+    const avgRate = filteredTutors.length > 0
+      ? filteredTutors.reduce((sum, t) => sum + t.hourlyRateCents, 0) / filteredTutors.length / 100
+      : 0;
+
+    document.querySelector('.stat-grid').innerHTML = `
+      <div>
+        <h4>Tutors available</h4>
+        <div class="stat-value">${totalTutors}</div>
+      </div>
+      <div>
+        <h4>Tutors filtered</h4>
+        <div class="stat-value">${filteredCount}</div>
+      </div>
+      <div>
+        <h4>Avg. hr rate</h4>
+        <div class="stat-value">$${avgRate.toFixed(0)}</div>
+      </div>
+    `;
+  }
+
+  function setupFilterListeners() {
+    document.querySelectorAll('.filters .meta-row:nth-child(4) .chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('.filters .meta-row:nth-child(4) .chip').forEach(c => {
+          c.classList.remove('active');
+          c.setAttribute('aria-pressed', 'false');
+        });
+        this.classList.add('active');
+        this.setAttribute('aria-pressed', 'true');
+
+        filters.priceRange = this.textContent.trim();
+        applyFilters();
+      });
+    });
+  }
+
+  function applyFilters() {
+    filteredTutors = allTutors.filter(tutor => {
+      if (filters.searchText) {
+        const q = filters.searchText;
+
+        const name = (tutor.user?.name || '').toLowerCase();
+        const city = (tutor.city || '').toLowerCase();
+        const state = (tutor.state || '').toLowerCase();
+        const bio = (tutor.bio || '').toLowerCase();
+
+        const haystack = `${name} ${city} ${state} ${bio}`;
+
+        if (!haystack.includes(q)) return false;
+      }
+
+      if (filters.priceRange) {
+        const rate = tutor.hourlyRateCents / 100;
+        if (filters.priceRange === '$' && rate > 30) return false;
+        if (filters.priceRange === '$$' && (rate <= 30 || rate > 60)) return false;
+        if (filters.priceRange === '$$$' && rate <= 60) return false;
+      }
+
+      return true;
+    });
+
+    renderTutors();
+    updateStats();
+    updateFooter();
+  }
+
+  function updateFooter() {
+    const footer = document.querySelector('.dashboard-footer');
+    const activeFilters = [];
+
+    if (filters.searchText) activeFilters.push(`"${filters.searchText}"`);
+    if (filters.priceRange) activeFilters.push(filters.priceRange);
+
+    if (activeFilters.length === 0) {
+      footer.textContent = 'Showing all tutors. Use filters to narrow your search.';
+    } else {
+      footer.textContent = `Showing tutors filtered by: ${activeFilters.join(', ')}.`;
+    }
+  }
+
+  function scheduleLesson(tutorId) { alert(`Schedule lesson with tutor ID: ${tutorId}`); }
+  function messageTutor(tutorId) { alert(`Message tutor ID: ${tutorId}`); }
+  function createOffer(tutorId) { alert(`Create offer for tutor ID: ${tutorId}`); }
+
+  function showError(message) {
+    const tutorsContainer = document.querySelector('.tutors-grid');
+    tutorsContainer.innerHTML =
+      `<li class="error-message" style="color:#d32f2f;padding:20px;text-align:center;">${message}</li>`;
+  }
+</script>
+
 </body>
 
 </html>
