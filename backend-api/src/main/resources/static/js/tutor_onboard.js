@@ -1,31 +1,8 @@
 (function () {
-  const form = document.getElementById("onboard-form");
-  const msg = document.getElementById("msg");
-  const fileInput = document.getElementById("inputPhoto");
-  const instrumentRowsContainer = document.getElementById("instrumentRows");
-  const addInstrumentBtn = document.getElementById("addInstrumentRow");
-
-  if (!form) return;
-
+  let form, msg, fileInput, instrumentRowsContainer, addInstrumentBtn;
   let uploadedPhotoUrl = null;
   let instruments = [];
   const levels = ["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"];
-  document.getElementById('zipcode').addEventListener('blur', async (e) => {
-    const zip = e.target.value;
-    if (zip && zip.length == 5) {
-      try {
-        const res = await fetch(`https://api.zippopotam.us/us/${zip}`)
-        if (res.ok) {
-          const data = await res.json();
-          document.getElementById('city').value = data.places[0]['place name'];
-          document.getElementById('state').value = data.places[0]['state abbreviation'];
-
-          document.getElementById('latitude').value = place['latitude'];
-          document.getElementById('longitude').value = place['longitude'];
-        }
-      } catch (err) {console.error('Geo Error', err);}
-    }
-  });
   (function prefillTimezone() {
     try {
       const tzInput = document.getElementById("timezone");
@@ -61,7 +38,7 @@
   function createInstrumentRow() {
     if (!instrumentRowsContainer) return;
     if (!instruments || instruments.length === 0) {
-      msg.textContent =
+      if (msg) msg.textContent =
         "Instruments are stilll loading. Please try again in a moment.";
       return;
     }
@@ -163,7 +140,7 @@
       if (instruments.length > 0) createInstrumentRow();
     } catch (err) {
       console.error(err);
-      msg.textContent = "Failed to load instruments.";
+      if (msg) msg.textContent = "Failed to load instruments.";
     }
   }
 
@@ -173,7 +150,7 @@
     const userId = requireUserId();
     if (!userId) return;
 
-    msg.textContent = "Uploading...";
+    if (msg) msg.textContent = "Uploading...";
     try {
       const fd = new FormData();
       fd.append("file", f);
@@ -185,14 +162,14 @@
         const data = await upRes.json();
         uploadedPhotoUrl = data.photoUrl;
         document.getElementById("photoPreview").src = uploadedPhotoUrl;
-        msg.textContent = "Uploaded.";
+        if (msg) msg.textContent = "Uploaded.";
       } else {
         const t = await upRes.text();
-        msg.textContent = "Upload failed: " + upRes.status + " " + t;
+        if (msg) msg.textContent = "Upload failed: " + upRes.status + " " + t;
       }
     } catch (err) {
       console.error(err);
-      msg.textContent = "Upload failed";
+      if (msg) msg.textContent = "Upload failed";
     }
   }
 
@@ -218,7 +195,7 @@
 
   async function handleSubmit(e) {
     e.preventDefault();
-    msg.textContent = "";
+    if (msg) msg.textContent = "";
 
     const userId = requireUserId();
     if (!userId) return;
@@ -288,12 +265,12 @@
           document.getElementById("photoPreview").src = photoUrl;
         } else {
           const t = await upRes.text();
-          msg.textContent = "Upload failed: " + upRes.status + " " + t;
+          if (msg) msg.textContent = "Upload failed: " + upRes.status + " " + t;
           return;
         }
       } catch (err) {
         console.error(err);
-        msg.textContent = "Upload failed";
+        if (msg) msg.textContent = "Upload failed";
         return;
       }
     }
@@ -313,27 +290,60 @@
       window.location.href = "/Tutor/tutor_profile.html";
     } catch (err) {
       if (err.status === 409) {
-        msg.textContent =
+        if (msg) msg.textContent =
           "A profile already exists for this account. Redirecting...";
         setTimeout(
           () => (window.location.href = "/Tutor/tutor_profile.html"),
           1000
         );
       } else if (err.status === 404) {
-        msg.textContent = "User not found. Please log in again.";
+        if (msg) msg.textContent = "User not found. Please log in again.";
       } else if (err.status === 400) {
-        msg.textContent = "Bad request: " + err.message;
+        if (msg) msg.textContent = "Bad request: " + err.message;
       } else {
         console.error(err);
-        msg.textContent = "Error creating profile.";
+        if (msg) msg.textContent = "Error creating profile.";
       }
     }
   }
 
-  if (fileInput) fileInput.addEventListener("change", handlePhotoChange);
-  if (addInstrumentBtn)
-    addInstrumentBtn.addEventListener("click", createInstrumentRow);
-  form.addEventListener("submit", handleSubmit);
+  function start(){
+    form = document.getElementById("onboard-form");
+    msg = document.getElementById("msg");
+    fileInput = document.getElementById("inputPhoto");
+    instrumentRowsContainer = document.getElementById("instrumentRows");
+    addInstrumentBtn = document.getElementById("addInstrumentRow");
 
-  loadInstruments();
+    if (!form) return; // page mismatch
+
+    const zipEl = document.getElementById('zipcode');
+    if (zipEl) {
+      zipEl.addEventListener('blur', async (e) => {
+        const zip = e.target.value;
+        if (zip && zip.length == 5) {
+          try {
+            const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
+            if (res.ok) {
+              const data = await res.json();
+              document.getElementById('city').value = data.places[0]['place name'];
+              document.getElementById('state').value = data.places[0]['state abbreviation'];
+              // Keeping existing behavior for lat/long placeholders
+            }
+          } catch (err) { console.error('Geo Error', err); }
+        }
+      });
+    }
+
+    if (fileInput) fileInput.addEventListener("change", handlePhotoChange);
+    if (addInstrumentBtn) addInstrumentBtn.addEventListener("click", createInstrumentRow);
+    form.addEventListener("submit", handleSubmit);
+
+    loadInstruments();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
 })();

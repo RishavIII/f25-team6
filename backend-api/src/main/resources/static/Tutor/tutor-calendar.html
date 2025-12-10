@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calendar — DUET</title>
   <meta name="description" content="Lesson calendar for students">
+  <script src="/js/common.js"></script>
+  <script defer src="/js/tutor_calendar.js"></script>
 </head>
 <body>
   <!-- Top nav (same as other pages) -->
@@ -60,7 +62,7 @@
   <main class="profile-page">
     <div class="card center-card">
       <div class="calendar-header">
-        <h1>September 2025</h1>
+        <h1 id="calMonthTitle">Month</h1>
         <div class="calendar-controls">
           <a class="btn" href="#">◀</a>
           <a class="btn" href="#">Today</a>
@@ -107,10 +109,7 @@
 
       <div class="card day-detail">
         <h2>Sessions — Today</h2>
-        <ul class="day-list">
-          <li><strong>4:00–4:30pm</strong> • Lesson with Emma (Online)</li>
-          <li><strong>6:00–7:00pm</strong> • Practice block</li>
-        </ul>
+        <ul class="day-list" id="dayList"></ul>
       </div>
     </div>
   </main>

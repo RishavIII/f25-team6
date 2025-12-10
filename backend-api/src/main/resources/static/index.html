@@ -52,6 +52,7 @@
       </section>
     </main>
 
+    <script src="/js/common.js"></script>
   <div id="about-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="about-title" aria-hidden="true">
     <div class="modal-backdrop" data-dismiss="backdrop"></div>
     <div class="modal-card" role="document">
@@ -178,16 +179,32 @@
 
     const loginForm = document.getElementById('login-form');
     if(loginForm){
-      loginForm.addEventListener('submit', function(e){
+      loginForm.addEventListener('submit', async function(e){
         e.preventDefault();
         const formData = new FormData(loginForm);
         const email = formData.get('email');
-        if (email === "tutor@tutor.com") {
-          window.location.href = "/Tutor/tutor_home.html"
+        const password = formData.get('password');
+        try {
+          const res = await fetch(`${API_BASE}/login`, {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ email, password })
+          });
+          if (res.ok) {
+            const user = await res.json();
+            try { localStorage.setItem('userId', user.id); } catch(_) { }
+            if (user.role) { try { localStorage.setItem('userRole', user.role); } catch(_) { } }
+            if (user.role === 'TUTOR') window.location.href = '/Tutor/tutor_home.html';
+            else if (user.role === 'STUDENT') window.location.href = '/Student/student-home.html';
+            else window.location.href = '/Tutor/tutor_home.html';
+            if(login) login.close();
+          } else if (res.status === 401) {
+            alert('Invalid credentials');
+          } else {
+            alert('Sign in failed: ' + res.status);
+          }
+        } catch (err) {
+          console.error(err); alert('Network error during sign in');
         }
-        else if (email === "student@student.com")
-          window.location.href = "/Student/student-home.html"
-        if(login) login.close();
       });
     }
     const signupForm = document.getElementById('signup-form');

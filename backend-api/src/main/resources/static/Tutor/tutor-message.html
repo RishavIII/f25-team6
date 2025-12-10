@@ -5,6 +5,8 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<title>Messages — DUET</title>
 	<link rel="stylesheet" href="../styles.css">
+	<script src="/js/common.js"></script>
+	<script defer src="/js/tutor_message.js"></script>
 </head>
 <body>
 	<header class="top-nav" role="banner">
@@ -66,64 +68,24 @@
 			<aside class="conversations">
 				<div class="convos-header">
 					<h2>Messages</h2>
-					<button class="btn add-convo" aria-label="Start new conversation">+</button>
 				</div>
-				<ul class="convo-list">
-					<li class="convo active">
-						<div class="avatar">AL</div>
-						<div class="convo-meta">
-							<strong>Alex Lee</strong>
-							<span class="muted">Seen 2h ago · Piano</span>
-						</div>
-						<div class="convo-unread">2</div>
-					</li>
-					<li class="convo">
-						<div class="avatar">JM</div>
-						<div class="convo-meta">
-							<strong>Jamie M.</strong>
-							<span class="muted">Online · Guitar</span>
-						</div>
-						<div class="convo-unread"></div>
-					</li>
-					<li class="convo">
-						<div class="avatar">SK</div>
-						<div class="convo-meta">
-							<strong>Sara K.</strong>
-							<span class="muted">Yesterday · Voice</span>
-						</div>
-						<div class="convo-unread">1</div>
-					</li>
-				</ul>
+				<ul class="convo-list" id="convoList"></ul>
 			</aside>
 
 			 
 			<section class="chat-panel" aria-live="polite">
-				<header class="chat-header">
-					<div class="avatar large">AL</div>
+				<header class="chat-header" id="chatHeader" style="display:none;">
+					<div class="avatar large" id="chatAvatar"></div>
 					<div>
-						<strong>Alex Lee</strong>
-						<div class="muted small">Last seen 2 hours ago</div>
+						<strong id="chatName"></strong>
 					</div>
 				</header>
 
-				<div class="chat-log" id="chatLog">
-					<div class="message received">
-						<div class="bubble">Hey — are we still on for the lesson tomorrow?</div>
-						<div class="time muted small">3:40 PM</div>
-					</div>
-					<div class="message sent">
-						<div class="bubble">Yes! See you at 4pm at the studio.</div>
-						<div class="time muted small">3:42 PM</div>
-					</div>
-					<div class="message received">
-						<div class="bubble">Perfect — would you mind bringing the music sheets?</div>
-						<div class="time muted small">3:45 PM</div>
-					</div>
-				</div>
+				<div class="chat-log" id="chatLog" style="display:none;"></div>
 
-				<footer class="composer">
-					<textarea placeholder="iMessage-style: Write a message..." rows="1" aria-label="Write a message"></textarea>
-					<button class="btn primary">Send</button>
+				<footer class="composer" id="chatComposer" style="display:none;">
+					<textarea id="composerText" placeholder="Write a message..." rows="1" aria-label="Write a message"></textarea>
+					<button id="composerSend" class="btn primary">Send</button>
 				</footer>
 			</section>
 		</div>

@@ -1,5 +1,5 @@
 (function () {
-  const msg = document.getElementById("msg");
+  let msg;
 
   function populateView(profile, tutorInstruments) {
     const photo =
@@ -81,7 +81,8 @@
   async function loadProfile() {
     const uid = requireUserId();
     if (!uid) return;
-    msg.textContent = "";
+    if (!msg) msg = document.getElementById("msg");
+    if (msg) msg.textContent = "";
 
     try {
       const profile = await getTutorProfile(uid);
@@ -89,17 +90,26 @@
       populateView(profile, tutorInstruments);
     } catch (err) {
       if (err.status === 404) {
-        msg.textContent =
+        if (msg) msg.textContent =
           "No tutor profile found for this account. Redirecting to onboarding...";
         setTimeout(() => {
           window.location.href = "/Tutor/tutor_onboard.html";
         }, 1200);
       } else {
         console.error(err);
-        msg.textContent = "Error loading profile.";
+        if (msg) msg.textContent = "Error loading profile.";
       }
     }
   }
 
-  loadProfile();
+  function start(){
+    msg = document.getElementById("msg");
+    loadProfile();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
 })();
