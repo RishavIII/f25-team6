@@ -33,7 +33,7 @@ public class TutorProfileController {
 
     if (in.getHourlyRateCents() == null)
       throw new ResponseStatusException(BAD_REQUEST, "hourlyRateCents required");
-    
+
     in.setUser(user);
     return ResponseEntity.ok(repo.save(in));
   }
