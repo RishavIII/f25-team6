@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Notifications — DUET</title>
   <link rel="stylesheet" href="../styles.css">
+  <script src="/js/common.js"></script>
+  <script defer src="/js/tutor_notifications.js"></script>
 </head>
 <body>
   <header class="top-nav" role="banner">
@@ -68,42 +70,21 @@
     <div class="card center-card">
       <h1>Notifications</h1>
 
-      <div class="filters-row">
-        <button class="chip chip-active" aria-pressed="true">All</button>
-        <button class="chip" aria-pressed="false">Unread</button>
-        <span class="muted small">3 unread</span>
+      <div class="filters-row" id="notifFilters">
+        <button id="btnMarkAllRead" class="btn small" style="margin-right:auto">Mark all as read</button>
+        <button id="filterAll" class="chip chip-active" aria-pressed="true">All</button>
+        <button id="filterUnread" class="chip" aria-pressed="false">Unread</button>
+        <span id="unreadCount" class="muted small">0 unread</span>
       </div>
 
-      <ul class="notifications-list">
-        <li class="notif-item is-unread">
-          <div class="notif-dot" aria-hidden="true"></div>
-          <div class="notif-body">
-            <strong>Lesson confirmed</strong>
-            <p>Your lesson with Alex is confirmed for Tue 4:00pm.</p>
-            <span class="time small muted">2h ago</span>
-          </div>
-        </li>
-        <li class="notif-item">
-          <div class="notif-dot" aria-hidden="true"></div>
-          <div class="notif-body">
-            <strong>New message</strong>
-            <p>Noah sent you a message.</p>
-            <span class="time small muted">Yesterday</span>
-          </div>
-        </li>
-        <li class="notif-item is-unread">
-          <div class="notif-dot" aria-hidden="true"></div>
-          <div class="notif-body">
-            <strong>Payment received</strong>
-            <p>Session on Sep 15 has been paid.</p>
-            <span class="time small muted">2d ago</span>
-          </div>
-        </li>
-      </ul>
+      <ul class="notifications-list" id="notifList"></ul>
 
-      <div class="actions-row">
-        <a class="btn" href="#">Mark all as read</a>
+      <div id="notifDetail" class="card" style="display:none;margin-top:12px;">
+        <button id="btnBackList" class="btn" style="margin-bottom:8px">← Back</button>
+        <div id="notifDetailBody"></div>
       </div>
+
+      <div class="actions-row" style="display:none"></div>
     </div>
   </main>
 </body>

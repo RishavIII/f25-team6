@@ -4,6 +4,8 @@ import com.f25_team6.duet.common.enums.*;
 import com.f25_team6.duet.user.*;
 import com.f25_team6.duet.catalog.Instrument;
 import com.f25_team6.duet.catalog.InstrumentRepository;
+import com.f25_team6.duet.messaging.Conversation;
+import com.f25_team6.duet.messaging.ConversationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ public class BookingService {
         private final TutorProfileRepository tutorProfileRepo;
         private final InstrumentRepository instrumentRepo;
         private final TutorRatingService tutorRatingService;
+        private final ConversationRepository conversationRepo;
 
         public BookingRequest createRequest(Long studentId, Long tutorId, Long instrumentId, Level level,
                         int durationMin,
@@ -47,7 +50,14 @@ public class BookingService {
                                 .notes(notes)
                                 .status(BookingStatus.PENDING)
                                 .build();
-                return bookingRepo.save(br);
+                br = bookingRepo.save(br);
+                // Ensure a conversation exists between student and tutor upon request creation
+                conversationRepo.findByStudentIdAndTutorId(student.getId(), tutor.getId())
+                        .or(() -> {
+                                Conversation c = Conversation.builder().student(student).tutor(tutor).build();
+                                return java.util.Optional.of(conversationRepo.save(c));
+                        });
+                return br;
         }
 
         public BookingRequest accept(Long bookingId) {

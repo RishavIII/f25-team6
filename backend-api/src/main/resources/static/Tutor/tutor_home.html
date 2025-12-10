@@ -72,64 +72,15 @@
 					<div class="col-left">
 						<section class="card upcoming-lessons" aria-labelledby="upcoming-lessons-title">
 							<h2 id="upcoming-lessons-title">Upcoming Lessons</h2>
-							<ul class="lessons-list">
-								<li>
-									<div class="lesson-info">
-										<strong>Emma L.</strong>
-										<span class="lesson-meta">Piano — Sep 22 · 4:00pm · 45m</span>
-									</div>
-									<div class="lesson-actions">
-										<button class="action">Details</button>
-										<button class="action">Reschedule</button>
-										<button class="action">Message</button>
-									</div>
-								</li>
-								<li>
-									<div class="lesson-info">
-										<strong>Liam R.</strong>
-										<span class="lesson-meta">Guitar — Sep 23 · 6:30pm · 60m</span>
-									</div>
-									<div class="lesson-actions">
-										<button class="action">Details</button>
-										<button class="action">Reschedule</button>
-										<button class="action">Message</button>
-									</div>
-								</li>
-								<li>
-									<div class="lesson-info">
-										<strong>Sophia M.</strong>
-										<span class="lesson-meta">Voice — Sep 24 · 3:00pm · 30m</span>
-									</div>
-									<div class="lesson-actions">
-										<button class="action">Details</button>
-										<button class="action">Reschedule</button>
-										<button class="action">Message</button>
-									</div>
-								</li>
-							</ul>
+							<ul id="upcoming-lessons-list" class="lessons-list"></ul>
+							<div id="upcoming-lessons-empty" class="muted small" style="display:none;margin-top:8px;">No upcoming lessons.</div>
 						</section>
 
 						<section class="card reviews" aria-labelledby="recent-reviews-title">
 							<h2 id="recent-reviews-title">Recent Reviews</h2>
-							<ul class="review-list">
-								<li>
-									<div class="avatar">AL</div>
-									<div class="review-body">
-										<strong>Alice</strong>
-										<div class="stars" aria-hidden="true">★★★★☆</div>
-										<p>Great lesson — really helped my scales. Clear and patient.</p>
-									</div>
-								</li>
-								<li>
-									<div class="avatar">JM</div>
-									<div class="review-body">
-										<strong>James</strong>
-										<div class="stars" aria-hidden="true">★★★★★</div>
-										<p>Awesome session — learned chord progressions quickly.</p>
-									</div>
-								</li>
-							</ul>
-							<a class="see-all" href="#">See all reviews</a>
+							<ul id="reviews-list" class="review-list"></ul>
+							<div id="reviews-empty" class="muted small" style="display:none;margin-top:8px;">No reviews yet.</div>
+							<a class="see-all" id="reviews-see-all" href="#" style="display:none;">See all reviews</a>
 						</section>
 					</div>
 
@@ -138,18 +89,18 @@
 						<section class="card metrics" aria-label="Key metrics">
 							<div class="metric">
 								<h3>Monthly Earnings</h3>
-								<div class="metric-value">$1,820</div>
-								<p class="muted small">Up 8% from last month</p>
+								<div id="metric-earnings" class="metric-value">—</div>
+								<p class="muted small" id="metric-earnings-note">Completed lessons this month</p>
 							</div>
 							<div class="metric">
 								<h3>Click‑through Rate</h3>
-								<div class="metric-value">12.4%</div>
-								<p class="muted small">Profile views → lesson bookings</p>
+								<div id="metric-ctr" class="metric-value">—</div>
+								<p class="muted small">Accepted requests ÷ total requests</p>
 							</div>
 							<div class="metric">
 								<h3>Overall Rating</h3>
-								<div class="rating" aria-label="4.6 out of 5 stars">★ ★ ★ ★ ☆ <span class="rating-value">4.6</span></div>
-								<p class="muted small">Based on 128 reviews</p>
+								<div id="metric-rating" class="rating" aria-label="—">—</div>
+								<p class="muted small" id="metric-rating-note">Based on 0 reviews</p>
 							</div>
 						</section>
 
@@ -157,15 +108,15 @@
 							<div class="stat-grid">
 								<div>
 									<h4>Students</h4>
-									<div class="stat-value">42</div>
+									<div id="stat-students" class="stat-value">—</div>
 								</div>
 								<div>
 									<h4>Lessons this month</h4>
-									<div class="stat-value">26</div>
+									<div id="stat-lessons-month" class="stat-value">—</div>
 								</div>
 								<div>
 									<h4>Avg. lesson</h4>
-									<div class="stat-value">45m</div>
+									<div id="stat-avg-lesson" class="stat-value">—</div>
 								</div>
 							</div>
 						</section>
@@ -175,5 +126,7 @@
 				
 			</section>
 		</main>
+		<script src="/js/common.js"></script>
+		<script src="/js/tutor_home.js"></script>
 	</body>
 </html>

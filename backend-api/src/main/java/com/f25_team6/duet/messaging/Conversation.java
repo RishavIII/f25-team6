@@ -3,6 +3,7 @@ package com.f25_team6.duet.messaging;
 import com.f25_team6.duet.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.OffsetDateTime;
 
 @Entity @Table(name="conversations",
   uniqueConstraints=@UniqueConstraint(columnNames={"student_user_id","tutor_user_id"}))
@@ -16,4 +17,7 @@ public class Conversation {
 
   @ManyToOne(optional=false) @JoinColumn(name="tutor_user_id")
   private User tutor;
+
+  // Tracks when the tutor last viewed this conversation (for unread counts)
+  private OffsetDateTime tutorLastReadAt;
 }

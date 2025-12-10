@@ -14,13 +14,13 @@
       <label class="field"><span>Password</span><input id="password" type="password" required></label>
       <div style="display:flex;gap:8px;align-items:center;margin-top:12px;">
         <button class="btn primary" type="submit">Sign in</button>
-        <a href="tutor_profile.html" class="btn">Continue as guest</a>
+        <a href="tutor_home.html" class="btn">Continue as guest</a>
       </div>
     </form>
     <div id="error" style="color:#b00020;margin-top:12px;display:none"></div>
   </main>
+  <script src="/js/common.js"></script>
   <script>
-    const API_BASE = 'http://localhost:8080/api';
     const form = document.getElementById('loginForm');
     const err = document.getElementById('error');
     form.addEventListener('submit', async (e)=>{
@@ -32,7 +32,16 @@
         if (res.ok) {
           const user = await res.json();
           localStorage.setItem('userId', user.id);
-          window.location.href = 'tutor_profile.html';
+          if (user.role) localStorage.setItem('userRole', user.role);
+          // Redirect to the correct home page by role
+          if (user.role === 'TUTOR') {
+            window.location.href = '/Tutor/tutor_home.html';
+          } else if (user.role === 'STUDENT') {
+            window.location.href = '/Student/student-home.html';
+          } else {
+            // Fallback to tutor home if role missing
+            window.location.href = '/Tutor/tutor_home.html';
+          }
         } else {
           err.textContent = 'Sign in failed'; err.style.display='block';
         }
