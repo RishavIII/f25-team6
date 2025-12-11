@@ -12,4 +12,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
   Double avgForTutor(Long tutorId);
 
   List<Review> findTop5ByTutor_IdOrderByCreatedAtDesc(Long tutorId);
+
+  void deleteByTutor_Id(Long tutorId);
+
+  void deleteByReviewerStudent_Id(Long studentId);
 }

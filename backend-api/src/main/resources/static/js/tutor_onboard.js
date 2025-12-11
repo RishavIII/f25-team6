@@ -9,7 +9,7 @@
       if (tzInput && !tzInput.value) {
         tzInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
       }
-    } catch (e) {}
+    } catch (e) { }
   })();
 
   function makeLevelSelect(defaultValue, dataRole) {
@@ -144,33 +144,16 @@
     }
   }
 
-  async function handlePhotoChange() {
+  function handlePhotoChange() {
     const f = fileInput.files && fileInput.files[0];
     if (!f) return;
-    const userId = requireUserId();
-    if (!userId) return;
 
-    if (msg) msg.textContent = "Uploading...";
-    try {
-      const fd = new FormData();
-      fd.append("file", f);
-      const upRes = await fetch(
-        `/api/tutor-profiles/${encodeURIComponent(userId)}/photo`,
-        { method: "POST", body: fd }
-      );
-      if (upRes.ok) {
-        const data = await upRes.json();
-        uploadedPhotoUrl = data.photoUrl;
-        document.getElementById("photoPreview").src = uploadedPhotoUrl;
-        if (msg) msg.textContent = "Uploaded.";
-      } else {
-        const t = await upRes.text();
-        if (msg) msg.textContent = "Upload failed: " + upRes.status + " " + t;
-      }
-    } catch (err) {
-      console.error(err);
-      if (msg) msg.textContent = "Upload failed";
-    }
+    // Local preview only
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById("photoPreview").src = e.target.result;
+    };
+    reader.readAsDataURL(f);
   }
 
   function collectInstrumentSelections() {
@@ -195,16 +178,10 @@
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (msg) msg.textContent = "";
+    if (msg) msg.textContent = "Creating profile...";
 
     const userId = requireUserId();
     if (!userId) return;
-
-    let photoUrl =
-      uploadedPhotoUrl || document.getElementById("photoPreview").src || null;
-    if (photoUrl && photoUrl.endsWith("/assets/empty-pfp.svg")) {
-      photoUrl = null;
-    }
 
     const bio = document.getElementById("bio").value || null;
     const hourly = document.getElementById("hourlyRate").value;
@@ -221,23 +198,12 @@
     const cancellationNote =
       document.getElementById("cancellationNote").value || null;
 
-    const latStr = document.getElementById("latitude").value;
-    const lonStr = document.getElementById("longitude").value;
-    const latitude =
-      latStr && latStr.trim() !== "" && !isNaN(latStr)
-        ? parseFloat(latStr)
-        : null;
-    const longitude =
-      lonStr && lonStr.trim() !== "" && !isNaN(lonStr)
-        ? parseFloat(lonStr)
-        : null;
-
-    const instrumentSelections = collectInstrumentSelections();
-
     const latRaw = document.getElementById("latitude").value;
     const lonRaw = document.getElementById("longitude").value;
+
+    // Initial payload (no photo URL yet)
     const payload = {
-      photoUrl,
+      photoUrl: null,
       bio,
       hourlyRateCents,
       onlineEnabled,
@@ -246,38 +212,32 @@
       state,
       timezone,
       cancellationNote,
-      latitude : latRaw ? parseFloat(latRaw) : null,
-      longitude : lonRaw ? parseFloat(lonRaw) : null,
+      latitude: latRaw ? parseFloat(latRaw) : null,
+      longitude: lonRaw ? parseFloat(lonRaw) : null,
     };
-    //failsafe
-    if (!uploadedPhotoUrl && fileInput && fileInput.files && fileInput.files[0]) {
-      try {
+
+    try {
+      // 1. Create Profile
+      await createTutorProfile(userId, payload);
+
+      // 2. Upload Photo (if selected)
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        if (msg) msg.textContent = "Uploading photo...";
         const fd = new FormData();
         fd.append("file", fileInput.files[0]);
         const upRes = await fetch(
           `/api/tutor-profiles/${encodeURIComponent(userId)}/photo`,
           { method: "POST", body: fd }
         );
-        if (upRes.ok) {
-          const data = await upRes.json();
-          photoUrl = data.photoUrl;
-          payload.photoUrl = photoUrl;
-          document.getElementById("photoPreview").src = photoUrl;
-        } else {
-          const t = await upRes.text();
-          if (msg) msg.textContent = "Upload failed: " + upRes.status + " " + t;
-          return;
+        if (!upRes.ok) {
+          console.warn("Photo upload failed after profile creation");
+          // Continue anyway, not blocking
         }
-      } catch (err) {
-        console.error(err);
-        if (msg) msg.textContent = "Upload failed";
-        return;
       }
-    }
 
-    try {
-      await createTutorProfile(userId, payload);
-
+      // 3. Create Instruments
+      if (msg) msg.textContent = "Saving instruments...";
+      const instrumentSelections = collectInstrumentSelections();
       for (const sel of instrumentSelections) {
         await createTutorInstrument({
           tutorUserId: Number(userId),
@@ -307,7 +267,7 @@
     }
   }
 
-  function start(){
+  function start() {
     form = document.getElementById("onboard-form");
     msg = document.getElementById("msg");
     fileInput = document.getElementById("inputPhoto");

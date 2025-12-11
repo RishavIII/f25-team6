@@ -26,6 +26,13 @@ public class TutorProfile {
     private String bio;
     private String photoUrl;
 
+    @Column(name = "image_data")
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private byte[] photoBlob;
+
+    @Column(name = "photo_content_type")
+    private String photoContentType;
+
     @Builder.Default
     @Column(nullable = false)
     private boolean onlineEnabled = true;
@@ -49,4 +56,8 @@ public class TutorProfile {
 
     @Column(columnDefinition = "text")
     private String cancellationNote;
+
+    @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private java.util.List<com.f25_team6.duet.catalog.TutorInstrument> instruments = new java.util.ArrayList<>();
 }

@@ -7,13 +7,10 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import static org.springframework.http.HttpStatus.*;
+import org.springframework.http.MediaType;
 
 @RestController
 @CrossOrigin(origins = "*", allowCredentials = "false")
@@ -83,19 +80,32 @@ public class TutorProfileController {
   public ResponseEntity<Map<String, String>> uploadPhoto(@PathVariable Long userId,
       @RequestParam("file") MultipartFile file) throws IOException {
 
-    String filename = UUID.randomUUID().toString() + ".jpg";
-    Path uploadPath = Paths.get("uploads");
-    Files.createDirectories(uploadPath);
-    Files.write(uploadPath.resolve(filename), file.getBytes());
+    TutorProfile profile = repo.findById(userId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
-    String photoUrl = "/" + uploadPath.toString().replace("\\", "/") + "/" + filename;
+    profile.setPhotoBlob(file.getBytes());
+    profile.setPhotoContentType(file.getContentType());
 
-    // Persist the photo URL immediately if a profile already exists for this tutor
-    try {
-      repo.updatePhotoUrl(userId, photoUrl);
-    } catch (Exception ignore) { /* safe no-op if profile doesn't exist yet */ }
+    String photoUrl = "/api/tutor-profiles/" + userId + "/photo";
+    profile.setPhotoUrl(photoUrl);
+
+    repo.save(profile);
+
     Map<String, String> response = new HashMap<>();
     response.put("photoUrl", photoUrl);
     return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/{userId}/photo")
+  public ResponseEntity<byte[]> getPhoto(@PathVariable Long userId) {
+    TutorProfile profile = repo.findById(userId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+
+    if (profile.getPhotoBlob() == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok()
+        .contentType(MediaType
+            .parseMediaType(profile.getPhotoContentType() != null ? profile.getPhotoContentType() : "image/jpeg"))
+        .body(profile.getPhotoBlob());
   }
 }

@@ -5,5 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookingRequestRepository extends JpaRepository<BookingRequest, Long> {
 	long countByTutor_Id(Long tutorId);
+
 	long countByTutor_IdAndStatus(Long tutorId, BookingStatus status);
+
+	void deleteByStudent_Id(Long studentId);
+
+	void deleteByTutor_Id(Long tutorId);
 }
