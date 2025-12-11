@@ -259,10 +259,7 @@
             <span class="label">Location</span>
             <span class="value" id="viewLocation"></span>
           </div>
-          <div class="view-row">
-            <span class="label">Latitude / Longitude</span>
-            <span class="value" id="viewLatLon"></span>
-          </div>
+          
           <div class="view-row">
             <span class="label">Timezone</span>
             <span class="value" id="viewTimezone"></span>
@@ -284,7 +281,42 @@
         "
       ></div>
     </main>
-
+    <section class="profile-page">
+      <div class="card center-card" id="editCard" style="display:none">
+        <h2>Edit profile</h2>
+        <form id="editForm">
+          <div class="view-top" style="margin-bottom:12px">
+            <div class="photo-large">
+              <img id="editPhotoPreview" src="/assets/empty-pfp.svg" alt="Profile photo" />
+            </div>
+            <div class="view-main">
+              <label class="field"><span>Change photo</span><input type="file" id="editPhoto" accept="image/*"></label>
+              <label class="field"><span>Bio</span><textarea id="editBio" rows="4"></textarea></label>
+              <label class="field"><span>Hourly rate (USD)</span><input type="number" id="editHourly" step="0.5" min="0"></label>
+              <div style="display:flex;gap:16px;margin:8px 0">
+                <label><input type="checkbox" id="editOnline"> Online</label>
+                <label><input type="checkbox" id="editInPerson"> In-person</label>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <label class="field"><span>City</span><input id="editCity"></label>
+                <label class="field"><span>State</span><input id="editState"></label>
+              </div>
+              <label class="field"><span>Zip Code</span><input id="editZip" placeholder="e.g. 27412"></label>
+              <input type="hidden" id="editLat"><input type="hidden" id="editLon">
+              <label class="field"><span>Timezone</span><input id="editTimezone"></label>
+              <label class="field"><span>Cancellation policy</span><input id="editCancel"></label>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button type="submit" class="btn primary">Save changes</button>
+            <button type="button" id="editCancelBtn" class="btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="center-card" style="text-align:right">
+        <button id="editOpenBtn" class="btn">Edit profile</button>
+      </div>
+    </section>
     <script src="/js/common.js"></script>
     <script src="/js/tutor_profile.js"></script>
   </body>
