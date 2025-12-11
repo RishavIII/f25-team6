@@ -158,6 +158,10 @@
     </div>
   </main>
   <script>
+    const API_BASE_URL = '/api';
+    let currentUserId = null;
+    let userProfile = null;
+    let studentProfile = null;
 
     const editToggle = document.getElementById('editToggle');
     const profileView = document.getElementById('profileView');
@@ -166,11 +170,93 @@
     const saveBtn = document.getElementById('saveBtn');
     const resetBtn = document.getElementById('resetBtn');
 
+    document.addEventListener('DOMContentLoaded', () => {
+      // Get logged-in user ID from localStorage
+      currentUserId = localStorage.getItem('userId');
+      
+      if (!currentUserId) {
+        alert('Please log in to continue');
+        window.location.href = '/index.html';
+        return;
+      }
+
+      fetchProfile();
+    });
+
+    async function fetchProfile() {
+      try {
+        // Fetch user data
+        const userResponse = await fetch(`${API_BASE_URL}/users/${currentUserId}`);
+        if (!userResponse.ok) {
+          throw new Error(`Failed to fetch user: ${userResponse.status}`);
+        }
+        userProfile = await userResponse.json();
+
+        // Fetch student profile data
+        const profileResponse = await fetch(`${API_BASE_URL}/student-profiles/${currentUserId}`);
+        if (profileResponse.ok) {
+          studentProfile = await profileResponse.json();
+        } else {
+          // Create default student profile if it doesn't exist
+          studentProfile = {
+            userId: parseInt(currentUserId),
+            contactPreferences: null,
+            prefersOnline: true,
+            prefersInPerson: false
+          };
+        }
+
+        renderProfile();
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        alert('Unable to load profile. Please try again.');
+      }
+    }
+
+    function renderProfile() {
+      // Render view mode
+      document.getElementById('viewName').textContent = userProfile.name || 'N/A';
+      document.getElementById('viewBio').textContent = studentProfile.contactPreferences || 'No bio provided';
+      document.getElementById('viewInstruments').textContent = 'N/A'; // Not stored in current model
+      document.getElementById('viewLevels').textContent = 'N/A'; // Not stored in current model
+      document.getElementById('viewGenres').textContent = 'N/A'; // Not stored in current model
+      document.getElementById('viewCreds').textContent = 'N/A'; // Not stored in current model
+      document.getElementById('viewRateLocal').textContent = 'N/A'; // Not stored in current model
+      document.getElementById('viewRateOnline').textContent = 'N/A'; // Not stored in current model
+      document.getElementById('viewRadius').textContent = 'N/A'; // Not stored in current model
+      document.getElementById('viewAddress').textContent = 'N/A'; // Not stored in current model
+      
+      const lessonTypes = [];
+      if (studentProfile.prefersOnline) lessonTypes.push('Online');
+      if (studentProfile.prefersInPerson) lessonTypes.push('In-person');
+      document.getElementById('viewTypes').textContent = lessonTypes.length > 0 ? lessonTypes.join(', ') : 'N/A';
+      
+      document.getElementById('viewCancel').textContent = 'N/A'; // Not stored in current model
+      document.getElementById('viewPrep').textContent = 'N/A'; // Not stored in current model
+      document.getElementById('viewCommute').textContent = 'N/A'; // Not stored in current model
+
+      // Render edit mode
+      document.getElementById('inputName').value = userProfile.name || '';
+      document.getElementById('inputBio').value = studentProfile.contactPreferences || '';
+      document.getElementById('inputInstruments').value = '';
+      document.getElementById('inputLevels').value = '';
+      document.getElementById('inputGenres').value = '';
+      document.getElementById('inputCreds').value = '';
+      document.getElementById('inputRateLocal').value = '';
+      document.getElementById('inputRateOnline').value = '';
+      document.getElementById('inputRadius').value = '';
+      document.getElementById('inputAddress').value = '';
+      document.getElementById('inputTypes').value = lessonTypes.join(', ');
+      document.getElementById('inputPrep').value = '';
+      document.getElementById('inputCommute').value = '';
+    }
+
     function showEdit() {
       profileView.classList.add('hidden');
       profileEdit.classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
     function showView() {
       profileEdit.classList.add('hidden');
       profileView.classList.remove('hidden');
@@ -180,42 +266,75 @@
     editToggle && editToggle.addEventListener('click', showEdit);
     cancelEdit && cancelEdit.addEventListener('click', showView);
 
-    saveBtn && saveBtn.addEventListener('click', () => {
+    saveBtn && saveBtn.addEventListener('click', async () => {
+      try {
+        // Update user data
+        const updatedUser = {
+          name: document.getElementById('inputName').value,
+          email: userProfile.email,
+          role: userProfile.role
+        };
 
-      document.getElementById('viewName').textContent = document.getElementById('inputName').value;
-      document.getElementById('viewBio').textContent = document.getElementById('inputBio').value;
-      document.getElementById('viewInstruments').textContent = document.getElementById('inputInstruments').value;
-      document.getElementById('viewLevels').textContent = document.getElementById('inputLevels').value;
-      document.getElementById('viewGenres').textContent = document.getElementById('inputGenres').value;
-      document.getElementById('viewCreds').textContent = document.getElementById('inputCreds').value;
-      document.getElementById('viewRateLocal').textContent = '$' + document.getElementById('inputRateLocal').value;
-      document.getElementById('viewRateOnline').textContent = '$' + document.getElementById('inputRateOnline').value;
-      document.getElementById('viewRadius').textContent = document.getElementById('inputRadius').value + ' miles';
-      document.getElementById('viewAddress').textContent = document.getElementById('inputAddress').value;
-      document.getElementById('viewTypes').textContent = document.getElementById('inputTypes').value;
-      document.getElementById('viewCancel').textContent = document.getElementById('inputCancel').value;
-      document.getElementById('viewPrep').textContent = document.getElementById('inputPrep').value + ' minutes';
-      document.getElementById('viewCommute').textContent = document.getElementById('inputCommute').value + ' minutes';
-      showView();
+        const userResponse = await fetch(`${API_BASE_URL}/users/${currentUserId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedUser)
+        });
+
+        if (!userResponse.ok) {
+          throw new Error(`Failed to update user: ${userResponse.status}`);
+        }
+
+        // Update student profile data
+        const lessonTypes = document.getElementById('inputTypes').value;
+        const updatedProfile = {
+          contactPreferences: document.getElementById('inputBio').value,
+          prefersOnline: lessonTypes.toLowerCase().includes('online'),
+          prefersInPerson: lessonTypes.toLowerCase().includes('person')
+        };
+
+        const profileResponse = await fetch(`${API_BASE_URL}/student-profiles/${currentUserId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedProfile)
+        });
+
+        if (!profileResponse.ok) {
+          // If profile doesn't exist, create it
+          if (profileResponse.status === 404) {
+            const createResponse = await fetch(`${API_BASE_URL}/student-profiles/${currentUserId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(updatedProfile)
+            });
+            
+            if (!createResponse.ok) {
+              throw new Error(`Failed to create profile: ${createResponse.status}`);
+            }
+          } else {
+            throw new Error(`Failed to update profile: ${profileResponse.status}`);
+          }
+        }
+
+        // Refresh profile data
+        await fetchProfile();
+        showView();
+        alert('Profile updated successfully!');
+
+      } catch (error) {
+        console.error('Error saving profile:', error);
+        alert('Failed to save profile. Please try again.');
+      }
     });
 
     resetBtn && resetBtn.addEventListener('click', () => {
-
-      document.getElementById('inputName').value = document.getElementById('viewName').textContent;
-      document.getElementById('inputBio').value = document.getElementById('viewBio').textContent;
-      document.getElementById('inputInstruments').value = document.getElementById('viewInstruments').textContent;
-      document.getElementById('inputLevels').value = document.getElementById('viewLevels').textContent;
-      document.getElementById('inputGenres').value = document.getElementById('viewGenres').textContent;
-      document.getElementById('inputCreds').value = document.getElementById('viewCreds').textContent;
-      document.getElementById('inputRateLocal').value = document.getElementById('viewRateLocal').textContent.replace(/[^0-9.]/g, '');
-      document.getElementById('inputRateOnline').value = document.getElementById('viewRateOnline').textContent.replace(/[^0-9.]/g, '');
-      document.getElementById('inputRadius').value = document.getElementById('viewRadius').textContent.replace(/[^0-9.]/g, '');
-      document.getElementById('inputAddress').value = document.getElementById('viewAddress').textContent;
-      document.getElementById('inputTypes').value = document.getElementById('viewTypes').textContent;
-
-      document.getElementById('inputCancel').value = document.getElementById('viewCancel').textContent;
-      document.getElementById('inputPrep').value = document.getElementById('viewPrep').textContent.replace(/[^0-9]/g, '');
-      document.getElementById('inputCommute').value = document.getElementById('viewCommute').textContent.replace(/[^0-9]/g, '');
+      renderProfile();
     });
   </script>
 </body>
