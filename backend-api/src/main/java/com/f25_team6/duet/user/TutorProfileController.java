@@ -67,6 +67,7 @@ public class TutorProfileController {
       cur.setTimezone(in.getTimezone());
     if (in.getCancellationNote() != null)
       cur.setCancellationNote(in.getCancellationNote());
+    repo.save(cur);
     return ResponseEntity.ok(cur);
   }
 
@@ -88,6 +89,11 @@ public class TutorProfileController {
     Files.write(uploadPath.resolve(filename), file.getBytes());
 
     String photoUrl = "/" + uploadPath.toString().replace("\\", "/") + "/" + filename;
+
+    // Persist the photo URL immediately if a profile already exists for this tutor
+    try {
+      repo.updatePhotoUrl(userId, photoUrl);
+    } catch (Exception ignore) { /* safe no-op if profile doesn't exist yet */ }
     Map<String, String> response = new HashMap<>();
     response.put("photoUrl", photoUrl);
     return ResponseEntity.ok(response);
