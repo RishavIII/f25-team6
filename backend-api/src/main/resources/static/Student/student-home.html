@@ -83,29 +83,7 @@
         </div>
 
         <div class="col-right">
-          <section class="card filters" aria-label="Filters">
-            <div class="meta-row">
-                <span class="meta-label">Zipcode</span>
-                <input
-                  type="text"
-                  id="student-zip"
-                  placeholder="e.g. 27412"
-                  style="
-                    width: 100%;
-                    padding: 8px;
-                    border-radius: 8px;
-                    border: 1px solid #ccc;
-                  "
-                />
-                <button
-                  class="btn"
-                  id="apply-location"
-                  style="width: 100%; margin-top: 8px"
-                >
-                  Find Nearest
-                </button>
-            </div>
-          </section>
+          
 
           <section class="card stats" aria-label="Student stats">
             <div class="stat-grid">
@@ -132,44 +110,214 @@
     </section>
   </main>
 
-  <script src="/js/common.js"></script>
+  <!-- Schedule Lesson Modal -->
+  <div id="scheduleModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeScheduleModal()">&times;</span>
+      <h2>Schedule a Lesson</h2>
+      <form id="scheduleForm" onsubmit="submitScheduleLesson(event)">
+        <input type="hidden" id="modalTutorId" />
+        
+        <div class="form-group">
+          <label for="instrumentSelect">Instrument *</label>
+          <select id="instrumentSelect" required>
+            <option value="">Select an instrument...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="levelSelect">Skill Level *</label>
+          <select id="levelSelect" required>
+            <option value="BEGINNER">Beginner</option>
+            <option value="INTERMEDIATE">Intermediate</option>
+            <option value="ADVANCED">Advanced</option>
+            <option value="EXPERT">Expert</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="durationInput">Duration (minutes) *</label>
+          <select id="durationInput" required>
+            <option value="30">30 minutes</option>
+            <option value="45">45 minutes</option>
+            <option value="60" selected>60 minutes</option>
+            <option value="90">90 minutes</option>
+            <option value="120">120 minutes</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="dateTimeInput">Preferred Date & Time *</label>
+          <input type="datetime-local" id="dateTimeInput" required />
+        </div>
+
+        <div class="form-group">
+          <label for="lessonModeSelect">Lesson Mode *</label>
+          <select id="lessonModeSelect" required>
+            <option value="ONLINE">Online</option>
+            <option value="IN_PERSON">In-Person</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="notesInput">Notes (Optional)</label>
+          <textarea id="notesInput" rows="4" placeholder="Any special requests or topics you'd like to focus on..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn" onclick="closeScheduleModal()">Cancel</button>
+          <button type="submit" class="btn primary">Submit Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    .modal {
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      overflow: auto;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #000;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 30px;
+    }
+
+    .success-message,
+    .error-message {
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+
   <script>
-    const API_BASE_URL = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : '/api';
+    const API_BASE_URL = '/api';
     
     let allTutors = [];
     let filteredTutors = [];
+    let allInstruments = [];
+    let currentUserId = null;
     let filters = {
       instrument: null,
       levels: [],
       availability: [],
-      priceRange: null,
-      zip: null,
-      zipLat: null,
-      zipLon: null
+      priceRange: null
     };
 
-    function start(){
+    document.addEventListener('DOMContentLoaded', () => {
+      // Get logged-in user ID from localStorage
+      currentUserId = localStorage.getItem('userId');
+      
+      if (!currentUserId) {
+        // Redirect to login if not authenticated
+        alert('Please log in to continue');
+        window.location.href = '/index.html';
+        return;
+      }
+      
       fetchTutors();
+      fetchInstruments();
       setupFilterListeners();
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', start);
-    } else { start(); }
+      setMinDateTime();
+    });
 
-    async function geocodeZip(zip){
-      const res = await fetch(`https://api.zippopotam.us/us/${encodeURIComponent(zip)}`);
-      if (!res.ok) throw new Error('Invalid zipcode');
-      const data = await res.json();
-      const place = data.places && data.places[0];
-      return { lat: parseFloat(place.latitude), lon: parseFloat(place.longitude) };
+    function setMinDateTime() {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      document.getElementById('dateTimeInput').min = now.toISOString().slice(0, 16);
     }
 
-    function toRad(x){ return x * Math.PI / 180; }
-    function haversine(lat1, lon1, lat2, lon2){
-      const R = 3958.8; // miles
-      const dLat = toRad(lat2-lat1), dLon = toRad(lon2-lon1);
-      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-      return 2*R*Math.asin(Math.sqrt(a));
+    async function fetchInstruments() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/instruments`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        allInstruments = await response.json();
+        populateInstrumentSelect();
+      } catch (error) {
+        console.error('Error fetching instruments:', error);
+      }
+    }
+
+    function populateInstrumentSelect() {
+      const select = document.getElementById('instrumentSelect');
+      allInstruments.forEach(instrument => {
+        const option = document.createElement('option');
+        option.value = instrument.id;
+        option.textContent = instrument.name;
+        select.appendChild(option);
+      });
     }
 
     async function fetchTutors() {
@@ -263,18 +411,6 @@
     }
 
     function setupFilterListeners() {
-      const btnLoc = document.getElementById('apply-location');
-      if (btnLoc){
-        btnLoc.addEventListener('click', async ()=>{
-          const zip = (document.getElementById('student-zip')?.value || '').trim();
-          if (!zip) return;
-          try{
-            const {lat, lon} = await geocodeZip(zip);
-            filters.zip = zip; filters.zipLat = lat; filters.zipLon = lon;
-            applyFilters();
-          }catch(e){ alert('Could not resolve zipcode'); }
-        });
-      }
       document.querySelectorAll('.filters .meta-row:nth-child(1) .chip').forEach(chip => {
         chip.addEventListener('click', function() {
           document.querySelectorAll('.filters .meta-row:nth-child(1) .chip').forEach(c => {
@@ -337,7 +473,7 @@
     }
 
     function applyFilters() {
-      let list = allTutors.filter(tutor => {
+      filteredTutors = allTutors.filter(tutor => {
         if (filters.priceRange) {
           const rate = tutor.hourlyRateCents / 100;
           if (filters.priceRange === '$' && rate > 30) return false;
@@ -347,17 +483,6 @@
         
         return true;
       });
-
-      // If zipcode provided, compute distances and sort by nearest (tutors without lat/lon go to end)
-      if (filters.zipLat != null && filters.zipLon != null){
-        list = list.map(t => {
-          const hasGeo = t.latitude != null && t.longitude != null;
-          const dist = hasGeo ? haversine(filters.zipLat, filters.zipLon, t.latitude, t.longitude) : Number.POSITIVE_INFINITY;
-          return {...t, _distanceMi: dist};
-        }).sort((a,b) => (a._distanceMi||Infinity) - (b._distanceMi||Infinity));
-      }
-
-      filteredTutors = list;
 
       renderTutors();
       updateStats();
@@ -371,7 +496,6 @@
       if (filters.instrument) activeFilters.push(filters.instrument);
       if (filters.levels.length > 0) activeFilters.push(...filters.levels);
       if (filters.priceRange) activeFilters.push(filters.priceRange);
-      if (filters.zip) activeFilters.push(`ZIP ${filters.zip}`);
       
       if (activeFilters.length === 0) {
         footer.textContent = 'Tip: Use filters to find tutors that match your learning style and goals.';
@@ -381,8 +505,70 @@
     }
 
     function scheduleLesson(tutorId) {
-      alert(`Schedule lesson with tutor ID: ${tutorId}`);
-      // TODO: Implement scheduling functionality
+      document.getElementById('modalTutorId').value = tutorId;
+      document.getElementById('scheduleModal').style.display = 'block';
+    }
+
+    function closeScheduleModal() {
+      document.getElementById('scheduleModal').style.display = 'none';
+      document.getElementById('scheduleForm').reset();
+      // Remove any success/error messages
+      const messages = document.querySelectorAll('.success-message, .error-message');
+      messages.forEach(msg => msg.remove());
+    }
+
+    async function submitScheduleLesson(event) {
+      event.preventDefault();
+      
+      const formData = {
+        studentId: parseInt(currentUserId),
+        tutorId: parseInt(document.getElementById('modalTutorId').value),
+        instrumentId: parseInt(document.getElementById('instrumentSelect').value),
+        level: document.getElementById('levelSelect').value,
+        durationMin: parseInt(document.getElementById('durationInput').value),
+        requestedStartUtc: new Date(document.getElementById('dateTimeInput').value).toISOString(),
+        lessonMode: document.getElementById('lessonModeSelect').value,
+        notes: document.getElementById('notesInput').value || null
+      };
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/booking-requests`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to create booking request: ${errorText}`);
+        }
+
+        const bookingRequest = await response.json();
+        
+        // Show success message
+        const form = document.getElementById('scheduleForm');
+        const successMsg = document.createElement('div');
+        successMsg.className = 'success-message';
+        successMsg.textContent = `Lesson request submitted successfully! The tutor will review your request. Booking ID: ${bookingRequest.id}`;
+        form.insertBefore(successMsg, form.firstChild);
+
+        // Reset form after 2 seconds and close modal
+        setTimeout(() => {
+          closeScheduleModal();
+        }, 2000);
+
+      } catch (error) {
+        console.error('Error creating booking request:', error);
+        
+        // Show error message
+        const form = document.getElementById('scheduleForm');
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'error-message';
+        errorMsg.textContent = `Error: ${error.message}`;
+        form.insertBefore(errorMsg, form.firstChild);
+      }
     }
 
     function messageTutor(tutorId) {
@@ -398,6 +584,14 @@
     function showError(message) {
       const tutorsContainer = document.querySelector('.tutors-grid');
       tutorsContainer.innerHTML = `<li class="error-message" style="color: #d32f2f; padding: 20px; text-align: center;">${message}</li>`;
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+      const modal = document.getElementById('scheduleModal');
+      if (event.target === modal) {
+        closeScheduleModal();
+      }
     }
   </script>
 </body>
