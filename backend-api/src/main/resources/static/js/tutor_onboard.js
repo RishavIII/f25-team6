@@ -198,6 +198,8 @@
     const cancellationNote =
       document.getElementById("cancellationNote").value || null;
 
+    const zipcode = document.getElementById("zipcode").value || null;
+
     const latRaw = document.getElementById("latitude").value;
     const lonRaw = document.getElementById("longitude").value;
 
@@ -210,6 +212,7 @@
       inPersonEnabled,
       city,
       state,
+      zipcode,
       timezone,
       cancellationNote,
       latitude: latRaw ? parseFloat(latRaw) : null,
@@ -278,16 +281,21 @@
 
     const zipEl = document.getElementById('zipcode');
     if (zipEl) {
-      zipEl.addEventListener('blur', async (e) => {
-        const zip = e.target.value;
-        if (zip && zip.length == 5) {
+      // Use input event for live auto-fill as user types
+      zipEl.addEventListener('input', async (e) => {
+        const zip = e.target.value.trim();
+        if (zip && zip.length === 5 && /^\d{5}$/.test(zip)) {
           try {
             const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
             if (res.ok) {
               const data = await res.json();
-              document.getElementById('city').value = data.places[0]['place name'];
-              document.getElementById('state').value = data.places[0]['state abbreviation'];
-              // Keeping existing behavior for lat/long placeholders
+              const place = data.places && data.places[0];
+              if (place) {
+                document.getElementById('city').value = place['place name'];
+                document.getElementById('state').value = place['state abbreviation'];
+                document.getElementById('latitude').value = place.latitude;
+                document.getElementById('longitude').value = place.longitude;
+              }
             }
           } catch (err) { console.error('Geo Error', err); }
         }

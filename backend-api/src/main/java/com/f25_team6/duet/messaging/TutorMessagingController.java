@@ -30,25 +30,25 @@ public class TutorMessagingController {
       if (c.getTutorLastReadAt() == null) {
         unread = msgRepo.countByConversationIdAndSender_IdNot(c.getId(), tutorId);
       } else {
-        unread = msgRepo.countByConversationIdAndCreatedAtAfterAndSender_IdNot(c.getId(), c.getTutorLastReadAt(), tutorId);
+        unread = msgRepo.countByConversationIdAndCreatedAtAfterAndSender_IdNot(c.getId(), c.getTutorLastReadAt(),
+            tutorId);
       }
       return ConversationSummary.builder()
           .conversationId(c.getId())
-          .otherUserId(c.getStudent()!=null? c.getStudent().getId(): null)
+          .otherUserId(c.getStudent() != null ? c.getStudent().getId() : null)
           .otherName(otherName)
           .lastMessage(last != null ? last.getBody() : null)
           .lastMessageAt(last != null ? last.getCreatedAt() : null)
           .unreadCount((int) unread)
           .build();
-    }).sorted((a,b) -> {
-      int ua = a.unreadCount == null ? 0 : a.unreadCount;
-      int ub = b.unreadCount == null ? 0 : b.unreadCount;
-      int cmpUnread = Integer.compare(ub, ua);
-      if (cmpUnread != 0) return cmpUnread;
+    }).sorted((a, b) -> {
       OffsetDateTime ad = a.lastMessageAt, bd = b.lastMessageAt;
-      if (ad == null && bd == null) return 0;
-      if (ad == null) return 1;
-      if (bd == null) return -1;
+      if (ad == null && bd == null)
+        return 0;
+      if (ad == null)
+        return 1;
+      if (bd == null)
+        return -1;
       return bd.compareTo(ad);
     }).collect(Collectors.toList());
   }
@@ -61,8 +61,8 @@ public class TutorMessagingController {
 
   @PostMapping("/conversations/{conversationId}/messages")
   public ResponseEntity<MessageDto> send(@PathVariable Long tutorId,
-                                         @PathVariable Long conversationId,
-                                         @RequestBody SendReq req) {
+      @PathVariable Long conversationId,
+      @RequestBody SendReq req) {
     Conversation conv = convRepo.findById(conversationId).orElseThrow();
     User sender = userRepo.findById(tutorId).orElseThrow();
     Message m = Message.builder().conversation(conv).sender(sender).body(req.body).build();
@@ -73,7 +73,7 @@ public class TutorMessagingController {
   }
 
   @PutMapping("/conversations/{conversationId}/read")
-  public ResponseEntity<Void> markRead(@PathVariable Long tutorId, @PathVariable Long conversationId){
+  public ResponseEntity<Void> markRead(@PathVariable Long tutorId, @PathVariable Long conversationId) {
     Conversation conv = convRepo.findById(conversationId).orElseThrow();
     conv.setTutorLastReadAt(OffsetDateTime.now());
     convRepo.save(conv);
@@ -97,7 +97,8 @@ public class TutorMessagingController {
     public Long senderUserId;
     public String body;
     public OffsetDateTime createdAt;
-    public static MessageDto from(Message m){
+
+    public static MessageDto from(Message m) {
       return MessageDto.builder()
           .id(m.getId())
           .conversationId(m.getConversation().getId())
@@ -108,5 +109,7 @@ public class TutorMessagingController {
     }
   }
 
-  public static class SendReq { public String body; }
+  public static class SendReq {
+    public String body;
+  }
 }

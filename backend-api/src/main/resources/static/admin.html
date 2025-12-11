@@ -130,6 +130,154 @@
 
         <div id="msg" style="margin-bottom: 16px; color: #047857; font-weight: 500; min-height: 24px;"></div>
 
+        <div class="controls">
+            <div class="control-group" style="flex: 1 1 100%; max-width: 100%;">
+                <h3>Messaging Utility</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
+                    <label>
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">From Users
+                            (Multi search)</span>
+                        <select id="msgFrom" multiple
+                            style="width: 100%; height: 120px; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></select>
+                    </label>
+                    <label>
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">To Users
+                            (Multi search)</span>
+                        <select id="msgTo" multiple
+                            style="width: 100%; height: 120px; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></select>
+                    </label>
+                </div>
+                <textarea id="msgBody" rows="3" placeholder="Type your message here..."
+                    style="width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;"></textarea>
+                <div style="text-align: right;">
+                    <button id="btnSendMsg" class="btn primary">Send Message</button>
+                </div>
+            </div>
+
+            <div class="control-group" style="flex: 1 1 100%; max-width: 100%;">
+                <h3>Booking Simulator</h3>
+                <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+                    <label style="flex: 1;">
+                        <span
+                            style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Student</span>
+                        <select id="bookStudent"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></select>
+                    </label>
+                    <label style="flex: 1;">
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Tutor</span>
+                        <select id="bookTutor"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></select>
+                    </label>
+                    <label style="flex: 1;">
+                        <span
+                            style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Instrument</span>
+                        <select id="bookInstrument"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></select>
+                    </label>
+                    <label style="flex: 1;">
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Lesson
+                            Date</span>
+                        <input type="date" id="bookDate"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                    </label>
+                    <label style="width: 120px;">
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Time</span>
+                        <input type="time" id="bookTime"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                    </label>
+                    <button id="btnCreateBooking" class="btn primary" style="margin-bottom: 2px;">Request
+                        Lesson</button>
+                </div>
+            </div>
+
+            <div class="control-group" style="flex: 1 1 100%; max-width: 100%;">
+                <h3>Tutor Location Search (3rd Party API Demo)</h3>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 12px;">
+                    Uses <strong>Zippopotamus</strong> API to geocode zipcodes and filter tutors by distance.
+                </p>
+                <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+                    <label style="flex: 1;">
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Search
+                            Zipcode</span>
+                        <input type="text" id="searchZip" placeholder="e.g. 27412"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                    </label>
+                    <label style="width: 140px;">
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Max Distance
+                            (mi)</span>
+                        <input type="number" id="searchRadius" value="25" min="1" max="500"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                    </label>
+                    <button id="btnSearchLocation" class="btn primary" style="margin-bottom: 2px;">Search
+                        Tutors</button>
+                </div>
+                <div id="locationSearchResults" style="margin-top: 16px;"></div>
+            </div>
+
+            <div class="control-group" style="flex: 1 1 100%; max-width: 100%;">
+                <h3>Review Creator</h3>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 12px;">
+                    Create a review from a student to a tutor. Select a completed lesson between them.
+                </p>
+                <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px;">
+                    <label style="flex: 1;">
+                        <span
+                            style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Student</span>
+                        <select id="reviewStudent"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></select>
+                    </label>
+                    <label style="flex: 1;">
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Tutor</span>
+                        <select id="reviewTutor"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></select>
+                    </label>
+                </div>
+                <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px;">
+                    <label style="flex: 2;">
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Completed
+                            Lesson</span>
+                        <select id="reviewLesson"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                            <option value="">-- Select student & tutor first --</option>
+                        </select>
+                    </label>
+                    <label style="width: 120px;">
+                        <span style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px;">Rating</span>
+                        <select id="reviewRating"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                            <option value="5">★★★★★ (5)</option>
+                            <option value="4">★★★★☆ (4)</option>
+                            <option value="3">★★★☆☆ (3)</option>
+                            <option value="2">★★☆☆☆ (2)</option>
+                            <option value="1">★☆☆☆☆ (1)</option>
+                        </select>
+                    </label>
+                </div>
+                <textarea id="reviewText" rows="2" placeholder="Review text (optional)..."
+                    style="width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 6px; border: 1px solid #ccc; font-family: inherit;"></textarea>
+                <div style="text-align: right;">
+                    <button id="btnCreateReview" class="btn primary">Create Review</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 32px;">Pending Booking Requests</h2>
+        <table style="margin-bottom: 48px;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Tutor</th>
+                    <th>Instrument</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="pendingBookingBody">
+            </tbody>
+        </table>
+
+        <h2>User Management</h2>
         <table>
             <thead>
                 <tr>

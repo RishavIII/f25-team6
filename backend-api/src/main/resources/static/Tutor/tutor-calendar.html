@@ -1,56 +1,247 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <link rel="stylesheet" href="../styles.css">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calendar — DUET</title>
-  <meta name="description" content="Lesson calendar for students">
+  <meta name="description" content="Lesson calendar for tutors">
   <script src="/js/common.js"></script>
   <script defer src="/js/tutor_calendar.js"></script>
+  <style>
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .calendar-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .calendar-controls .btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #666;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      background: #e5e5e5;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .cal-day {
+      background: #fff;
+      min-height: 80px;
+      padding: 0.5rem;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.15s;
+    }
+
+    .cal-day:hover {
+      background: #f0f0f0;
+    }
+
+    .cal-day.is-muted {
+      background: #f9f9f9;
+      color: #bbb;
+    }
+
+    .cal-day.is-muted:hover {
+      background: #f5f5f5;
+    }
+
+    .cal-day.today {
+      background: #e8f4ff;
+    }
+
+    .cal-day.today:hover {
+      background: #d8ecff;
+    }
+
+    .cal-day.selected {
+      background: #d0e8ff;
+      box-shadow: inset 0 0 0 2px #4a90d9;
+    }
+
+    .cal-day .num {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .cal-day .badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: #4a90d9;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .cal-day .event-dots {
+      display: flex;
+      gap: 3px;
+      margin-top: 0.3rem;
+      flex-wrap: wrap;
+    }
+
+    .cal-day .event-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4a90d9;
+    }
+
+    .cal-day .event-dot.completed {
+      background: #28a745;
+    }
+
+    .cal-day .event-dot.canceled {
+      background: #dc3545;
+    }
+
+    .day-detail {
+      margin-top: 1.5rem;
+    }
+
+    .day-detail h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .day-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .day-list li {
+      padding: 0.75rem;
+      background: #f9f9f9;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .day-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .day-list .lesson-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .day-list .lesson-time {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .day-list .lesson-meta {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .day-list .lesson-status {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .day-list .lesson-status.scheduled {
+      background: #e8f4ff;
+      color: #4a90d9;
+    }
+
+    .day-list .lesson-status.completed {
+      background: #d4edda;
+      color: #28a745;
+    }
+
+    .day-list .lesson-status.canceled {
+      background: #f8d7da;
+      color: #dc3545;
+    }
+
+    .no-events {
+      color: #888;
+      font-style: italic;
+      text-align: center;
+      padding: 1rem;
+    }
+  </style>
 </head>
+
 <body>
   <!-- Top nav (same as other pages) -->
   <header class="top-nav" role="banner">
     <div class="nav-container">
       <div class="brand">DUET</div>
-      <div class="search" role="search">
-        <form action="search.html" method="get" class="search-inner">
-          <label for="nav-search" class="visually-hidden">Search</label>
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-            <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="2" fill="none"></circle>
-          </svg>
-          <input id="nav-search" type="search" name="q" placeholder="Search" />
-        </form>
-      </div>
+
       <nav class="nav-links" aria-label="Main navigation">
         <a href="tutor_home.html" class="nav-link" aria-label="Home">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-            <path d="M5 21V12h14v9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+            <path d="M5 21V12h14v9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
           </svg>
         </a>
         <a href="tutor-message.html" class="nav-link" aria-label="Messages">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor"
+              stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
           </svg>
         </a>
         <a href="tutor-notifications.html" class="nav-link" aria-label="Notifications">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M15 17H9a3 3 0 0 1-3-3V11a6 6 0 1 1 12 0v3a3 3 0 0 1-3 3z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M15 17H9a3 3 0 0 1-3-3V11a6 6 0 1 1 12 0v3a3 3 0 0 1-3 3z" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
           </svg>
         </a>
         <a href="tutor-calendar.html" class="nav-link" aria-label="Calendar">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <rect x="3" y="5" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="1.6" fill="none"></rect>
-            <path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <rect x="3" y="5" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="1.6" fill="none">
+            </rect>
+            <path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
           </svg>
         </a>
         <a href="tutor_profile.html" class="nav-link" aria-label="Profile">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
             <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.6" fill="none"></circle>
           </svg>
         </a>
@@ -62,56 +253,28 @@
   <main class="profile-page">
     <div class="card center-card">
       <div class="calendar-header">
-        <h1 id="calMonthTitle">Month</h1>
+        <h1 id="calMonthTitle">Loading...</h1>
         <div class="calendar-controls">
-          <a class="btn" href="#">◀</a>
-          <a class="btn" href="#">Today</a>
-          <a class="btn" href="#">▶</a>
-          <div class="toggle">
-            <span class="chip chip-active">Month</span>
-            <span class="chip">Week</span>
-          </div>
+          <button class="btn" id="btnPrev" aria-label="Previous month">◀</button>
+          <button class="btn" id="btnToday">Today</button>
+          <button class="btn" id="btnNext" aria-label="Next month">▶</button>
         </div>
       </div>
 
-      <div class="cal-weekdays small muted">
+      <div class="cal-weekdays small">
         <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
       </div>
 
-      <div class="cal-grid">
-        <!-- leading previous-month days -->
-        <div class="cal-day is-muted"><span class="num">31</span></div>
-        <!-- week 1 -->
-        <div class="cal-day"><span class="num">1</span></div>
-        <div class="cal-day"><span class="num">2</span></div>
-        <div class="cal-day"><span class="num">3</span></div>
-        <div class="cal-day"><span class="num">4</span></div>
-        <div class="cal-day"><span class="num">5</span></div>
-        <div class="cal-day"><span class="num">6</span></div>
-        <!-- week 2 -->
-        <div class="cal-day"><span class="num">7</span></div>
-        <div class="cal-day"><span class="num">8</span></div>
-        <div class="cal-day"><span class="num">9</span><span class="badge">1</span></div>
-        <div class="cal-day"><span class="num">10</span></div>
-        <div class="cal-day"><span class="num">11</span></div>
-        <div class="cal-day today"><span class="num">12</span><span class="badge">1</span></div>
-        <div class="cal-day"><span class="num">13</span></div>
-        <!-- week 3 -->
-        <div class="cal-day"><span class="num">14</span></div>
-        <div class="cal-day"><span class="num">15</span></div>
-        <div class="cal-day"><span class="num">16</span></div>
-        <div class="cal-day"><span class="num">17</span></div>
-        <div class="cal-day"><span class="num">18</span></div>
-        <div class="cal-day"><span class="num">19</span></div>
-        <div class="cal-day"><span class="num">20</span></div>
-        <!-- add more rows as needed for your mock -->
+      <div class="cal-grid" id="calGrid">
+        <!-- Days will be rendered by JavaScript -->
       </div>
 
       <div class="card day-detail">
-        <h2>Sessions — Today</h2>
+        <h2 id="dayDetailTitle">Sessions — Select a day</h2>
         <ul class="day-list" id="dayList"></ul>
       </div>
     </div>
   </main>
 </body>
+
 </html>

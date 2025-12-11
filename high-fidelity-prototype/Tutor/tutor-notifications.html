@@ -1,26 +1,18 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Notifications — DUET</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
+
 <body>
   <header class="top-nav" role="banner">
     <div class="nav-container">
       <div class="brand">DUET</div>
-      <div class="search" role="search">
-        <form action="search.html" method="get" class="search-inner">
-          <label for="nav-search" class="visually-hidden">Search</label>
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" fill="none"></path>
-            <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="2" fill="none"></circle>
-          </svg>
-          <input id="nav-search" type="search" name="q" placeholder="Search" />
-        </form>
-      </div>
+
       <nav class="nav-links" aria-label="Main navigation">
         <a href="tutor_home.html" class="nav-link" aria-label="Home">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -74,31 +66,8 @@
         <span class="muted small">3 unread</span>
       </div>
 
-      <ul class="notifications-list">
-        <li class="notif-item is-unread">
-          <div class="notif-dot" aria-hidden="true"></div>
-          <div class="notif-body">
-            <strong>Lesson confirmed</strong>
-            <p>Your lesson with Alex is confirmed for Tue 4:00pm.</p>
-            <span class="time small muted">2h ago</span>
-          </div>
-        </li>
-        <li class="notif-item">
-          <div class="notif-dot" aria-hidden="true"></div>
-          <div class="notif-body">
-            <strong>New message</strong>
-            <p>Noah sent you a message.</p>
-            <span class="time small muted">Yesterday</span>
-          </div>
-        </li>
-        <li class="notif-item is-unread">
-          <div class="notif-dot" aria-hidden="true"></div>
-          <div class="notif-body">
-            <strong>Payment received</strong>
-            <p>Session on Sep 15 has been paid.</p>
-            <span class="time small muted">2d ago</span>
-          </div>
-        </li>
+      <ul class="notifications-list" id="notifList">
+        <!-- Dynamic Content -->
       </ul>
 
       <div class="actions-row">
@@ -106,5 +75,63 @@
       </div>
     </div>
   </main>
+  <script>
+    const API_BASE = 'http://localhost:8080/api';
+    const uid = localStorage.getItem('userId');
+
+    async function handleBooking(id, status) {
+      if (!confirm('Are you sure you want to ' + status.toLowerCase() + ' this request?')) return;
+      try {
+        const res = await fetch(`${API_BASE}/booking-requests/${id}/${status.toLowerCase()}`, { method: 'POST' });
+        if (res.ok) {
+          loadNotifs(); // reload
+        } else {
+          alert('Action failed');
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadNotifs() {
+      if (!uid) return;
+      try {
+        const res = await fetch(`${API_BASE}/tutors/${uid}/notifications`);
+        if (res.ok) {
+          const list = await res.json();
+          const ul = document.getElementById('notifList');
+          ul.innerHTML = list.map(n => {
+            let actions = '';
+            if (n.type === 'booking') {
+              actions = `
+                <div class="notif-actions" style="margin-top:0.5rem">
+                  <button class="btn small" onclick="handleBooking(${n.id}, 'ACCEPT')">Accept</button>
+                  <button class="btn small secondary" onclick="handleBooking(${n.id}, 'DECLINE')">Decline</button>
+                </div>
+              `;
+            } else if (n.type === 'message') {
+              actions = `
+                <div class="notif-actions" style="margin-top:0.5rem">
+                  <a class="btn small secondary" href="tutor-message.html?convId=${n.conversationId}">View Message</a>
+                </div>
+              `;
+            }
+
+            return `
+            <li class="notif-item ${!n.read ? 'is-unread' : ''}">
+              <div class="notif-dot" aria-hidden="true"></div>
+              <div class="notif-body">
+                <strong>${n.title}</strong>
+                <p>${n.body || ''}</p>
+                <span class="time small muted">${new Date(n.createdAt).toLocaleString()}</span>
+                ${actions}
+              </div>
+            </li>
+            `;
+          }).join('');
+        }
+      } catch (e) { console.error(e); }
+    }
+    loadNotifs();
+  </script>
 </body>
+
 </html>

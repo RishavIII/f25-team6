@@ -29,3 +29,14 @@
     9. Tutor Metrics - Lightweight dashboard: upcoming sessions, last 30-day earnings, response time, acceptance rate.
     10. Proof-of-Session: Generate dynamic QR codes at the start and end of a session. 
 
+## 3rd Party API Integration
+> **Zippopotamus** (https://api.zippopotam.us/)  
+> Used to geocode US zipcodes for location-based features:
+> - Automatic city/state population during tutor profile creation
+> - Distance calculation for tutor search and filtering
+> - Location validation during onboarding
+
+## Tech Stack
+- **Backend**: Java 21, Spring Boot, PostgreSQL
+- **Frontend**: HTML, CSS, JavaScript
+- **API**: RESTful API with JSON responses

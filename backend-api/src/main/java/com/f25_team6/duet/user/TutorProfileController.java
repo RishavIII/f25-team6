@@ -20,6 +20,8 @@ public class TutorProfileController {
 
   private final TutorProfileRepository repo;
   private final UserRepository userRepo;
+  private final com.f25_team6.duet.catalog.InstrumentRepository instrumentRepo;
+  private final com.f25_team6.duet.catalog.TutorInstrumentRepository tutorInstrumentRepo;
 
   @PostMapping("/{userId}")
   public ResponseEntity<TutorProfile> create(@PathVariable Long userId, @RequestBody TutorProfile in) {
@@ -64,6 +66,31 @@ public class TutorProfileController {
       cur.setTimezone(in.getTimezone());
     if (in.getCancellationNote() != null)
       cur.setCancellationNote(in.getCancellationNote());
+    if (in.getZipcode() != null)
+      cur.setZipcode(in.getZipcode());
+
+    if (in.getInstrumentNames() != null) {
+      cur.getInstruments().clear();
+      repo.save(cur);
+
+      for (String name : in.getInstrumentNames()) {
+        if (name == null || name.isBlank())
+          continue;
+        String cleanName = name.trim();
+        com.f25_team6.duet.catalog.Instrument inst = instrumentRepo.findByName(cleanName)
+            .orElseGet(
+                () -> instrumentRepo.save(com.f25_team6.duet.catalog.Instrument.builder().name(cleanName).build()));
+
+        com.f25_team6.duet.catalog.TutorInstrument ti = com.f25_team6.duet.catalog.TutorInstrument.builder()
+            .tutor(cur)
+            .instrument(inst)
+            .minLevel(com.f25_team6.duet.common.enums.Level.BEGINNER)
+            .maxLevel(com.f25_team6.duet.common.enums.Level.EXPERT)
+            .build();
+        cur.getInstruments().add(ti);
+      }
+    }
+
     repo.save(cur);
     return ResponseEntity.ok(cur);
   }

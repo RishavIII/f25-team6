@@ -1,6 +1,9 @@
 (function () {
   let msg;
   let edit = {};
+  let allInstruments = []; // All available instruments
+  let currentTutorInstruments = []; // Current tutor's instruments
+  const levels = ["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"];
 
   function populateView(profile, tutorInstruments) {
     const photo =
@@ -49,15 +52,7 @@
     if (profile.state) locParts.push(profile.state);
     document.getElementById("viewLocation").textContent = locParts.join(", ");
 
-    let latLonText = "";
-    if (profile.latitude != null || profile.longitude != null) {
-      const lat =
-        profile.latitude != null ? profile.latitude.toFixed(6) : "—";
-      const lon =
-        profile.longitude != null ? profile.longitude.toFixed(6) : "—";
-      latLonText = `${lat}, ${lon}`;
-    }
-    document.getElementById("viewLatLon").textContent = latLonText;
+    document.getElementById("viewZipcode").textContent = profile.zipcode || "";
 
     document.getElementById("viewTimezone").textContent =
       profile.timezone || "";
@@ -69,9 +64,7 @@
     try {
       const all = await getTutorInstruments();
       return all.filter(
-        (ti) =>
-          ti.tutor &&
-          (ti.tutor.userId === Number(userId) || ti.tutor.userId === userId)
+        (ti) => (ti.tutorId === Number(userId) || ti.tutorId === userId)
       );
     } catch (e) {
       console.error(e);
@@ -86,10 +79,13 @@
     if (msg) msg.textContent = "";
 
     try {
+      // Load all instruments for the dropdown
+      allInstruments = await getInstruments();
+
       const profile = await getTutorProfile(uid);
-      const tutorInstruments = await loadTutorInstrumentsForUser(uid);
-      populateView(profile, tutorInstruments);
-      populateEdit(profile);
+      currentTutorInstruments = await loadTutorInstrumentsForUser(uid);
+      populateView(profile, currentTutorInstruments);
+      populateEdit(profile, currentTutorInstruments);
     } catch (err) {
       if (err.status === 404) {
         if (msg) msg.textContent =
@@ -104,8 +100,148 @@
     }
   }
 
-  function populateEdit(p) {
-    edit.photoPreview = document.getElementById('editPhotoPreview');
+  function makeLevelSelect(defaultValue, dataRole) {
+    const sel = document.createElement("select");
+    sel.dataset.role = dataRole;
+
+    levels.forEach((lvl) => {
+      const opt = document.createElement("option");
+      opt.value = lvl;
+      opt.textContent = lvl.charAt(0) + lvl.slice(1).toLowerCase();
+      sel.appendChild(opt);
+    });
+
+    if (defaultValue && levels.includes(defaultValue)) {
+      sel.value = defaultValue;
+    }
+    return sel;
+  }
+
+  function createInstrumentRow(existingTi = null) {
+    const container = document.getElementById('editInstrumentRows');
+    if (!container) return;
+    if (!allInstruments || allInstruments.length === 0) {
+      if (msg) msg.textContent = "Instruments are loading...";
+      return;
+    }
+
+    const row = document.createElement("div");
+    row.className = "instrument-row";
+    if (existingTi && existingTi.id) {
+      row.dataset.existingId = existingTi.id;
+    }
+
+    // Instrument wrapper
+    const instWrapper = document.createElement("div");
+    instWrapper.style.flex = "1 1 180px";
+
+    const instLabel = document.createElement("div");
+    instLabel.textContent = "Instrument";
+    instLabel.style.fontSize = "0.85rem";
+    instLabel.style.color = "#6b7280";
+    instLabel.style.marginBottom = "4px";
+
+    const instSelect = document.createElement("select");
+    instSelect.style.width = "100%";
+    instSelect.dataset.role = "instrument";
+
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Select instrument";
+    placeholder.disabled = true;
+    if (!existingTi) placeholder.selected = true;
+    instSelect.appendChild(placeholder);
+
+    allInstruments.forEach((inst) => {
+      const opt = document.createElement("option");
+      opt.value = inst.id;
+      opt.textContent = inst.name;
+      if (existingTi && existingTi.instrument && existingTi.instrument.id === inst.id) {
+        opt.selected = true;
+      }
+      instSelect.appendChild(opt);
+    });
+
+    instWrapper.appendChild(instLabel);
+    instWrapper.appendChild(instSelect);
+
+    // Levels wrapper
+    const levelsWrapper = document.createElement("div");
+    levelsWrapper.style.display = "flex";
+    levelsWrapper.style.flex = "1 1 260px";
+    levelsWrapper.style.gap = "8px";
+    levelsWrapper.style.alignItems = "center";
+
+    const minWrapper = document.createElement("div");
+    minWrapper.style.flex = "1";
+    const minLabel = document.createElement("div");
+    minLabel.textContent = "Min level";
+    minLabel.style.fontSize = "0.85rem";
+    minLabel.style.color = "#6b7280";
+    minWrapper.appendChild(minLabel);
+    const minSelect = makeLevelSelect(existingTi ? existingTi.minLevel : "BEGINNER", "minLevel");
+    minSelect.style.width = "100%";
+    minWrapper.appendChild(minSelect);
+
+    const maxWrapper = document.createElement("div");
+    maxWrapper.style.flex = "1";
+    const maxLabel = document.createElement("div");
+    maxLabel.textContent = "Max level";
+    maxLabel.style.fontSize = "0.85rem";
+    maxLabel.style.color = "#6b7280";
+    maxWrapper.appendChild(maxLabel);
+    const maxSelect = makeLevelSelect(existingTi ? existingTi.maxLevel : "EXPERT", "maxLevel");
+    maxSelect.style.width = "100%";
+    maxWrapper.appendChild(maxSelect);
+
+    levelsWrapper.appendChild(minWrapper);
+    levelsWrapper.appendChild(maxWrapper);
+
+    // Remove button
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.textContent = "Remove";
+    removeBtn.className = "remove-btn";
+    removeBtn.addEventListener("click", () => row.remove());
+
+    row.appendChild(instWrapper);
+    row.appendChild(levelsWrapper);
+    row.appendChild(removeBtn);
+
+    container.appendChild(row);
+  }
+
+  function populateInstrumentRows(tutorInstruments) {
+    const container = document.getElementById('editInstrumentRows');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (tutorInstruments && tutorInstruments.length > 0) {
+      tutorInstruments.forEach(ti => createInstrumentRow(ti));
+    }
+  }
+
+  function collectInstrumentSelections() {
+    const selections = [];
+    document.querySelectorAll("#editInstrumentRows .instrument-row").forEach((row) => {
+      const instSelect = row.querySelector("select[data-role='instrument']");
+      const minSelect = row.querySelector("select[data-role='minLevel']");
+      const maxSelect = row.querySelector("select[data-role='maxLevel']");
+      if (!instSelect) return;
+      const instId = instSelect.value;
+      if (!instId) return;
+      const existingId = row.dataset.existingId ? parseInt(row.dataset.existingId, 10) : null;
+      selections.push({
+        existingId,
+        instrumentId: parseInt(instId, 10),
+        minLevel: (minSelect && minSelect.value) || "BEGINNER",
+        maxLevel: (maxSelect && maxSelect.value) || "EXPERT",
+      });
+    });
+    return selections;
+  }
+
+  function populateEdit(p, tutorInstruments) {
     edit.photoInput = document.getElementById('editPhoto');
     edit.bio = document.getElementById('editBio');
     edit.hourly = document.getElementById('editHourly');
@@ -119,18 +255,21 @@
     edit.tz = document.getElementById('editTimezone');
     edit.cancel = document.getElementById('editCancel');
 
-    if (!edit.photoPreview) return;
-    edit.photoPreview.src = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : '/assets/empty-pfp.svg';
-    edit.bio.value = p.bio || '';
-    edit.hourly.value = p.hourlyRateCents != null ? (p.hourlyRateCents / 100).toFixed(2) : '';
-    edit.online.checked = !!p.onlineEnabled;
-    edit.inPerson.checked = !!p.inPersonEnabled;
-    edit.city.value = p.city || '';
-    edit.state.value = p.state || '';
-    edit.tz.value = p.timezone || '';
-    edit.cancel.value = p.cancellationNote || '';
-    edit.lat.value = p.latitude != null ? p.latitude : '';
-    edit.lon.value = p.longitude != null ? p.longitude : '';
+    // Populate text fields
+    if (edit.bio) edit.bio.value = p.bio || '';
+    if (edit.hourly) edit.hourly.value = p.hourlyRateCents != null ? (p.hourlyRateCents / 100).toFixed(2) : '';
+    if (edit.online) edit.online.checked = !!p.onlineEnabled;
+    if (edit.inPerson) edit.inPerson.checked = !!p.inPersonEnabled;
+    if (edit.city) edit.city.value = p.city || '';
+    if (edit.state) edit.state.value = p.state || '';
+    if (edit.tz) edit.tz.value = p.timezone || '';
+    if (edit.cancel) edit.cancel.value = p.cancellationNote || '';
+    if (edit.zip) edit.zip.value = p.zipcode || '';
+    if (edit.lat) edit.lat.value = p.latitude != null ? p.latitude : '';
+    if (edit.lon) edit.lon.value = p.longitude != null ? p.longitude : '';
+
+    // Populate instrument rows
+    populateInstrumentRows(tutorInstruments);
   }
 
   async function uploadEditPhoto() {
@@ -141,7 +280,6 @@
     const res = await fetch(`/api/tutor-profiles/${encodeURIComponent(uid)}/photo`, { method: 'POST', body: fd });
     if (!res.ok) { const t = await res.text(); throw new Error(`Upload failed: ${res.status} ${t}`); }
     const data = await res.json();
-    if (edit.photoPreview) edit.photoPreview.src = data.photoUrl + '?t=' + new Date().getTime();
     const previewOnView = document.getElementById('viewPhoto');
     if (previewOnView) previewOnView.src = data.photoUrl + '?t=' + new Date().getTime();
     return data.photoUrl;
@@ -155,23 +293,82 @@
     return { city: place['place name'], state: place['state abbreviation'], lat: parseFloat(place.latitude), lon: parseFloat(place.longitude) };
   }
 
+  async function saveInstruments(uid, selections) {
+    // Get current tutor instruments
+    const current = await loadTutorInstrumentsForUser(uid);
+    const currentIds = current.map(ti => ti.id);
+    const selectedExistingIds = selections.filter(s => s.existingId).map(s => s.existingId);
+
+    // Delete instruments that were removed
+    for (const ti of current) {
+      if (!selectedExistingIds.includes(ti.id)) {
+        await fetch(`/api/tutor-instruments/${ti.id}`, { method: 'DELETE' });
+      }
+    }
+
+    // Create new instruments
+    for (const sel of selections) {
+      if (!sel.existingId) {
+        await createTutorInstrument({
+          tutorUserId: Number(uid),
+          instrumentId: sel.instrumentId,
+          minLevel: sel.minLevel,
+          maxLevel: sel.maxLevel,
+        });
+      }
+    }
+  }
+
   function bindEdit() {
     const btnOpen = document.getElementById('editOpenBtn');
-    const card = document.getElementById('editCard');
-    const form = document.getElementById('editForm');
+    const form = document.getElementById('profileForm');
     const btnCancel = document.getElementById('editCancelBtn');
-    if (btnOpen && card) {
-      btnOpen.addEventListener('click', () => { card.style.display = 'block'; });
+    const addInstrumentBtn = document.getElementById('addInstrumentBtn');
+
+    if (btnOpen && form) {
+      btnOpen.addEventListener('click', () => { form.classList.add('editing'); });
     }
-    if (btnCancel && card) { btnCancel.addEventListener('click', () => { card.style.display = 'none'; }); }
-    if (edit.photoInput) { edit.photoInput.addEventListener('change', async () => { try { await uploadEditPhoto(); } catch (e) { if (msg) msg.textContent = e.message; } }); }
+    if (btnCancel && form) {
+      btnCancel.addEventListener('click', async () => {
+        form.classList.remove('editing');
+        // Re-populate edit fields with current data to reset changes
+        const uid = requireUserId();
+        if (uid) {
+          try {
+            const profile = await getTutorProfile(uid);
+            currentTutorInstruments = await loadTutorInstrumentsForUser(uid);
+            populateEdit(profile, currentTutorInstruments);
+          } catch (e) { console.error(e); }
+        }
+      });
+    }
+    if (addInstrumentBtn) {
+      addInstrumentBtn.addEventListener('click', () => createInstrumentRow());
+    }
+    const photoInput = document.getElementById('editPhoto');
+    if (photoInput) {
+      photoInput.addEventListener('change', () => {
+        // Show local preview immediately (don't upload yet)
+        const f = photoInput.files && photoInput.files[0];
+        if (f) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const viewPhoto = document.getElementById('viewPhoto');
+            if (viewPhoto) viewPhoto.src = e.target.result;
+          };
+          reader.readAsDataURL(f);
+        }
+      });
+    }
     if (edit.zip) {
-      edit.zip.addEventListener('blur', async () => {
-        const z = (edit.zip.value || '').trim(); if (!z) return;
-        try {
-          const g = await geocodeZip(z);
-          edit.city.value = g.city; edit.state.value = g.state; edit.lat.value = g.lat; edit.lon.value = g.lon;
-        } catch (e) { if (msg) msg.textContent = 'Invalid zipcode'; }
+      edit.zip.addEventListener('input', async () => {
+        const z = (edit.zip.value || '').trim();
+        if (z && z.length === 5 && /^\d{5}$/.test(z)) {
+          try {
+            const g = await geocodeZip(z);
+            edit.city.value = g.city; edit.state.value = g.state; edit.lat.value = g.lat; edit.lon.value = g.lon;
+          } catch (e) { /* ignore invalid zip */ }
+        }
       });
     }
     if (form) {
@@ -183,6 +380,8 @@
           if (edit.photoInput && edit.photoInput.files && edit.photoInput.files[0]) {
             await uploadEditPhoto();
           }
+
+          // Save profile
           const payload = {
             bio: edit.bio.value || null,
             hourlyRateCents: edit.hourly.value ? Math.round(parseFloat(edit.hourly.value) * 100) : null,
@@ -190,6 +389,7 @@
             inPersonEnabled: !!edit.inPerson.checked,
             city: edit.city.value || null,
             state: edit.state.value || null,
+            zipcode: edit.zip.value || null,
             timezone: edit.tz.value || null,
             cancellationNote: edit.cancel.value || null,
             latitude: edit.lat.value ? parseFloat(edit.lat.value) : null,
@@ -198,9 +398,16 @@
           const res = await fetch(`/api/tutor-profiles/${encodeURIComponent(uid)}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
           if (!res.ok) { const t = await res.text(); throw new Error(`Save failed: ${res.status} ${t}`); }
           const updated = await res.json();
-          populateView(updated, []);
-          populateEdit(updated);
-          const card = document.getElementById('editCard'); if (card) card.style.display = 'none';
+
+          // Save instruments
+          const instrumentSelections = collectInstrumentSelections();
+          await saveInstruments(uid, instrumentSelections);
+
+          // Reload and display
+          currentTutorInstruments = await loadTutorInstrumentsForUser(uid);
+          populateView(updated, currentTutorInstruments);
+          populateEdit(updated, currentTutorInstruments);
+          form.classList.remove('editing');
         } catch (e) { console.error(e); if (msg) msg.textContent = e.message || 'Save failed'; }
       });
     }
