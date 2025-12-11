@@ -83,7 +83,22 @@
         </div>
 
         <div class="col-right">
-          
+          <section class="card" aria-label="Location Filter">
+            <h3>Find Nearest Tutors</h3>
+            <div style="margin-bottom: 10px;">
+              <label for="student-zip" style="display: block; margin-bottom: 5px; font-weight: 500;">Enter Zipcode</label>
+              <input type="text" id="student-zip" placeholder="e.g. 27412" 
+                style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ddd; font-size: 14px;" />
+            </div>
+            <button class="btn primary" id="apply-location" style="width: 100%;">Find Nearest</button>
+          </section>
+
+          <section class="card" aria-labelledby="upcoming-lessons-title">
+            <h2 id="upcoming-lessons-title">Upcoming Lessons</h2>
+            <ul id="upcomingLessonsList" style="list-style: none; padding: 0;">
+              <li style="padding: 10px; color: #999;">Loading lessons...</li>
+            </ul>
+          </section>
 
           <section class="card stats" aria-label="Student stats">
             <div class="stat-grid">
@@ -271,7 +286,10 @@
       instrument: null,
       levels: [],
       availability: [],
-      priceRange: null
+      priceRange: null,
+      zip: null,
+      zipLat: null,
+      zipLon: null
     };
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -287,6 +305,7 @@
       
       fetchTutors();
       fetchInstruments();
+      fetchUpcomingLessons();
       setupFilterListeners();
       setMinDateTime();
       
@@ -481,6 +500,49 @@
           applyFilters();
         });
       });
+
+      // Setup location filter button
+      const btnLoc = document.getElementById('apply-location');
+      if (btnLoc) {
+        btnLoc.addEventListener('click', async () => {
+          const zip = (document.getElementById('student-zip')?.value || '').trim();
+          if (!zip) {
+            alert('Please enter a zipcode');
+            return;
+          }
+          try {
+            const {lat, lon} = await geocodeZip(zip);
+            filters.zip = zip;
+            filters.zipLat = lat;
+            filters.zipLon = lon;
+            applyFilters();
+          } catch(e) {
+            alert('Could not resolve zipcode. Please check and try again.');
+          }
+        });
+      }
+    }
+
+    async function geocodeZip(zip) {
+      const res = await fetch(`https://api.zippopotam.us/us/${encodeURIComponent(zip)}`);
+      if (!res.ok) throw new Error('Invalid zipcode');
+      const data = await res.json();
+      const place = data.places && data.places[0];
+      return { lat: parseFloat(place.latitude), lon: parseFloat(place.longitude) };
+    }
+
+    function toRad(x) {
+      return x * Math.PI / 180;
+    }
+
+    function haversine(lat1, lon1, lat2, lon2) {
+      const R = 3958.8; // Earth radius in miles
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      return 2 * R * Math.asin(Math.sqrt(a));
     }
 
     function applyFilters() {
@@ -495,6 +557,15 @@
         return true;
       });
 
+      // Sort by distance if zipcode filter is applied
+      if (filters.zipLat != null && filters.zipLon != null) {
+        filteredTutors = filteredTutors.map(t => {
+          const hasGeo = t.latitude != null && t.longitude != null;
+          const dist = hasGeo ? haversine(filters.zipLat, filters.zipLon, t.latitude, t.longitude) : Number.POSITIVE_INFINITY;
+          return {...t, _distanceMi: dist};
+        }).sort((a, b) => (a._distanceMi || Infinity) - (b._distanceMi || Infinity));
+      }
+
       renderTutors();
       updateStats();
       updateFooter();
@@ -507,6 +578,7 @@
       if (filters.instrument) activeFilters.push(filters.instrument);
       if (filters.levels.length > 0) activeFilters.push(...filters.levels);
       if (filters.priceRange) activeFilters.push(filters.priceRange);
+      if (filters.zip) activeFilters.push(`ZIP ${filters.zip}`);
       
       if (activeFilters.length === 0) {
         footer.textContent = 'Tip: Use filters to find tutors that match your learning style and goals.';
@@ -595,6 +667,65 @@
     function showError(message) {
       const tutorsContainer = document.querySelector('.tutors-grid');
       tutorsContainer.innerHTML = `<li class="error-message" style="color: #d32f2f; padding: 20px; text-align: center;">${message}</li>`;
+    }
+
+    async function fetchUpcomingLessons() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/lessons`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const allLessons = await response.json();
+        
+        // Filter to only show lessons where current user is the student
+        const myLessons = allLessons.filter(lesson => 
+          lesson.student.id === parseInt(currentUserId)
+        );
+
+        // Filter for upcoming lessons (future dates only)
+        const now = new Date();
+        const upcomingLessons = myLessons
+          .filter(lesson => new Date(lesson.startUtc) > now)
+          .sort((a, b) => new Date(a.startUtc) - new Date(b.startUtc))
+          .slice(0, 5); // Show only next 5 lessons
+
+        renderUpcomingLessons(upcomingLessons);
+      } catch (error) {
+        console.error('Error fetching upcoming lessons:', error);
+        document.getElementById('upcomingLessonsList').innerHTML = 
+          '<li style="padding: 10px; color: #d32f2f;">Unable to load lessons.</li>';
+      }
+    }
+
+    function renderUpcomingLessons(lessons) {
+      const listContainer = document.getElementById('upcomingLessonsList');
+      
+      if (lessons.length === 0) {
+        listContainer.innerHTML = '<li style="padding: 10px; color: #999;">No upcoming lessons scheduled.</li>';
+        return;
+      }
+
+      listContainer.innerHTML = lessons.map(lesson => {
+        const start = new Date(lesson.startUtc);
+        const end = new Date(lesson.endUtc);
+        const date = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const startTime = start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        const endTime = end.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        const tutor = lesson.tutor.name;
+        const mode = lesson.lessonMode === 'ONLINE' ? '🌐 Online' : '📍 In-Person';
+        
+        return `
+          <li style="padding: 12px; border-bottom: 1px solid #eee;">
+            <div style="font-weight: 500; margin-bottom: 4px;">${tutor}</div>
+            <div style="font-size: 0.9em; color: #666;">
+              ${date} • ${startTime}–${endTime}
+            </div>
+            <div style="font-size: 0.85em; color: #888; margin-top: 4px;">
+              ${mode}
+            </div>
+          </li>
+        `;
+      }).join('');
     }
 
     function handleSearch(event) {
