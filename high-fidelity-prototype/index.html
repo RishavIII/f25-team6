@@ -1,227 +1,234 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Duet — Music student & tutor finder</title>
-    <meta name="description" content="Find music students and tutors — Duet">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <script>
-       
-      window._openModal = function(id){
-        if(window._modals && window._modals[id] && window._modals[id].open) window._modals[id].open();
-      };
-    </script>
-       
-      <div id="bg-wrap" aria-hidden="true">
-        <iframe id="bg-iframe" src="https://www.youtube.com/embed/IZx6_bCvVNo?autoplay=1&controls=0&loop=1&playlist=IZx6_bCvVNo&mute=1&rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-      </div>
-      <script>
-       
-      (function(){
-        const f = document.getElementById('bg-iframe');
-        if(!f) return;
-        f.style.opacity = '0';
-        f.addEventListener('load', ()=>{ setTimeout(()=>{ f.style.opacity = '1'; }, 120); });
-         
-        setTimeout(()=>{ if(getComputedStyle(f).opacity === '0') f.style.opacity = '1'; }, 2000);
-      })();
-      </script>
-    <header class="top-nav simple" role="banner">
-      <div class="nav-container">
-        <div class="brand">DUET</div>
-        <nav class="simple-nav" aria-label="Top navigation">
-          <a href="#about" id="about-link" class="btn-link">About</a>
-          <button id="login-btn" class="btn-outline" type="button" onclick="(window._modals && window._modals['login-modal'] && window._modals['login-modal'].open && window._modals['login-modal'].open())">Log in</button>
-          <button id="signup-btn" class="btn-primary" type="button" onclick="(window._modals && window._modals['signup-modal'] && window._modals['signup-modal'].open && window._modals['signup-modal'].open())">Sign up</button>
-        </nav>
-      </div>
-    </header>
 
-    <main>
-      <section class="hero" role="region" aria-labelledby="hero-title">
-        <div class="hero-inner">
-          <article class="hero-card" aria-label="Duet introduction">
-            <div class="card-decor" aria-hidden="true"></div>
-            <h1 id="hero-title" class="hero-title">DUET</h1>
-            <p class="hero-sub">A music student & tutor finder: connect, practice, and perform together.</p>
-            <div class="hero-ctas">
-              <button id="hero-signup" class="btn-primary large" onclick="(window._modals && window._modals['signup-modal'] && window._modals['signup-modal'].open && window._modals['signup-modal'].open())">Get started</button>
-              <button id="hero-login" class="btn-outline large" onclick="(window._modals && window._modals['login-modal'] && window._modals['login-modal'].open && window._modals['login-modal'].open())">I already have an account</button>
-            </div>
-          </article>
-        </div>
-      </section>
-    </main>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Duet — Music student & tutor finder</title>
+  <meta name="description" content="Find music students and tutors — Duet">
+  <link rel="stylesheet" href="styles.css">
+</head>
 
-   
+<body>
+  <script>
+
+    window._openModal = function (id) {
+      if (window._modals && window._modals[id] && window._modals[id].open) window._modals[id].open();
+    };
+  </script>
+
+  <div id="bg-wrap" aria-hidden="true">
+    <iframe id="bg-iframe"
+      src="https://www.youtube.com/embed/IZx6_bCvVNo?autoplay=1&controls=0&loop=1&playlist=IZx6_bCvVNo&mute=1&rel=0&modestbranding=1&playsinline=1"
+      frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
+  <script>
+
+    (function () {
+      const f = document.getElementById('bg-iframe');
+      if (!f) return;
+      f.style.opacity = '0';
+      f.addEventListener('load', () => { setTimeout(() => { f.style.opacity = '1'; }, 120); });
+
+      setTimeout(() => { if (getComputedStyle(f).opacity === '0') f.style.opacity = '1'; }, 2000);
+    })();
+  </script>
+  <header class="top-nav simple" role="banner">
+    <div class="nav-container">
+      <div class="brand">DUET</div>
+      <nav class="simple-nav" aria-label="Top navigation">
+        <a href="#about" id="about-link" class="btn-link">About</a>
+        <button id="login-btn" class="btn-outline" type="button"
+          onclick="(window._modals && window._modals['login-modal'] && window._modals['login-modal'].open && window._modals['login-modal'].open())">Log
+          in</button>
+        <button id="signup-btn" class="btn-primary" type="button"
+          onclick="(window._modals && window._modals['signup-modal'] && window._modals['signup-modal'].open && window._modals['signup-modal'].open())">Sign
+          up</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" role="region" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <article class="hero-card" aria-label="Duet introduction">
+          <div class="card-decor" aria-hidden="true"></div>
+          <h1 id="hero-title" class="hero-title">DUET</h1>
+          <p class="hero-sub">A music student & tutor finder: connect, practice, and perform together.</p>
+          <div class="hero-ctas">
+            <button id="hero-signup" class="btn-primary large"
+              onclick="(window._modals && window._modals['signup-modal'] && window._modals['signup-modal'].open && window._modals['signup-modal'].open())">Get
+              started</button>
+            <button id="hero-login" class="btn-outline large"
+              onclick="(window._modals && window._modals['login-modal'] && window._modals['login-modal'].open && window._modals['login-modal'].open())">I
+              already have an account</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+
   <div id="about-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="about-title" aria-hidden="true">
     <div class="modal-backdrop" data-dismiss="backdrop"></div>
     <div class="modal-card" role="document">
       <button class="modal-close" aria-label="Close about dialog">✕</button>
       <h2 id="about-title">About Duet</h2>
       <div class="modal-body">
-        <p>Duet helps music students and tutors find each other for lessons, practice sessions, and performances. Create profiles, list skills and availability, and connect securely.</p>
+        <p>Duet helps music students and tutors find each other for lessons, practice sessions, and performances. Create
+          profiles, list skills and availability, and connect securely.</p>
         <p>Built with a clean, accessible UI and a focus on musical collaboration.</p>
       </div>
     </div>
 
+  </div>
+
+
+  <div id="login-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title" aria-hidden="true">
+    <div class="modal-backdrop" data-dismiss="backdrop"></div>
+    <div class="modal-card" role="document">
+      <button class="modal-close" aria-label="Close login dialog">✕</button>
+      <h2 id="login-title">Log in</h2>
+      <div class="modal-body">
+        <form id="login-form">
+          <label>Email<br><input type="email" name="email" required></label>
+          <label>Password<br><input type="password" name="password" required></label>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+            <button type="submit" class="btn-primary">Sign in</button>
+            <button type="button" class="btn-link" id="forgot">Forgot?</button>
+          </div>
+        </form>
+
+      </div>
     </div>
+  </div>
 
-       
-      <div id="login-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title" aria-hidden="true">
-        <div class="modal-backdrop" data-dismiss="backdrop"></div>
-        <div class="modal-card" role="document">
-          <button class="modal-close" aria-label="Close login dialog">✕</button>
-          <h2 id="login-title">Log in</h2>
-          <div class="modal-body">
-            <form id="login-form">
-              <label>Email<br><input type="email" name="email" required></label>
-              <label>Password<br><input type="password" name="password" required></label>
-              <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-                <button type="submit" class="btn-primary">Sign in</button>
-                <button type="button" class="btn-link" id="forgot">Forgot?</button>
-              </div>
-            </form>
-            <hr style="margin:16px 0">
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <button class="btn-outline oauth google" data-provider="google">Continue with Google</button>
-              <button class="btn-outline oauth apple" data-provider="apple">Continue with Apple</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-       
-      <div id="signup-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="signup-title" aria-hidden="true">
-        <div class="modal-backdrop" data-dismiss="backdrop"></div>
-        <div class="modal-card" role="document">
-          <button class="modal-close" aria-label="Close signup dialog">✕</button>
-          <h2 id="signup-title">Sign up</h2>
-          <div class="modal-body">
-            <form id="signup-form">
-              <label>Full name<br><input type="text" name="name" required></label>
-              <label>Email<br><input type="email" name="email" required></label>
-              <label>Password<br><input type="password" name="password" required></label>
-              <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-                <button type="submit" class="btn-primary">Create account</button>
-              </div>
-            </form>
-            <hr style="margin:16px 0">
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <button class="btn-outline oauth google" data-provider="google">Sign up with Google</button>
-              <button class="btn-outline oauth apple" data-provider="apple">Sign up with Apple</button>
-            </div>
+  <div id="signup-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="signup-title"
+    aria-hidden="true">
+    <div class="modal-backdrop" data-dismiss="backdrop"></div>
+    <div class="modal-card" role="document">
+      <button class="modal-close" aria-label="Close signup dialog">✕</button>
+      <h2 id="signup-title">Sign up</h2>
+      <div class="modal-body">
+        <form id="signup-form">
+          <label>Full name<br><input type="text" name="name" required></label>
+          <label>Email<br><input type="email" name="email" required></label>
+          <label>Password<br><input type="password" name="password" required></label>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+            <button type="submit" class="btn-primary">Create account</button>
           </div>
-        </div>
+        </form>
+
       </div>
+    </div>
+  </div>
   </div>
 
   <script>
-   
-  (function(){
-    function initModals(){
-      window._modals = window._modals || {};
-      function makeModal(id){
-      const modal = document.getElementById(id);
-      if(!modal) return null;
-      const closeBtn = modal.querySelector('.modal-close');
-      const backdrop = modal.querySelector('[data-dismiss]');
-      let lastFocused = null;
-      function onKey(e){
-        if(e.key === 'Escape') close();
-        if(e.key === 'Tab'){
-          const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-          if(focusable.length === 0) return;
-          const first = focusable[0];
-          const last = focusable[focusable.length-1];
-          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+
+    (function () {
+      function initModals() {
+        window._modals = window._modals || {};
+        function makeModal(id) {
+          const modal = document.getElementById(id);
+          if (!modal) return null;
+          const closeBtn = modal.querySelector('.modal-close');
+          const backdrop = modal.querySelector('[data-dismiss]');
+          let lastFocused = null;
+          function onKey(e) {
+            if (e.key === 'Escape') close();
+            if (e.key === 'Tab') {
+              const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+              if (focusable.length === 0) return;
+              const first = focusable[0];
+              const last = focusable[focusable.length - 1];
+              if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+              else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+            }
+          }
+          function open() {
+            lastFocused = document.activeElement;
+            modal.setAttribute('aria-hidden', 'false');
+            modal.classList.add('open');
+            if (closeBtn) closeBtn.focus();
+            document.addEventListener('keydown', onKey);
+          }
+          function close() {
+            modal.setAttribute('aria-hidden', 'true');
+            modal.classList.remove('open');
+            document.removeEventListener('keydown', onKey);
+            if (lastFocused && lastFocused.focus) lastFocused.focus();
+          }
+          if (closeBtn) closeBtn.addEventListener('click', close);
+          if (backdrop) backdrop.addEventListener('click', close);
+          const api = { open, close, modal };
+          window._modals[id] = api;
+          return api;
+        }
+
+
+        const about = makeModal('about-modal');
+        const aboutLink = document.getElementById('about-link');
+        console.debug('about modal', !!about, 'aboutLink', !!aboutLink);
+        if (about && aboutLink) aboutLink.addEventListener('click', function (e) { e.preventDefault(); about.open(); });
+
+
+        const login = makeModal('login-modal');
+        const signup = makeModal('signup-modal');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const heroLogin = document.getElementById('hero-login');
+        const heroSignup = document.getElementById('hero-signup');
+        console.debug('login modal', !!login, 'signup modal', !!signup);
+        if (loginBtn) {
+          loginBtn.addEventListener('click', () => { console.debug('login-btn clicked'); if (login) login.open(); else alert('Login modal not found'); });
+        }
+        if (signupBtn) {
+          signupBtn.addEventListener('click', () => { console.debug('signup-btn clicked'); if (signup) signup.open(); else alert('Signup modal not found'); });
+        }
+        if (heroLogin) { heroLogin.addEventListener('click', () => { console.debug('hero-login clicked'); if (login) login.open(); }); }
+        if (heroSignup) { heroSignup.addEventListener('click', () => { console.debug('hero-signup clicked'); if (signup) signup.open(); }); }
+
+
+        document.querySelectorAll('.oauth').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const provider = btn.dataset.provider || 'oauth';
+            alert('OAuth sign-in with: ' + provider + '\n(This is a placeholder — wire your auth flow.)');
+          });
+        });
+
+
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+          loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(loginForm);
+            const email = formData.get('email');
+            if (email === "tutor@tutor.com") {
+              window.location.href = "Tutor/tutor_home.html"
+            }
+            else if (email === "student@student.com")
+              window.location.href = "Student/student-home.html"
+            if (login) login.close();
+          });
+        }
+        const signupForm = document.getElementById('signup-form');
+        if (signupForm) {
+          signupForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            alert('Account created (placeholder) — implement backend API call');
+            if (signup) signup.close();
+          });
         }
       }
-      function open(){
-        lastFocused = document.activeElement;
-        modal.setAttribute('aria-hidden','false');
-        modal.classList.add('open');
-        if(closeBtn) closeBtn.focus();
-        document.addEventListener('keydown', onKey);
-      }
-      function close(){
-        modal.setAttribute('aria-hidden','true');
-        modal.classList.remove('open');
-        document.removeEventListener('keydown', onKey);
-        if(lastFocused && lastFocused.focus) lastFocused.focus();
-      }
-      if(closeBtn) closeBtn.addEventListener('click', close);
-      if(backdrop) backdrop.addEventListener('click', close);
-      const api = {open, close, modal};
-      window._modals[id] = api;
-      return api;
-    }
 
-     
-    const about = makeModal('about-modal');
-    const aboutLink = document.getElementById('about-link');
-    console.debug('about modal', !!about, 'aboutLink', !!aboutLink);
-    if(about && aboutLink) aboutLink.addEventListener('click', function(e){ e.preventDefault(); about.open(); });
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initModals);
+      else initModals();
 
-     
-    const login = makeModal('login-modal');
-    const signup = makeModal('signup-modal');
-    const loginBtn = document.getElementById('login-btn');
-    const signupBtn = document.getElementById('signup-btn');
-    const heroLogin = document.getElementById('hero-login');
-    const heroSignup = document.getElementById('hero-signup');
-    console.debug('login modal', !!login, 'signup modal', !!signup);
-    if(loginBtn){
-      loginBtn.addEventListener('click', ()=>{ console.debug('login-btn clicked'); if(login) login.open(); else alert('Login modal not found'); });
-    }
-    if(signupBtn){
-      signupBtn.addEventListener('click', ()=>{ console.debug('signup-btn clicked'); if(signup) signup.open(); else alert('Signup modal not found'); });
-    }
-    if(heroLogin){ heroLogin.addEventListener('click', ()=>{ console.debug('hero-login clicked'); if(login) login.open(); }); }
-    if(heroSignup){ heroSignup.addEventListener('click', ()=>{ console.debug('hero-signup clicked'); if(signup) signup.open(); }); }
-
-     
-    document.querySelectorAll('.oauth').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const provider = btn.dataset.provider || 'oauth';
-        alert('OAuth sign-in with: ' + provider + '\n(This is a placeholder — wire your auth flow.)');
-      });
-    });
-
-     
-    const loginForm = document.getElementById('login-form');
-    if(loginForm){
-      loginForm.addEventListener('submit', function(e){
-        e.preventDefault();
-        const formData = new FormData(loginForm);
-        const email = formData.get('email');
-        if (email === "tutor@tutor.com") {
-          window.location.href = "Tutor/tutor_home.html"
-        }
-        else if (email === "student@student.com")
-          window.location.href = "Student/student-home.html"
-        if(login) login.close();
-      });
-    }
-    const signupForm = document.getElementById('signup-form');
-    if(signupForm){
-      signupForm.addEventListener('submit', function(e){
-        e.preventDefault();
-        alert('Account created (placeholder) — implement backend API call');
-        if(signup) signup.close();
-      });
-    }
-  }
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initModals);
-  else initModals();
-
-  })();
+    })();
   </script>
 
-  </body>
+</body>
+
 </html>

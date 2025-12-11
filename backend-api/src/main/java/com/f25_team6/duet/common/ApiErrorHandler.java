@@ -9,8 +9,12 @@ import java.util.Map;
 public class ApiErrorHandler {
   @ExceptionHandler(ResponseStatusException.class)
   public ResponseEntity<Map<String, Object>> handleRse(ResponseStatusException ex) {
+    String reason = ex.getReason();
+    if (reason == null) {
+      reason = "No detailed error message available";
+    }
     return ResponseEntity.status(ex.getStatusCode())
-      .body(Map.of("status", ex.getStatusCode().value(), "error", ex.getReason()));
+        .body(Map.of("status", ex.getStatusCode().value(), "error", reason));
   }
 
   @ExceptionHandler(IllegalArgumentException.class)

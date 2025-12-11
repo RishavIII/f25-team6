@@ -1,323 +1,533 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Profile — DUET</title>
-    <link rel="stylesheet" href="/styles.css" />
-    <style>
-      .profile-page {
-        padding: 24px;
-        max-width: 1100px;
-        margin: 0 auto;
-      }
-      .card {
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 6px 20px rgba(10, 20, 30, 0.06);
-        padding: 20px;
-      }
-      .center-card {
-        margin: 18px 0;
-      }
-      .profile-view-card h1 {
-        margin-top: 0;
-      }
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Profile — DUET</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .profile-page {
+      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #fff, #fbfbff);
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(10, 20, 30, 0.06);
+      padding: 24px;
+      border: 1px solid rgba(99, 102, 241, 0.06);
+    }
+
+    .center-card {
+      margin: 18px 0;
+    }
+
+    .profile-view-card h1 {
+      margin-top: 0;
+      color: var(--purple-600);
+    }
+
+    .view-top {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .photo-container {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .photo-large {
+      width: 160px;
+      height: 160px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f5f5f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(91, 33, 182, 0.08);
+    }
+
+    .photo-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-edit-overlay {
+      display: none;
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+    }
+
+    .photo-edit-overlay label {
+      display: block;
+      background: rgba(91, 33, 182, 0.9);
+      color: #fff;
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .photo-edit-overlay label:hover {
+      background: var(--purple-600);
+    }
+
+    .editing .photo-edit-overlay {
+      display: block;
+    }
+
+    .view-main {
+      flex: 1;
+    }
+
+    .view-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+    }
+
+    .view-row:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      min-width: 140px;
+    }
+
+    .value {
+      font-weight: 500;
+      text-align: right;
+      flex: 1;
+      margin-left: 16px;
+    }
+
+    /* Edit mode inputs - themed */
+    .edit-input {
+      display: none;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(91, 33, 182, 0.15);
+      background: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(91, 33, 182, 0.04);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .edit-input:focus {
+      outline: none;
+      border-color: var(--purple-400);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    .edit-input::placeholder {
+      color: var(--muted);
+    }
+
+    textarea.edit-input {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .editing .edit-input {
+      display: block;
+    }
+
+    .editing .value-display {
+      display: none;
+    }
+
+    .value-display {
+      display: block;
+    }
+
+    /* Checkbox row in edit mode */
+    .checkbox-group {
+      display: none;
+      gap: 20px;
+      margin-top: 4px;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: #374151;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--purple-600);
+      cursor: pointer;
+    }
+
+    .editing .checkbox-group {
+      display: flex;
+    }
+
+    .editing .checkbox-display {
+      display: none;
+    }
+
+    .checkbox-display {
+      display: block;
+    }
+
+    /* Location grid */
+    .location-grid {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .editing .location-grid {
+      display: grid;
+    }
+
+    .editing .location-display {
+      display: none;
+    }
+
+    .location-display {
+      display: block;
+    }
+
+    .view-grid {
+      margin-top: 8px;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(91, 33, 182, 0.08));
+      color: var(--purple-600);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Header with buttons */
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-header h1 {
+      margin: 0;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid rgba(91, 33, 182, 0.15);
+      background: #fff;
+      color: var(--purple-600);
+    }
+
+    .btn:hover {
+      background: rgba(124, 58, 237, 0.06);
+    }
+
+    .btn.primary {
+      background: linear-gradient(90deg, var(--purple-600), var(--purple-400));
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 12px rgba(91, 33, 182, 0.2);
+    }
+
+    .btn.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(91, 33, 182, 0.25);
+    }
+
+    .edit-buttons {
+      display: none;
+    }
+
+    .editing .edit-buttons {
+      display: flex;
+    }
+
+    .editing .view-buttons {
+      display: none;
+    }
+
+    .view-buttons {
+      display: flex;
+    }
+
+    /* Instruments editing */
+    .instruments-edit {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+    }
+
+    .editing .instruments-edit {
+      display: flex;
+    }
+
+    .editing .instruments-display {
+      display: none;
+    }
+
+    .instrument-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: rgba(124, 58, 237, 0.04);
+      border-radius: 10px;
+      border: 1px solid rgba(91, 33, 182, 0.08);
+    }
+
+    .instrument-row select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(91, 33, 182, 0.15);
+      background: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+
+    .instrument-row select:focus {
+      outline: none;
+      border-color: var(--purple-400);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    .instrument-row .remove-btn {
+      border: none;
+      background: transparent;
+      color: #b91c1c;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+
+    .instrument-row .remove-btn:hover {
+      color: #991b1b;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
       .view-top {
-        display: flex;
-        gap: 20px;
-        align-items: flex-start;
-        margin-bottom: 20px;
-      }
-      .photo-large {
-        width: 160px;
-        height: 160px;
-        border-radius: 8px;
-        overflow: hidden;
-        background: #f5f5f6;
-        display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
       }
-      .photo-large img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      }
-      .view-main {
-        flex: 1;
-      }
+
       .view-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 0;
-        border-bottom: 1px solid #f0f0f0;
-      }
-      .view-row:last-child {
-        border-bottom: none;
-      }
-      .label {
-        color: #666;
-        font-size: 13px;
-      }
-      .value {
-        font-weight: 500;
-        text-align: right;
-        margin-left: 16px;
-      }
-      .view-grid {
-        margin-top: 8px;
-      }
-      .pill-list {
-        display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
         gap: 6px;
-        justify-content: flex-end;
       }
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        padding: 4px 8px;
-        border-radius: 999px;
-        background: #f3e8ff;
-        color: #6b21a8;
-        font-size: 12px;
-        font-weight: 500;
-      }
-    </style>
-  </head>
-  <body>
-    <header class="top-nav" role="banner">
-      <div class="nav-container">
-        <div class="brand">DUET</div>
-        <div class="search" role="search">
-          <label for="nav-search" class="visually-hidden">Search</label>
-          <div class="search-inner">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path
-                d="M21 21l-4.35-4.35"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                fill="none"
-              ></path>
-              <circle
-                cx="10.5"
-                cy="10.5"
-                r="5.5"
-                stroke="currentColor"
-                stroke-width="2"
-                fill="none"
-              ></circle>
-            </svg>
-            <input id="nav-search" type="search" placeholder="Search" />
-          </div>
-        </div>
-        <nav class="nav-links" aria-label="Main navigation">
-          <a href="tutor_home.html" class="nav-link" aria-label="Home">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path
-                d="M3 11.5L12 4l9 7.5"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                fill="none"
-              ></path>
-              <path
-                d="M5 21V12h14v9"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                fill="none"
-              ></path>
-            </svg>
-          </a>
-          <a href="tutor-message.html" class="nav-link" aria-label="Messages">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path
-                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                fill="none"
-              ></path>
-            </svg>
-          </a>
-          <a
-            href="tutor-notifications.html"
-            class="nav-link"
-            aria-label="Notifications"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path
-                d="M15 17H9a3 3 0 0 1-3-3V11a6 6 0 1 1 12 0v3a3 3 0 0 1-3 3z"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                fill="none"
-              ></path>
-              <path
-                d="M13.73 21a2 2 0 0 1-3.46 0"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                fill="none"
-              ></path>
-            </svg>
-          </a>
-          <a href="tutor-calendar.html" class="nav-link" aria-label="Calendar">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <rect
-                x="3"
-                y="5"
-                width="18"
-                height="16"
-                rx="2"
-                ry="2"
-                stroke="currentColor"
-                stroke-width="1.6"
-                fill="none"
-              ></rect>
-              <path
-                d="M16 3v4M8 3v4M3 11h18"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                fill="none"
-              ></path>
-            </svg>
-          </a>
-          <a href="tutor_profile.html" class="nav-link" aria-label="Profile">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path
-                d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                fill="none"
-              ></path>
-              <circle
-                cx="12"
-                cy="7"
-                r="4"
-                stroke="currentColor"
-                stroke-width="1.6"
-                fill="none"
-              ></circle>
-            </svg>
-          </a>
-        </nav>
-      </div>
-    </header>
 
-    <main class="profile-page">
-      <div class="profile-view-card card center-card" id="profileView">
+      .value {
+        text-align: left;
+        margin-left: 0;
+      }
+
+      .location-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="top-nav" role="banner">
+    <div class="nav-container">
+      <div class="brand">DUET</div>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="tutor_home.html" class="nav-link" aria-label="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+            <path d="M5 21V12h14v9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="tutor-message.html" class="nav-link" aria-label="Messages">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor"
+              stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="tutor-notifications.html" class="nav-link" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15 17H9a3 3 0 0 1-3-3V11a6 6 0 1 1 12 0v3a3 3 0 0 1-3 3z" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="tutor-calendar.html" class="nav-link" aria-label="Calendar">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="3" y="5" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="1.6" fill="none">
+            </rect>
+            <path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </a>
+        <a href="tutor_profile.html" class="nav-link" aria-label="Profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.6" fill="none"></circle>
+          </svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="profile-page">
+    <form id="profileForm" class="profile-view-card card center-card">
+      <div class="profile-header">
         <h1>Your profile</h1>
-        <div class="view-top">
-          <div class="photo-large">
-            <img
-              id="viewPhoto"
-              src="/assets/empty-pfp.svg"
-              alt="Profile photo"
-            />
+        <div class="btn-group">
+          <div class="view-buttons">
+            <button type="button" id="editOpenBtn" class="btn">Edit profile</button>
           </div>
-          <div class="view-main">
-            <div class="view-row">
-              <span class="label">Name</span>
-              <span class="value" id="viewName"></span>
-            </div>
-            <div class="view-row">
-              <span class="label">Bio</span>
-              <span class="value" id="viewBio"></span>
-            </div>
-            <div class="view-row">
-              <span class="label">Hourly rate</span>
-              <span class="value" id="viewHourlyRate"></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="view-grid">
-          <div class="view-row">
-            <span class="label">Lesson types</span>
-            <span class="value" id="viewLessonTypes"></span>
-          </div>
-          <div class="view-row">
-            <span class="label">Instruments</span>
-            <span class="value" id="viewInstruments"></span>
-          </div>
-          <div class="view-row">
-            <span class="label">Location</span>
-            <span class="value" id="viewLocation"></span>
-          </div>
-          
-          <div class="view-row">
-            <span class="label">Timezone</span>
-            <span class="value" id="viewTimezone"></span>
-          </div>
-          <div class="view-row">
-            <span class="label">Cancellation policy</span>
-            <span class="value" id="viewCancel"></span>
-          </div>
-        </div>
-      </div>
-
-      <div
-        id="msg"
-        style="
-          margin-top: 12px;
-          color: #b91c1c;
-          font-size: 0.95rem;
-          font-weight: 500;
-        "
-      ></div>
-    </main>
-    <section class="profile-page">
-      <div class="card center-card" id="editCard" style="display:none">
-        <h2>Edit profile</h2>
-        <form id="editForm">
-          <div class="view-top" style="margin-bottom:12px">
-            <div class="photo-large">
-              <img id="editPhotoPreview" src="/assets/empty-pfp.svg" alt="Profile photo" />
-            </div>
-            <div class="view-main">
-              <label class="field"><span>Change photo</span><input type="file" id="editPhoto" accept="image/*"></label>
-              <label class="field"><span>Bio</span><textarea id="editBio" rows="4"></textarea></label>
-              <label class="field"><span>Hourly rate (USD)</span><input type="number" id="editHourly" step="0.5" min="0"></label>
-              <div style="display:flex;gap:16px;margin:8px 0">
-                <label><input type="checkbox" id="editOnline"> Online</label>
-                <label><input type="checkbox" id="editInPerson"> In-person</label>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                <label class="field"><span>City</span><input id="editCity"></label>
-                <label class="field"><span>State</span><input id="editState"></label>
-              </div>
-              <label class="field"><span>Zip Code</span><input id="editZip" placeholder="e.g. 27412"></label>
-              <input type="hidden" id="editLat"><input type="hidden" id="editLon">
-              <label class="field"><span>Timezone</span><input id="editTimezone"></label>
-              <label class="field"><span>Cancellation policy</span><input id="editCancel"></label>
-            </div>
-          </div>
-          <div style="display:flex;gap:8px">
+          <div class="edit-buttons">
             <button type="submit" class="btn primary">Save changes</button>
             <button type="button" id="editCancelBtn" class="btn">Cancel</button>
           </div>
-        </form>
+        </div>
       </div>
-      <div class="center-card" style="text-align:right">
-        <button id="editOpenBtn" class="btn">Edit profile</button>
+
+      <div class="view-top">
+        <div class="photo-container">
+          <div class="photo-large">
+            <img id="viewPhoto" src="/assets/empty-pfp.svg" alt="Profile photo" />
+          </div>
+          <div class="photo-edit-overlay">
+            <label for="editPhoto">Change photo</label>
+            <input type="file" id="editPhoto" accept="image/*" style="display:none" />
+          </div>
+        </div>
+
+        <div class="view-main">
+          <div class="view-row">
+            <span class="label">Name</span>
+            <span class="value value-display" id="viewName"></span>
+          </div>
+          <div class="view-row">
+            <span class="label">Bio</span>
+            <span class="value value-display" id="viewBio"></span>
+            <textarea id="editBio" class="edit-input" rows="3" placeholder="Tell students about yourself..."></textarea>
+          </div>
+          <div class="view-row">
+            <span class="label">Hourly rate</span>
+            <span class="value value-display" id="viewHourlyRate"></span>
+            <input type="number" id="editHourly" class="edit-input" step="0.5" min="0" placeholder="e.g. 50.00" />
+          </div>
+        </div>
       </div>
-    </section>
-    <script src="/js/common.js"></script>
-    <script src="/js/tutor_profile.js"></script>
-  </body>
+
+      <div class="view-grid">
+        <div class="view-row">
+          <span class="label">Lesson types</span>
+          <span class="value checkbox-display" id="viewLessonTypes"></span>
+          <div class="checkbox-group">
+            <label><input type="checkbox" id="editOnline" /> Online lessons</label>
+            <label><input type="checkbox" id="editInPerson" /> In-person lessons</label>
+          </div>
+        </div>
+        <div class="view-row instruments-row">
+          <span class="label">Instruments</span>
+          <span class="value instruments-display" id="viewInstruments"></span>
+          <div class="instruments-edit">
+            <div id="editInstrumentRows"></div>
+            <button type="button" id="addInstrumentBtn" class="btn"
+              style="margin-top: 8px; padding: 8px 14px; font-size: 0.9rem;">+ Add instrument</button>
+          </div>
+        </div>
+        <div class="view-row">
+          <span class="label">Location</span>
+          <span class="value location-display" id="viewLocation"></span>
+          <div class="location-grid">
+            <input id="editCity" class="edit-input" placeholder="City" />
+            <input id="editState" class="edit-input" placeholder="State" />
+          </div>
+        </div>
+        <div class="view-row">
+          <span class="label">Zip Code</span>
+          <span class="value value-display" id="viewZipcode"></span>
+          <input id="editZip" class="edit-input" placeholder="e.g. 27412" />
+          <input type="hidden" id="editLat" />
+          <input type="hidden" id="editLon" />
+        </div>
+        <div class="view-row">
+          <span class="label">Timezone</span>
+          <span class="value value-display" id="viewTimezone"></span>
+          <input id="editTimezone" class="edit-input" placeholder="e.g. America/New_York" />
+        </div>
+        <div class="view-row">
+          <span class="label">Cancellation policy</span>
+          <span class="value value-display" id="viewCancel"></span>
+          <input id="editCancel" class="edit-input" placeholder="Your cancellation policy (optional)" />
+        </div>
+      </div>
+    </form>
+
+    <div id="msg" style="
+          max-width: 720px;
+          margin: 12px auto;
+          color: #b91c1c;
+          font-size: 0.95rem;
+          font-weight: 500;
+          text-align: center;
+        "></div>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/tutor_profile.js"></script>
+</body>
+
 </html>

@@ -5,8 +5,8 @@
   <link rel="stylesheet" href="../styles.css">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>High Fidelity Prototype</title>
-  <meta name="description" content="Barebone HTML5 skeleton for the high-fidelity prototype">
+  <title>Student Dashboard — DUET</title>
+  <meta name="description" content="Student dashboard for DUET music tutor platform">
 </head>
 
 <body>
@@ -83,7 +83,7 @@
         </div>
 
         <div class="col-right">
-          
+
 
           <section class="card stats" aria-label="Student stats">
             <div class="stat-grid">
@@ -117,7 +117,7 @@
       <h2>Schedule a Lesson</h2>
       <form id="scheduleForm" onsubmit="submitScheduleLesson(event)">
         <input type="hidden" id="modalTutorId" />
-        
+
         <div class="form-group">
           <label for="instrumentSelect">Instrument *</label>
           <select id="instrumentSelect" required>
@@ -161,7 +161,8 @@
 
         <div class="form-group">
           <label for="notesInput">Notes (Optional)</label>
-          <textarea id="notesInput" rows="4" placeholder="Any special requests or topics you'd like to focus on..."></textarea>
+          <textarea id="notesInput" rows="4"
+            placeholder="Any special requests or topics you'd like to focus on..."></textarea>
         </div>
 
         <div class="form-actions">
@@ -262,7 +263,7 @@
 
   <script>
     const API_BASE_URL = '/api';
-    
+
     let allTutors = [];
     let filteredTutors = [];
     let allInstruments = [];
@@ -277,14 +278,14 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Get logged-in user ID from localStorage
       currentUserId = localStorage.getItem('userId');
-      
+
       if (!currentUserId) {
         // Redirect to login if not authenticated
         alert('Please log in to continue');
         window.location.href = '/index.html';
         return;
       }
-      
+
       fetchTutors();
       fetchInstruments();
       setupFilterListeners();
@@ -349,7 +350,7 @@
 
     function renderTutors() {
       const tutorsContainer = document.querySelector('.tutors-grid');
-      
+
       if (filteredTutors.length === 0) {
         tutorsContainer.innerHTML = '<li class="no-results">No tutors found matching your criteria.</li>';
         return;
@@ -401,7 +402,7 @@
     function updateStats() {
       const totalTutors = allTutors.length;
       const filteredCount = filteredTutors.length;
-      const avgRate = filteredTutors.length > 0 
+      const avgRate = filteredTutors.length > 0
         ? filteredTutors.reduce((sum, t) => sum + t.hourlyRateCents, 0) / filteredTutors.length / 100
         : 0;
 
@@ -423,25 +424,25 @@
 
     function setupFilterListeners() {
       document.querySelectorAll('.filters .meta-row:nth-child(1) .chip').forEach(chip => {
-        chip.addEventListener('click', function() {
+        chip.addEventListener('click', function () {
           document.querySelectorAll('.filters .meta-row:nth-child(1) .chip').forEach(c => {
             c.classList.remove('active');
             c.setAttribute('aria-pressed', 'false');
           });
           this.classList.add('active');
           this.setAttribute('aria-pressed', 'true');
-          
+
           filters.instrument = this.textContent.trim();
           applyFilters();
         });
       });
 
       document.querySelectorAll('.filters .meta-row:nth-child(2) .chip').forEach(chip => {
-        chip.addEventListener('click', function() {
+        chip.addEventListener('click', function () {
           this.classList.toggle('active');
           const isActive = this.classList.contains('active');
           this.setAttribute('aria-pressed', isActive);
-          
+
           const level = this.textContent.trim();
           if (isActive) {
             filters.levels.push(level);
@@ -453,11 +454,11 @@
       });
 
       document.querySelectorAll('.filters .meta-row:nth-child(3) .chip').forEach(chip => {
-        chip.addEventListener('click', function() {
+        chip.addEventListener('click', function () {
           this.classList.toggle('active');
           const isActive = this.classList.contains('active');
           this.setAttribute('aria-pressed', isActive);
-          
+
           const avail = this.textContent.trim();
           if (isActive) {
             filters.availability.push(avail);
@@ -469,14 +470,14 @@
       });
 
       document.querySelectorAll('.filters .meta-row:nth-child(4) .chip').forEach(chip => {
-        chip.addEventListener('click', function() {
+        chip.addEventListener('click', function () {
           document.querySelectorAll('.filters .meta-row:nth-child(4) .chip').forEach(c => {
             c.classList.remove('active');
             c.setAttribute('aria-pressed', 'false');
           });
           this.classList.add('active');
           this.setAttribute('aria-pressed', 'true');
-          
+
           filters.priceRange = this.textContent.trim();
           applyFilters();
         });
@@ -491,7 +492,7 @@
           if (filters.priceRange === '$$' && (rate <= 30 || rate > 60)) return false;
           if (filters.priceRange === '$$$' && rate <= 60) return false;
         }
-        
+
         return true;
       });
 
@@ -503,11 +504,11 @@
     function updateFooter() {
       const footer = document.querySelector('.dashboard-footer');
       const activeFilters = [];
-      
+
       if (filters.instrument) activeFilters.push(filters.instrument);
       if (filters.levels.length > 0) activeFilters.push(...filters.levels);
       if (filters.priceRange) activeFilters.push(filters.priceRange);
-      
+
       if (activeFilters.length === 0) {
         footer.textContent = 'Tip: Use filters to find tutors that match your learning style and goals.';
       } else {
@@ -530,7 +531,7 @@
 
     async function submitScheduleLesson(event) {
       event.preventDefault();
-      
+
       const formData = {
         studentId: parseInt(currentUserId),
         tutorId: parseInt(document.getElementById('modalTutorId').value),
@@ -557,7 +558,7 @@
         }
 
         const bookingRequest = await response.json();
-        
+
         // Show success message
         const form = document.getElementById('scheduleForm');
         const successMsg = document.createElement('div');
@@ -572,7 +573,7 @@
 
       } catch (error) {
         console.error('Error creating booking request:', error);
-        
+
         // Show error message
         const form = document.getElementById('scheduleForm');
         const errorMsg = document.createElement('div');
@@ -625,7 +626,7 @@
     }
 
     // Close modal when clicking outside of it
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       const modal = document.getElementById('scheduleModal');
       if (event.target === modal) {
         closeScheduleModal();

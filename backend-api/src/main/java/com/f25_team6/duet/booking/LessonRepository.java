@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
-	List<Lesson> findTop10ByTutor_IdAndStatusAndStartUtcAfterOrderByStartUtcAsc(Long tutorId, LessonStatus status, OffsetDateTime after);
+	List<Lesson> findTop10ByTutor_IdAndStatusAndStartUtcAfterOrderByStartUtcAsc(Long tutorId, LessonStatus status,
+			OffsetDateTime after);
 
 	List<Lesson> findByTutor_Id(Long tutorId);
 
@@ -17,4 +18,10 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
 	@Query("select count(distinct l.student.id) from Lesson l where l.tutor.id = :tutorId")
 	long countDistinctStudentsByTutorId(Long tutorId);
+
+	void deleteByTutor_Id(Long tutorId);
+
+	void deleteByStudent_Id(Long studentId);
+
+	List<Lesson> findByStudent_IdAndTutor_IdAndStatus(Long studentId, Long tutorId, LessonStatus status);
 }
