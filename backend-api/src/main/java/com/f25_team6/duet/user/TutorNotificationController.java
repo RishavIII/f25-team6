@@ -75,7 +75,8 @@ public class TutorNotificationController {
 
     for (BookingRequest br : bookingRepo.findByTutor_IdAndStatus(tutorId,
         com.f25_team6.duet.common.enums.BookingStatus.PENDING)) {
-      var n = NotificationDto.booking(br.getId(), br.getStudent() != null ? br.getStudent().getName() : "Student",
+      var n = NotificationDto.booking(br.getId(), br.getStudent() != null ? br.getStudent().getId() : null,
+          br.getStudent() != null ? br.getStudent().getName() : "Student",
           br.getInstrument() != null ? br.getInstrument().getName() : "Unknown Instrument", br.getRequestedStartUtc(),
           br.getCreatedAt());
       n.read = isReadOptimized(tutorId, "booking", br.getId(), lastAll, br.getCreatedAt(), readSet);
@@ -126,6 +127,7 @@ public class TutorNotificationController {
     public String type; // message|lesson|payment|review|booking
     public Long id;
     public Long conversationId; // new field
+    public Long studentId;
     public String title;
     public String body;
     public OffsetDateTime when;
@@ -148,13 +150,13 @@ public class TutorNotificationController {
           .build();
     }
 
-    public static NotificationDto booking(Long id, String from, String instrument, OffsetDateTime when,
-        OffsetDateTime createdAt) {
+    public static NotificationDto booking(Long id, Long studentId, String from, String instrument, OffsetDateTime when,
+      OffsetDateTime createdAt) {
       return NotificationDto.builder()
-          .type("booking").id(id).title("Lesson Request")
-          .body(from + " wants to learn " + instrument)
-          .when(when).createdAt(createdAt)
-          .build();
+        .type("booking").id(id).studentId(studentId).title("Lesson Request")
+        .body(from + " wants to learn " + instrument)
+        .when(when).createdAt(createdAt)
+        .build();
     }
 
     public static NotificationDto payment(Long id, Integer amountCents, OffsetDateTime createdAt) {

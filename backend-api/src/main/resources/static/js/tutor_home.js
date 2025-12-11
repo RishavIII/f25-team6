@@ -85,9 +85,9 @@
 
       const meta = document.createElement('span'); meta.className = 'lesson-meta';
       const instr = r.instrumentName || 'Lesson';
-      const when = r.createdAt ? tzFormatDate(r.createdAt) : '';
+      const when = r.requestedStartUtc ? tzFormatDate(r.requestedStartUtc) : (r.createdAt ? tzFormatDate(r.createdAt) : '');
       const details = r.details || '';
-      meta.textContent = details ? `${instr} — ${details}` : instr;
+      meta.textContent = details ? `${instr} — ${when} · ${details}` : `${instr} — ${when}`;
 
       info.appendChild(strong); info.appendChild(meta);
 
@@ -119,6 +119,45 @@
 
       actions.appendChild(btnAccept);
       actions.appendChild(btnDecline);
+
+      // Details button (uses existing lesson modal UI)
+      const btnDetails = document.createElement('button');
+      btnDetails.className = 'action'; btnDetails.type = 'button'; btnDetails.textContent = 'Details';
+      btnDetails.onclick = () => {
+        // Construct a lesson-like object for the modal
+        const fakeLesson = {
+          id: r.id,
+          studentId: r.studentId,
+          studentName: r.studentName,
+          instrumentName: r.instrumentName,
+          startUtc: r.requestedStartUtc,
+          durationMin: r.durationMin,
+          priceCents: null
+        };
+        window.showLessonModal && window.showLessonModal(fakeLesson);
+      };
+      actions.appendChild(btnDetails);
+
+      // Message button
+      const btnMessage = document.createElement('button');
+      btnMessage.className = 'action'; btnMessage.type = 'button';
+      btnMessage.textContent = 'Message';
+      btnMessage.onclick = async () => {
+        if (!r.studentId) { alert('Cannot message: student info not available'); return; }
+        try {
+          const convos = await apiJson(`/tutors/${encodeURIComponent(uid)}/conversations`);
+          const convo = convos.find(c => c.otherUserId === r.studentId);
+          if (convo) {
+            window.location.href = `tutor-message.html?conversationId=${convo.conversationId}`;
+          } else {
+            window.location.href = `tutor-message.html?studentId=${r.studentId}`;
+          }
+        } catch (e) {
+          console.error(e);
+          window.location.href = 'tutor-message.html';
+        }
+      };
+      actions.appendChild(btnMessage);
 
       li.appendChild(info); li.appendChild(actions);
       elList.appendChild(li);

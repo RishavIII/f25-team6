@@ -270,6 +270,31 @@
 
     // Populate instrument rows
     populateInstrumentRows(tutorInstruments);
+
+    // Re-attach zipcode autofill event listener
+    attachZipcodeAutofill();
+  }
+
+  function attachZipcodeAutofill() {
+    if (edit.zip) {
+      // Remove any existing listener to avoid duplicates
+      edit.zip.removeEventListener('input', handleZipcodeInput);
+      // Attach the event listener
+      edit.zip.addEventListener('input', handleZipcodeInput);
+    }
+  }
+
+  async function handleZipcodeInput() {
+    const z = (edit.zip.value || '').trim();
+    if (z && z.length === 5 && /^\d{5}$/.test(z)) {
+      try {
+        const g = await geocodeZip(z);
+        edit.city.value = g.city;
+        edit.state.value = g.state;
+        edit.lat.value = g.lat;
+        edit.lon.value = g.lon;
+      } catch (e) { /* ignore invalid zip */ }
+    }
   }
 
   async function uploadEditPhoto() {
@@ -357,17 +382,6 @@
             if (viewPhoto) viewPhoto.src = e.target.result;
           };
           reader.readAsDataURL(f);
-        }
-      });
-    }
-    if (edit.zip) {
-      edit.zip.addEventListener('input', async () => {
-        const z = (edit.zip.value || '').trim();
-        if (z && z.length === 5 && /^\d{5}$/.test(z)) {
-          try {
-            const g = await geocodeZip(z);
-            edit.city.value = g.city; edit.state.value = g.state; edit.lat.value = g.lat; edit.lon.value = g.lon;
-          } catch (e) { /* ignore invalid zip */ }
         }
       });
     }

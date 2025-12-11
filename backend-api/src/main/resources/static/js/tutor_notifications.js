@@ -44,9 +44,17 @@
       const dot = document.createElement('div'); dot.className = 'notif-dot'; dot.setAttribute('aria-hidden', 'true');
       const body = document.createElement('div'); body.className = 'notif-body';
       const strong = document.createElement('strong'); strong.textContent = n.title || 'Notification';
-      const p = document.createElement('p'); p.textContent = n.body || '';
-      const time = document.createElement('span'); time.className = 'time small muted'; time.textContent = fmtWhen(n.createdAt || n.when);
-      body.appendChild(strong); if (p.textContent) body.appendChild(p); body.appendChild(time);
+      const p = document.createElement('p');
+      // If booking notification, show instrument and requested time
+      if (n.type === 'booking') {
+        p.textContent = n.body || '';
+        const whenEl = document.createElement('div'); whenEl.className = 'muted small'; whenEl.textContent = fmtWhen(n.when || n.createdAt);
+        body.appendChild(strong); if (p.textContent) body.appendChild(p); body.appendChild(whenEl);
+      } else {
+        p.textContent = n.body || '';
+        const time = document.createElement('span'); time.className = 'time small muted'; time.textContent = fmtWhen(n.createdAt || n.when);
+        body.appendChild(strong); if (p.textContent) body.appendChild(p); body.appendChild(time);
+      }
       li.appendChild(dot); li.appendChild(body);
       li.addEventListener('click', () => openDetail(n));
       els.list.appendChild(li);
@@ -119,6 +127,42 @@
       };
       actions.appendChild(btnAccept);
       actions.appendChild(btnDecline);
+      // Details button - show booking details in a modal-like overlay
+      const btnDetails = document.createElement('a');
+      btnDetails.className = 'btn small';
+      btnDetails.textContent = 'Details';
+      btnDetails.href = '#';
+      btnDetails.onclick = (e) => {
+        e.preventDefault();
+        // Show inline detail modal if available
+        if (window.showBookingModal) window.showBookingModal(n);
+        else {
+          // Fallback: expand details inline
+          const extra = document.createElement('div');
+          extra.className = 'muted small';
+          extra.style.marginTop = '8px';
+          extra.textContent = `Instrument: ${n.body || ''} · When: ${fmtWhen(n.when)}`;
+          els.detailBody.appendChild(extra);
+        }
+      };
+      actions.appendChild(btnDetails);
+
+      // Message button - go to messaging page with studentId if available
+      const btnMessage = document.createElement('a');
+      btnMessage.className = 'btn small';
+      btnMessage.textContent = 'Message';
+      btnMessage.href = '#';
+      btnMessage.onclick = (e) => {
+        e.preventDefault();
+        if (n.conversationId) {
+          window.location.href = `tutor-message.html?conversationId=${n.conversationId}`;
+        } else if (n.studentId) {
+          window.location.href = `tutor-message.html?studentId=${n.studentId}`;
+        } else {
+          window.location.href = 'tutor-message.html';
+        }
+      };
+      actions.appendChild(btnMessage);
     } else if (n.type === 'message') {
       const btnReply = document.createElement('a');
       btnReply.className = 'btn primary small';
@@ -154,8 +198,38 @@
     if (els.btnMarkAll) els.btnMarkAll.addEventListener('click', markAllRead);
     if (els.btnBack) els.btnBack.addEventListener('click', backToList);
 
+    // Booking modal close handler
+    const bookingCloseBtn = document.getElementById('bookingModalClose');
+    if (bookingCloseBtn) bookingCloseBtn.addEventListener('click', () => closeBookingModal());
+
     load();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+
+  // Booking modal helpers
+  window.showBookingModal = function (n) {
+    const modal = document.getElementById('bookingModal');
+    const content = document.getElementById('bookingModalContent');
+    if (!modal || !content) return;
+    content.innerHTML = '';
+    const h = document.createElement('div');
+    h.className = 'modal-row';
+    const lbl = document.createElement('span'); lbl.className = 'modal-label'; lbl.textContent = 'Student';
+    const val = document.createElement('span'); val.className = 'modal-value'; val.textContent = n.title ? n.title.replace('Lesson Request','') : (n.body || '');
+    h.appendChild(lbl); h.appendChild(val); content.appendChild(h);
+    const instrRow = document.createElement('div'); instrRow.className = 'modal-row';
+    const il = document.createElement('span'); il.className = 'modal-label'; il.textContent = 'When';
+    const iv = document.createElement('span'); iv.className = 'modal-value'; iv.textContent = fmtWhen(n.when);
+    instrRow.appendChild(il); instrRow.appendChild(iv); content.appendChild(instrRow);
+    if (n.body) {
+      const notes = document.createElement('div'); notes.style.marginTop = '8px'; notes.textContent = n.body; content.appendChild(notes);
+    }
+    modal.style.display = 'flex'; modal.classList.add('active');
+  };
+
+  function closeBookingModal() {
+    const modal = document.getElementById('bookingModal');
+    if (modal) { modal.style.display = 'none'; modal.classList.remove('active'); }
+  }
 })();

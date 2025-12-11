@@ -173,17 +173,23 @@ public class TutorDashboardController {
   @Builder
   public static class IncomingRequestDto {
     public Long id;
+    public Long studentId;
     public String studentName;
     public String instrumentName;
     public String details;
+    public OffsetDateTime requestedStartUtc;
+    public Integer durationMin;
     public OffsetDateTime createdAt;
 
     public static IncomingRequestDto from(BookingRequest r) {
       return IncomingRequestDto.builder()
           .id(r.getId())
+          .studentId(r.getStudent() != null ? r.getStudent().getId() : null)
           .studentName(r.getStudent() != null ? r.getStudent().getName() : "Unknown")
           .instrumentName(r.getInstrument() != null ? r.getInstrument().getName() : "Unknown")
           .details(r.getNotes())
+          .requestedStartUtc(r.getRequestedStartUtc())
+          .durationMin(r.getDurationMin())
           .createdAt(r.getCreatedAt())
           .build();
     }

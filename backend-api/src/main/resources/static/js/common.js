@@ -77,7 +77,7 @@ window.updateTutorUnreadBadge = async function updateTutorUnreadBadge() {
     }
     const convos = await apiJson(`/tutors/${encodeURIComponent(uid)}/conversations`).catch(() => []);
     const total = Array.isArray(convos) ? convos.reduce((s, c) => s + (c.unreadCount || 0), 0) : 0;
-    if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.style.display = 'inline-flex'; }
+    if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.style.display = 'flex'; }
     else { badge.textContent = ''; badge.style.display = 'none'; }
   } catch (_) { /* ignore */ }
 }
@@ -101,7 +101,7 @@ window.updateTutorNotificationsBadge = async function updateTutorNotificationsBa
     if (!badge) { badge = document.createElement('span'); badge.className = 'nav-badge'; anchor.appendChild(badge); }
     const count = await apiJson(`/tutors/${encodeURIComponent(uid)}/notifications/unread-count`).catch(() => 0);
     const total = Number(count) || 0;
-    if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.style.display = 'inline-flex'; }
+    if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.style.display = 'flex'; }
     else { badge.textContent = ''; badge.style.display = 'none'; }
   } catch (_) { }
 }
@@ -153,7 +153,7 @@ window.updateTutorCalendarBadge = async function updateTutorCalendarBadge() {
     const viewed = window.getViewedLessonIds();
     const unviewedCount = Array.isArray(lessons) ? lessons.filter(l => !viewed.includes(l.id)).length : 0;
 
-    if (unviewedCount > 0) { badge.textContent = unviewedCount > 99 ? '99+' : String(unviewedCount); badge.style.display = 'inline-flex'; }
+    if (unviewedCount > 0) { badge.textContent = unviewedCount > 99 ? '99+' : String(unviewedCount); badge.style.display = 'flex'; }
     else { badge.textContent = ''; badge.style.display = 'none'; }
   } catch (_) { }
 };
