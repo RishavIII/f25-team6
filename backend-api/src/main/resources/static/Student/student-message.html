@@ -68,65 +68,237 @@
 					<h2>Messages</h2>
 					<button class="btn add-convo" aria-label="Start new conversation">+</button>
 				</div>
-				<ul class="convo-list">
-					<li class="convo active">
-						<div class="avatar">AL</div>
-						<div class="convo-meta">
-							<strong>Alex Lee</strong>
-							<span class="muted">Seen 2h ago · Piano</span>
-						</div>
-						<div class="convo-unread">2</div>
-					</li>
-					<li class="convo">
-						<div class="avatar">JM</div>
-						<div class="convo-meta">
-							<strong>Jamie M.</strong>
-							<span class="muted">Online · Guitar</span>
-						</div>
-						<div class="convo-unread"></div>
-					</li>
-					<li class="convo">
-						<div class="avatar">SK</div>
-						<div class="convo-meta">
-							<strong>Sara K.</strong>
-							<span class="muted">Yesterday · Voice</span>
-						</div>
-						<div class="convo-unread">1</div>
-					</li>
+				<ul class="convo-list" id="convoList">
+					<li class="no-results">Loading conversations...</li>
 				</ul>
 			</aside>
 
 			 
-			<section class="chat-panel" aria-live="polite">
+			<section class="chat-panel" aria-live="polite" id="chatPanel">
+				<div class="no-conversation-selected" style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">
+					<p>Select a conversation to view messages</p>
+				</div>
+			</section>
+		</div>
+	</main>
+
+	<script>
+		const API_BASE_URL = '/api';
+		let currentUserId = null;
+		let conversations = [];
+		let selectedConversation = null;
+		let messages = [];
+
+		document.addEventListener('DOMContentLoaded', () => {
+			// Get logged-in user ID from localStorage
+			currentUserId = localStorage.getItem('userId');
+			
+			if (!currentUserId) {
+				alert('Please log in to continue');
+				window.location.href = '/index.html';
+				return;
+			}
+
+			fetchConversations();
+		});
+
+		async function fetchConversations() {
+			try {
+				const response = await fetch(`${API_BASE_URL}/conversations`);
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				const allConversations = await response.json();
+				
+				// Filter to only show conversations where current user is the student
+				conversations = allConversations.filter(conv => 
+					conv.student.id === parseInt(currentUserId)
+				);
+
+				renderConversations();
+			} catch (error) {
+				console.error('Error fetching conversations:', error);
+				document.getElementById('convoList').innerHTML = 
+					'<li class="no-results">Unable to load conversations.</li>';
+			}
+		}
+
+		function renderConversations() {
+			const convoList = document.getElementById('convoList');
+			
+			if (conversations.length === 0) {
+				convoList.innerHTML = '<li class="no-results">No conversations yet. Start by messaging a tutor!</li>';
+				return;
+			}
+
+			convoList.innerHTML = conversations.map((conv, index) => {
+				const tutor = conv.tutor;
+				const initials = getInitials(tutor.name);
+				const isActive = selectedConversation && selectedConversation.id === conv.id ? 'active' : '';
+				
+				return `
+					<li class="convo ${isActive}" onclick="selectConversation(${conv.id})">
+						<div class="avatar">${initials}</div>
+						<div class="convo-meta">
+							<strong>${tutor.name}</strong>
+							<span class="muted">Tutor</span>
+						</div>
+						<div class="convo-unread"></div>
+					</li>
+				`;
+			}).join('');
+		}
+
+		function getInitials(name) {
+			if (!name) return '??';
+			const parts = name.trim().split(' ');
+			if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+			return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+		}
+
+		async function selectConversation(conversationId) {
+			selectedConversation = conversations.find(c => c.id === conversationId);
+			if (!selectedConversation) return;
+
+			// Update UI to show selected conversation
+			renderConversations();
+
+			// Fetch messages for this conversation
+			await fetchMessages(conversationId);
+		}
+
+		async function fetchMessages(conversationId) {
+			try {
+				const response = await fetch(`${API_BASE_URL}/messages/by-conversation/${conversationId}`);
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				messages = await response.json();
+				renderChatPanel();
+			} catch (error) {
+				console.error('Error fetching messages:', error);
+				document.getElementById('chatPanel').innerHTML = 
+					'<div style="padding: 20px; color: #d32f2f;">Unable to load messages.</div>';
+			}
+		}
+
+		function renderChatPanel() {
+			const chatPanel = document.getElementById('chatPanel');
+			const tutor = selectedConversation.tutor;
+			const initials = getInitials(tutor.name);
+
+			const messagesHtml = messages.length === 0 
+				? '<div class="no-results" style="text-align: center; padding: 40px; color: #999;">No messages yet. Start the conversation!</div>'
+				: messages.map(msg => {
+					const isSent = msg.sender.id === parseInt(currentUserId);
+					const messageClass = isSent ? 'sent' : 'received';
+					const time = formatMessageTime(msg.createdAt);
+					
+					return `
+						<div class="message ${messageClass}">
+							<div class="bubble">${escapeHtml(msg.body)}</div>
+							<div class="time muted small">${time}</div>
+						</div>
+					`;
+				}).join('');
+
+			chatPanel.innerHTML = `
 				<header class="chat-header">
-					<div class="avatar large">AL</div>
+					<div class="avatar large">${initials}</div>
 					<div>
-						<strong>Alex Lee</strong>
-						<div class="muted small">Last seen 2 hours ago</div>
+						<strong>${tutor.name}</strong>
+						<div class="muted small">Tutor</div>
 					</div>
 				</header>
 
 				<div class="chat-log" id="chatLog">
-					<div class="message received">
-						<div class="bubble">Hey — are we still on for the lesson tomorrow?</div>
-						<div class="time muted small">3:40 PM</div>
-					</div>
-					<div class="message sent">
-						<div class="bubble">Yes! See you at 4pm at the studio.</div>
-						<div class="time muted small">3:42 PM</div>
-					</div>
-					<div class="message received">
-						<div class="bubble">Perfect — would you mind bringing the music sheets?</div>
-						<div class="time muted small">3:45 PM</div>
-					</div>
+					${messagesHtml}
 				</div>
 
 				<footer class="composer">
-					<textarea placeholder="iMessage-style: Write a message..." rows="1" aria-label="Write a message"></textarea>
-					<button class="btn primary">Send</button>
+					<textarea id="messageInput" placeholder="Write a message..." rows="1" aria-label="Write a message"></textarea>
+					<button class="btn primary" onclick="sendMessage()">Send</button>
 				</footer>
-			</section>
-		</div>
-	</main>
+			`;
+
+			// Scroll to bottom of chat
+			const chatLog = document.getElementById('chatLog');
+			if (chatLog) {
+				chatLog.scrollTop = chatLog.scrollHeight;
+			}
+		}
+
+		async function sendMessage() {
+			const input = document.getElementById('messageInput');
+			const body = input.value.trim();
+			
+			if (!body || !selectedConversation) return;
+
+			try {
+				const response = await fetch(`${API_BASE_URL}/messages`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						conversationId: selectedConversation.id,
+						senderUserId: parseInt(currentUserId),
+						body: body
+					})
+				});
+
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+
+				const newMessage = await response.json();
+				messages.push(newMessage);
+				
+				// Clear input and re-render
+				input.value = '';
+				renderChatPanel();
+
+			} catch (error) {
+				console.error('Error sending message:', error);
+				alert('Failed to send message. Please try again.');
+			}
+		}
+
+		function formatMessageTime(timestamp) {
+			const date = new Date(timestamp);
+			const now = new Date();
+			const diffMs = now - date;
+			const diffMins = Math.floor(diffMs / 60000);
+			const diffHours = Math.floor(diffMs / 3600000);
+			const diffDays = Math.floor(diffMs / 86400000);
+
+			if (diffDays > 1) {
+				return date.toLocaleDateString();
+			} else if (diffDays === 1) {
+				return 'Yesterday';
+			} else if (diffHours > 0) {
+				return `${diffHours}h ago`;
+			} else if (diffMins > 0) {
+				return `${diffMins}m ago`;
+			} else {
+				return 'Just now';
+			}
+		}
+
+		function escapeHtml(text) {
+			const div = document.createElement('div');
+			div.textContent = text;
+			return div.innerHTML;
+		}
+
+		// Allow sending message with Enter key (Shift+Enter for new line)
+		document.addEventListener('keydown', (e) => {
+			const input = document.getElementById('messageInput');
+			if (input && e.target === input && e.key === 'Enter' && !e.shiftKey) {
+				e.preventDefault();
+				sendMessage();
+			}
+		});
+	</script>
 </body>
 </html>

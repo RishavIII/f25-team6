@@ -14,7 +14,7 @@
     <div class="nav-container">
       <div class="brand">DUET</div>
       <div class="search" role="search">
-        <form action="search.html" method="get" class="search-inner">
+        <form onsubmit="handleSearch(event)" class="search-inner">
           <label for="nav-search" class="visually-hidden">Search</label>
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -289,6 +289,17 @@
       fetchInstruments();
       setupFilterListeners();
       setMinDateTime();
+      
+      // Check if there's a search query from redirect
+      const searchQuery = sessionStorage.getItem('searchQuery');
+      if (searchQuery) {
+        document.getElementById('nav-search').value = searchQuery;
+        sessionStorage.removeItem('searchQuery'); // Clear it after using
+        // Trigger search after tutors are loaded
+        setTimeout(() => {
+          handleSearch({ preventDefault: () => {} });
+        }, 500);
+      }
     });
 
     function setMinDateTime() {
@@ -584,6 +595,33 @@
     function showError(message) {
       const tutorsContainer = document.querySelector('.tutors-grid');
       tutorsContainer.innerHTML = `<li class="error-message" style="color: #d32f2f; padding: 20px; text-align: center;">${message}</li>`;
+    }
+
+    function handleSearch(event) {
+      event.preventDefault();
+      
+      const searchQuery = document.getElementById('nav-search').value.toLowerCase().trim();
+      
+      if (!searchQuery) {
+        // If search is empty, show all tutors
+        filteredTutors = [...allTutors];
+      } else {
+        // Filter tutors by name, bio, city, or state
+        filteredTutors = allTutors.filter(tutor => {
+          const name = tutor.user.name.toLowerCase();
+          const bio = (tutor.bio || '').toLowerCase();
+          const city = (tutor.city || '').toLowerCase();
+          const state = (tutor.state || '').toLowerCase();
+          
+          return name.includes(searchQuery) || 
+                 bio.includes(searchQuery) || 
+                 city.includes(searchQuery) || 
+                 state.includes(searchQuery);
+        });
+      }
+      
+      renderTutors();
+      updateStats();
     }
 
     // Close modal when clicking outside of it
