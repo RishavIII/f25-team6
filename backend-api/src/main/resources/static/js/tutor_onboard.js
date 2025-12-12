@@ -9,7 +9,7 @@
       if (tzInput && !tzInput.value) {
         tzInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
       }
-    } catch (e) {}
+    } catch (e) { }
   })();
 
   function makeLevelSelect(defaultValue, dataRole) {
@@ -144,33 +144,16 @@
     }
   }
 
-  async function handlePhotoChange() {
+  function handlePhotoChange() {
     const f = fileInput.files && fileInput.files[0];
     if (!f) return;
-    const userId = requireUserId();
-    if (!userId) return;
 
-    if (msg) msg.textContent = "Uploading...";
-    try {
-      const fd = new FormData();
-      fd.append("file", f);
-      const upRes = await fetch(
-        `/api/tutor-profiles/${encodeURIComponent(userId)}/photo`,
-        { method: "POST", body: fd }
-      );
-      if (upRes.ok) {
-        const data = await upRes.json();
-        uploadedPhotoUrl = data.photoUrl;
-        document.getElementById("photoPreview").src = uploadedPhotoUrl;
-        if (msg) msg.textContent = "Uploaded.";
-      } else {
-        const t = await upRes.text();
-        if (msg) msg.textContent = "Upload failed: " + upRes.status + " " + t;
-      }
-    } catch (err) {
-      console.error(err);
-      if (msg) msg.textContent = "Upload failed";
-    }
+    // Local preview only
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById("photoPreview").src = e.target.result;
+    };
+    reader.readAsDataURL(f);
   }
 
   function collectInstrumentSelections() {
@@ -195,16 +178,10 @@
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (msg) msg.textContent = "";
+    if (msg) msg.textContent = "Creating profile...";
 
     const userId = requireUserId();
     if (!userId) return;
-
-    let photoUrl =
-      uploadedPhotoUrl || document.getElementById("photoPreview").src || null;
-    if (photoUrl && photoUrl.endsWith("/assets/empty-pfp.svg")) {
-      photoUrl = null;
-    }
 
     const bio = document.getElementById("bio").value || null;
     const hourly = document.getElementById("hourlyRate").value;
@@ -221,63 +198,49 @@
     const cancellationNote =
       document.getElementById("cancellationNote").value || null;
 
-    const latStr = document.getElementById("latitude").value;
-    const lonStr = document.getElementById("longitude").value;
-    const latitude =
-      latStr && latStr.trim() !== "" && !isNaN(latStr)
-        ? parseFloat(latStr)
-        : null;
-    const longitude =
-      lonStr && lonStr.trim() !== "" && !isNaN(lonStr)
-        ? parseFloat(lonStr)
-        : null;
-
-    const instrumentSelections = collectInstrumentSelections();
+    const zipcode = document.getElementById("zipcode").value || null;
 
     const latRaw = document.getElementById("latitude").value;
     const lonRaw = document.getElementById("longitude").value;
+
+    // Initial payload (no photo URL yet)
     const payload = {
-      photoUrl,
+      photoUrl: null,
       bio,
       hourlyRateCents,
       onlineEnabled,
       inPersonEnabled,
       city,
       state,
+      zipcode,
       timezone,
       cancellationNote,
-      latitude : latRaw ? parseFloat(latRaw) : null,
-      longitude : lonRaw ? parseFloat(lonRaw) : null,
+      latitude: latRaw ? parseFloat(latRaw) : null,
+      longitude: lonRaw ? parseFloat(lonRaw) : null,
     };
-    //failsafe
-    if (!uploadedPhotoUrl && fileInput && fileInput.files && fileInput.files[0]) {
-      try {
+
+    try {
+      // 1. Create Profile
+      await createTutorProfile(userId, payload);
+
+      // 2. Upload Photo (if selected)
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        if (msg) msg.textContent = "Uploading photo...";
         const fd = new FormData();
         fd.append("file", fileInput.files[0]);
         const upRes = await fetch(
           `/api/tutor-profiles/${encodeURIComponent(userId)}/photo`,
           { method: "POST", body: fd }
         );
-        if (upRes.ok) {
-          const data = await upRes.json();
-          photoUrl = data.photoUrl;
-          payload.photoUrl = photoUrl;
-          document.getElementById("photoPreview").src = photoUrl;
-        } else {
-          const t = await upRes.text();
-          if (msg) msg.textContent = "Upload failed: " + upRes.status + " " + t;
-          return;
+        if (!upRes.ok) {
+          console.warn("Photo upload failed after profile creation");
+          // Continue anyway, not blocking
         }
-      } catch (err) {
-        console.error(err);
-        if (msg) msg.textContent = "Upload failed";
-        return;
       }
-    }
 
-    try {
-      await createTutorProfile(userId, payload);
-
+      // 3. Create Instruments
+      if (msg) msg.textContent = "Saving instruments...";
+      const instrumentSelections = collectInstrumentSelections();
       for (const sel of instrumentSelections) {
         await createTutorInstrument({
           tutorUserId: Number(userId),
@@ -307,7 +270,7 @@
     }
   }
 
-  function start(){
+  function start() {
     form = document.getElementById("onboard-form");
     msg = document.getElementById("msg");
     fileInput = document.getElementById("inputPhoto");
@@ -318,16 +281,21 @@
 
     const zipEl = document.getElementById('zipcode');
     if (zipEl) {
-      zipEl.addEventListener('blur', async (e) => {
-        const zip = e.target.value;
-        if (zip && zip.length == 5) {
+      // Use input event for live auto-fill as user types
+      zipEl.addEventListener('input', async (e) => {
+        const zip = e.target.value.trim();
+        if (zip && zip.length === 5 && /^\d{5}$/.test(zip)) {
           try {
             const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
             if (res.ok) {
               const data = await res.json();
-              document.getElementById('city').value = data.places[0]['place name'];
-              document.getElementById('state').value = data.places[0]['state abbreviation'];
-              // Keeping existing behavior for lat/long placeholders
+              const place = data.places && data.places[0];
+              if (place) {
+                document.getElementById('city').value = place['place name'];
+                document.getElementById('state').value = place['state abbreviation'];
+                document.getElementById('latitude').value = place.latitude;
+                document.getElementById('longitude').value = place.longitude;
+              }
             }
           } catch (err) { console.error('Geo Error', err); }
         }

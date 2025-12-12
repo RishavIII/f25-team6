@@ -148,7 +148,7 @@ html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -app
 
 /* Navbar unread badge for Messages */
 .nav-links .nav-link{position:relative}
-.nav-badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 5px;border-radius:999px;background:var(--purple-400);color:#fff;font-size:10px;line-height:16px;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff}
+.nav-badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 5px;border-radius:999px;background:var(--purple-400);color:#fff;font-size:10px;line-height:16px;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff;z-index:10}
 
  
 @media (max-width:700px){

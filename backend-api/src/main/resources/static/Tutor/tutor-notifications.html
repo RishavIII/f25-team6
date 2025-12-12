@@ -1,28 +1,31 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Notifications — DUET</title>
   <link rel="stylesheet" href="../styles.css">
+  <style>
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
+    .modal-overlay.active { display:flex; }
+    .modal { background:#fff;border-radius:12px;padding:24px;max-width:400px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2); }
+    .modal-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
+    .modal-label{color:#666;font-weight:500}
+    .modal-value{font-weight:600;color:#333}
+    .modal-actions{margin-top:20px;display:flex;gap:12px;justify-content:flex-end}
+    .modal-actions .btn{padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer;border:none}
+    .modal-actions .btn.secondary{background:#f3f4f6;color:#374151}
+  </style>
   <script src="/js/common.js"></script>
   <script defer src="/js/tutor_notifications.js"></script>
 </head>
+
 <body>
   <header class="top-nav" role="banner">
     <div class="nav-container">
       <div class="brand">DUET</div>
-      <div class="search" role="search">
-        <form action="search.html" method="get" class="search-inner">
-          <label for="nav-search" class="visually-hidden">Search</label>
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" fill="none"></path>
-            <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="2" fill="none"></circle>
-          </svg>
-          <input id="nav-search" type="search" name="q" placeholder="Search" />
-        </form>
-      </div>
+
       <nav class="nav-links" aria-label="Main navigation">
         <a href="tutor_home.html" class="nav-link" aria-label="Home">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -84,8 +87,20 @@
         <div id="notifDetailBody"></div>
       </div>
 
+      <!-- Booking Details Modal -->
+      <div id="bookingModal" class="modal-overlay" style="display:none;">
+        <div class="modal">
+          <h3>Request Details</h3>
+          <div id="bookingModalContent"></div>
+          <div class="modal-actions">
+            <button class="btn secondary" id="bookingModalClose">Close</button>
+          </div>
+        </div>
+      </div>
+
       <div class="actions-row" style="display:none"></div>
     </div>
   </main>
 </body>
+
 </html>

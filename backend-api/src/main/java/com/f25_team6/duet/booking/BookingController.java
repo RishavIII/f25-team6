@@ -39,6 +39,15 @@ public class BookingController {
         return bookingRepo.findAll();
     }
 
+    @GetMapping("/tutors/{tutorId}/booking-requests")
+    public List<BookingRequest> listForTutor(@PathVariable Long tutorId,
+            @RequestParam(required = false) com.f25_team6.duet.common.enums.BookingStatus status) {
+        if (status != null) {
+            return bookingRepo.findByTutor_IdAndStatus(tutorId, status);
+        }
+        return bookingRepo.findByTutor_Id(tutorId);
+    }
+
     @PostMapping("/booking-requests/{id}/accept")
     public ResponseEntity<BookingRequest> accept(@PathVariable Long id) {
         return ResponseEntity.ok(bookingService.accept(id));
@@ -64,6 +73,12 @@ public class BookingController {
     public ResponseEntity<PaymentSummary> pay(@PathVariable Long lessonId,
             @RequestParam int amountCents) {
         Payment p = bookingService.pay(lessonId, amountCents);
+        return ResponseEntity.ok(PaymentSummary.from(p));
+    }
+
+    @PostMapping("/lessons/{lessonId}/complete")
+    public ResponseEntity<PaymentSummary> complete(@PathVariable Long lessonId) {
+        Payment p = bookingService.complete(lessonId);
         return ResponseEntity.ok(PaymentSummary.from(p));
     }
 

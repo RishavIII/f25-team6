@@ -77,7 +77,7 @@ Duet helps students/parents discover, evaluate, and book local private music les
 | **Java**              | Backend implementation language.                                                     |
 | **Spring Boot**       | Java framework used to create the backend service.                                   |
 | **PostgreSQL**        | Relational database used to store application data.                                  |
-| **Map Geocoding API** | Service to geocode addresses and compute distances (e.g., Mapbox/Google).            |
+| **Zippopotamus API**  | Free 3rd party service to geocode US zipcodes (api.zippopotam.us).                   |
 
 ### 1.4 References
 
@@ -85,7 +85,7 @@ Spring Guides & Docs
 
 PostgreSQL Documentation
 
-Mapbox/Google Maps Geocoding & Distance APIs
+Zippopotamus API Documentation (https://api.zippopotam.us/)
 
 OWASP ASVS & Top 10 (security baseline)
 
@@ -111,7 +111,7 @@ Our website application does not expect our users to have any prior knowledge of
 
 ### 2.4 Assumptions and Dependencies
 
-We will be using Java, with our program being dependent on Spring & SpringBoot, and RestAPI to connect to external APIs and developed with VS Code. The application will also use an external location API that will help the student schedule the appointment with the most convenience.
+We will be using Java, with our program being dependent on Spring & SpringBoot, and RestAPI to connect to external APIs and developed with VS Code. The application uses the Zippopotamus API (api.zippopotam.us) to geocode US zipcodes, enabling location-based tutor filtering and automatic city/state population during profile creation.
 
 ## 3. Requirements
 

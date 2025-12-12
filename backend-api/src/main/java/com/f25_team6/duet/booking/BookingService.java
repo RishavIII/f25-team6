@@ -53,10 +53,10 @@ public class BookingService {
                 br = bookingRepo.save(br);
                 // Ensure a conversation exists between student and tutor upon request creation
                 conversationRepo.findByStudentIdAndTutorId(student.getId(), tutor.getId())
-                        .or(() -> {
-                                Conversation c = Conversation.builder().student(student).tutor(tutor).build();
-                                return java.util.Optional.of(conversationRepo.save(c));
-                        });
+                                .or(() -> {
+                                        Conversation c = Conversation.builder().student(student).tutor(tutor).build();
+                                        return java.util.Optional.of(conversationRepo.save(c));
+                                });
                 return br;
         }
 
@@ -97,6 +97,33 @@ public class BookingService {
                 br.setStatus(BookingStatus.DECLINED);
                 br.setUpdatedAt(OffsetDateTime.now());
                 return br;
+        }
+
+        /**
+         * Mark a lesson as completed and process payment.
+         * 
+         * @param lessonId the lesson to complete
+         * @return the payment record created
+         */
+        public Payment complete(Long lessonId) {
+                Lesson lesson = lessonRepo.findById(lessonId)
+                                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Lesson not found"));
+                if (lesson.getStatus() != LessonStatus.SCHEDULED) {
+                        throw new ResponseStatusException(CONFLICT, "Lesson is not in SCHEDULED status.");
+                }
+                lesson.setStatus(LessonStatus.COMPLETED);
+                lesson.setUpdatedAt(OffsetDateTime.now());
+                lessonRepo.save(lesson);
+
+                // Create payment for the lesson using its priceCents
+                Payment p = Payment.builder()
+                                .lesson(lesson)
+                                .student(lesson.getStudent())
+                                .amountCents(lesson.getPriceCents())
+                                .status(PaymentStatus.CAPTURED)
+                                .processorRef("complete-" + lessonId)
+                                .build();
+                return paymentRepo.save(p);
         }
 
         public Payment pay(Long lessonId, int amountCents) {

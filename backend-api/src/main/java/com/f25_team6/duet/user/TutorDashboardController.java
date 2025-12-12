@@ -28,7 +28,7 @@ public class TutorDashboardController {
 
   @GetMapping("/upcoming-lessons")
   public List<UpcomingLessonDto> upcoming(@PathVariable Long tutorId,
-                                          @RequestParam(defaultValue = "7") int limit) {
+      @RequestParam(defaultValue = "7") int limit) {
     OffsetDateTime now = OffsetDateTime.now();
     return lessonRepo
         .findTop10ByTutor_IdAndStatusAndStartUtcAfterOrderByStartUtcAsc(tutorId, LessonStatus.SCHEDULED, now)
@@ -40,9 +40,17 @@ public class TutorDashboardController {
 
   @GetMapping("/reviews")
   public List<ReviewSummaryDto> recentReviews(@PathVariable Long tutorId,
-                                              @RequestParam(defaultValue = "5") int limit) {
+      @RequestParam(defaultValue = "5") int limit) {
     List<Review> base = reviewRepo.findTop5ByTutor_IdOrderByCreatedAtDesc(tutorId);
     return base.stream().limit(Math.max(1, limit)).map(ReviewSummaryDto::from).toList();
+  }
+
+  @GetMapping("/incoming-requests")
+  public List<IncomingRequestDto> incomingRequests(@PathVariable Long tutorId) {
+    return bookingRepo.findByTutor_IdAndStatus(tutorId, BookingStatus.PENDING)
+        .stream()
+        .map(IncomingRequestDto::from)
+        .collect(Collectors.toList());
   }
 
   @GetMapping("/metrics")
@@ -77,11 +85,15 @@ public class TutorDashboardController {
     List<Lesson> allLessons = lessonRepo.findByTutor_Id(tutorId);
     double avgMin = 0.0;
     if (!allLessons.isEmpty()) {
-      double sum = 0.0; int n = 0;
+      double sum = 0.0;
+      int n = 0;
       for (Lesson l : allLessons) {
         if (l.getStartUtc() != null && l.getEndUtc() != null) {
           long m = Duration.between(l.getStartUtc(), l.getEndUtc()).toMinutes();
-          if (m > 0) { sum += m; n++; }
+          if (m > 0) {
+            sum += m;
+            n++;
+          }
         }
       }
       avgMin = (n == 0) ? 0.0 : (sum / n);
@@ -113,22 +125,28 @@ public class TutorDashboardController {
   @Builder
   public static class UpcomingLessonDto {
     public Long id;
+    public Long studentId;
     public String studentName;
     public String instrumentName;
     public OffsetDateTime startUtc;
     public Integer durationMin;
+    public Integer priceCents;
 
-    public static UpcomingLessonDto from(Lesson l){
+    public static UpcomingLessonDto from(Lesson l) {
       Integer dur = null;
-      if (l.getStartUtc()!=null && l.getEndUtc()!=null){
+      if (l.getStartUtc() != null && l.getEndUtc() != null) {
         dur = (int) java.time.Duration.between(l.getStartUtc(), l.getEndUtc()).toMinutes();
       }
       return UpcomingLessonDto.builder()
           .id(l.getId())
-          .studentName(l.getStudent()!=null? l.getStudent().getName(): null)
-          .instrumentName(l.getBookingRequest()!=null && l.getBookingRequest().getInstrument()!=null ? l.getBookingRequest().getInstrument().getName() : null)
+          .studentId(l.getStudent() != null ? l.getStudent().getId() : null)
+          .studentName(l.getStudent() != null ? l.getStudent().getName() : null)
+          .instrumentName(l.getBookingRequest() != null && l.getBookingRequest().getInstrument() != null
+              ? l.getBookingRequest().getInstrument().getName()
+              : null)
           .startUtc(l.getStartUtc())
           .durationMin(dur)
+          .priceCents(l.getPriceCents())
           .build();
     }
   }
@@ -141,12 +159,37 @@ public class TutorDashboardController {
     public String text;
     public OffsetDateTime createdAt;
 
-    public static ReviewSummaryDto from(Review r){
+    public static ReviewSummaryDto from(Review r) {
       return ReviewSummaryDto.builder()
           .id(r.getId())
-          .studentName(r.getReviewerStudent()!=null? r.getReviewerStudent().getName(): null)
+          .studentName(r.getReviewerStudent() != null ? r.getReviewerStudent().getName() : null)
           .rating(r.getRating())
           .text(r.getText())
+          .createdAt(r.getCreatedAt())
+          .build();
+    }
+  }
+
+  @Builder
+  public static class IncomingRequestDto {
+    public Long id;
+    public Long studentId;
+    public String studentName;
+    public String instrumentName;
+    public String details;
+    public OffsetDateTime requestedStartUtc;
+    public Integer durationMin;
+    public OffsetDateTime createdAt;
+
+    public static IncomingRequestDto from(BookingRequest r) {
+      return IncomingRequestDto.builder()
+          .id(r.getId())
+          .studentId(r.getStudent() != null ? r.getStudent().getId() : null)
+          .studentName(r.getStudent() != null ? r.getStudent().getName() : "Unknown")
+          .instrumentName(r.getInstrument() != null ? r.getInstrument().getName() : "Unknown")
+          .details(r.getNotes())
+          .requestedStartUtc(r.getRequestedStartUtc())
+          .durationMin(r.getDurationMin())
           .createdAt(r.getCreatedAt())
           .build();
     }
